@@ -1,12 +1,16 @@
 #include "Aplication.h"
 #include <iostream>
+#include "Input.h"
+#include "GLFW/glfw3.h"
 
-//Dimension::Aplication::app;
+
+Dimension::Aplication*	Dimension::Aplication::app;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
+	
+	Dimension::Aplication::app = this;
 	window = Window::Create(title, width, height);
 	window->EventsHandler(&events);
-	app = this;
 }
 
 void Dimension::Aplication::Run() {
@@ -19,13 +23,17 @@ void Dimension::Aplication::Run() {
 		window->Update();
 		Close();
 		
-		events.Dispacth<KeyTypedEvent>([&text](Event& e) {
+		if (Input::IsKeyPressed(GLFW_KEY_R)) {
+			std::cout << "R is pressed!" << std::endl;
+		}
+
+		/*events.Dispacth<KeyTypedEvent>([&text](Event& e) {
 			KeyTypedEvent& event = (KeyTypedEvent&)e;
 			
 			text += event.GetKey();
 			return true;
-		});
-		std::cout << text << std::endl;
+		});*/
+		//std::cout << text << std::endl;
 	}
 
 }

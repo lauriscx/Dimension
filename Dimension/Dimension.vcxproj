@@ -154,11 +154,13 @@
     <ClCompile Include="src\Engine\Core\Logger.cpp" />
     <ClCompile Include="src\Engine\Core\Window.cpp" />
     <ClCompile Include="src\Engine\Events\Events.h" />
+    <ClCompile Include="src\Engine\Platforms\Window\WindowInput.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Engine\Platforms\Window\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Core\Aplication.h" />
+    <ClInclude Include="src\Engine\Core\Input.h" />
     <ClInclude Include="src\Engine\Events\AplicationEvent.h" />
     <ClInclude Include="src\Engine\Events\KeyEvent.h" />
     <ClInclude Include="src\Engine\Events\MouseEvent.h" />

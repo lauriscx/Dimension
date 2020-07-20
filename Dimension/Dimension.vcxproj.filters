@@ -7,6 +7,7 @@
     <ClCompile Include="src\Engine\Core\Window.cpp" />
     <ClCompile Include="src\Engine\Core\Aplication.cpp" />
     <ClCompile Include="src\Engine\Events\Events.h" />
+    <ClCompile Include="src\Engine\Platforms\Window\WindowInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Core\Logger.h" />
@@ -17,5 +18,6 @@
     <ClInclude Include="src\Engine\Events\MouseEvent.h" />
     <ClInclude Include="src\Engine\Events\AplicationEvent.h" />
     <ClInclude Include="src\Engine\Core\Aplication.h" />
+    <ClInclude Include="src\Engine\Core\Input.h" />
   </ItemGroup>
 </Project>
