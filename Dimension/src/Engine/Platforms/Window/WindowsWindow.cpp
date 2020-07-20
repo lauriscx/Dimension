@@ -47,7 +47,8 @@ void		Dimension::WindowsWindow::Update			() {
 	/* Poll for and process events */
 	glfwPollEvents();
 }
-void		Dimension::WindowsWindow::EventsHandler		(Events* event){
+void		Dimension::WindowsWindow::EventsHandler		(Events* event) {
+	//Pass events class to glfw for events input.
 	glfwSetWindowUserPointer(window, event);
 	
 	// Set GLFW callbacks
@@ -94,37 +95,33 @@ void		Dimension::WindowsWindow::EventsHandler		(Events* event){
 	});
 
 	glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
-		/*WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		Events& events = *(Events*)glfwGetWindowUserPointer(window);
 
-		switch (action)
-		{
-		case GLFW_PRESS:
-		{
-			MouseButtonPressedEvent event(static_cast<MouseCode>(button));
-			data.EventCallback(event);
+		switch (action) {
+		case GLFW_PRESS: {
+			MausePressedEvent event(button);
+			events.AddEvent(event);
+			break;
+		} case GLFW_RELEASE: {
+			MauseReleaseEvent event(button);
+			events.AddEvent(event);
 			break;
 		}
-		case GLFW_RELEASE:
-		{
-			MouseButtonReleasedEvent event(static_cast<MouseCode>(button));
-			data.EventCallback(event);
-			break;
 		}
-		}*/
 	});
 
-	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset) {
-		/*WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+	glfwSetScrollCallback(window, [](GLFWwindow* window, double x, double y) {
+		Events& events = *(Events*)glfwGetWindowUserPointer(window);
 
-		MouseScrolledEvent event((float)xOffset, (float)yOffset);
-		data.EventCallback(event);*/
+		MauseScrollEvent event(x, y);
+		events.AddEvent(event);
 	});
 
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos) {
-		/*WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double x, double y) {
+		Events& events = *(Events*)glfwGetWindowUserPointer(window);
 
-		MouseMovedEvent event((float)xPos, (float)yPos);
-		data.EventCallback(event);*/
+		MauseCursorEvent event(x, y);
+		events.AddEvent(event);
 	});
 }
 
