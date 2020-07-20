@@ -12,9 +12,13 @@ namespace Dimension {
 		public:
 			Aplication(const char* title, int width, int height);
 			void Run();
+
+			static Aplication* Get() { return app; }
+			std::shared_ptr<Window> GetWindow() { return window; }
 			
 			~Aplication();
 		private:
+			static Aplication* app;
 			std::shared_ptr<Window> window;
 			Events events;
 			bool Running;

@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-Dimension::WindowsWindow::WindowsWindow(const char * title, const uint32_t width, const uint32_t height) {
+Dimension::WindowsWindow::WindowsWindow	(const char * title, const uint32_t width, const uint32_t height) {
 	/* Initialize the library */
 	if (!glfwInit())
 		return;
@@ -123,6 +123,9 @@ void		Dimension::WindowsWindow::EventsHandler		(Events* event) {
 		MauseCursorEvent event(x, y);
 		events.AddEvent(event);
 	});
+}
+void *		Dimension::WindowsWindow::Context			() {
+	return window;
 }
 
 Dimension::WindowsWindow::~WindowsWindow() {

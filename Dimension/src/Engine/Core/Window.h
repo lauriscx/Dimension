@@ -15,5 +15,6 @@ namespace Dimension {
 			virtual float		GetAspectRation	()				= 0;
 			virtual void		Update			()				= 0;
 			virtual void		EventsHandler	(Events* event)	= 0;
+			virtual void *		Context			()				= 0;
 	};
 }

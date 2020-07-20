@@ -1,9 +1,12 @@
 #include "Aplication.h"
 #include <iostream>
 
+//Dimension::Aplication::app;
+
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	window = Window::Create(title, width, height);
 	window->EventsHandler(&events);
+	app = this;
 }
 
 void Dimension::Aplication::Run() {

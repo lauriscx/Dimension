@@ -13,6 +13,7 @@ namespace Dimension {
 		virtual float		GetAspectRation	()				override;
 		virtual void		Update			()				override;
 		virtual void		EventsHandler	(Events* event)	override;
+		virtual void *		Context			()				override;
 
 		virtual ~WindowsWindow();
 	private:
