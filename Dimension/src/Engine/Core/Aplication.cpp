@@ -20,6 +20,9 @@ void Dimension::Aplication::Run() {
 	//test();
 	std::string text;
 	while (Running) {
+
+		m_Layers.Update();
+
 		window->Update();
 		Close();
 		

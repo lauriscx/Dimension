@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include <string>
 
 namespace Dimension {
 	enum class EventType {

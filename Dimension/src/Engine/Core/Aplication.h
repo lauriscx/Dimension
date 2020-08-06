@@ -6,6 +6,7 @@
 #include "../Events/AplicationEvent.h"
 #include "../Events/MouseEvent.h"
 #include "../Events/KeyEvent.h"
+#include "LayerStack.h"
 
 namespace Dimension {
 	class Aplication {
@@ -24,5 +25,7 @@ namespace Dimension {
 			bool Running;
 
 			void Close();
+
+			LayerStack m_Layers;
 	};
 }
