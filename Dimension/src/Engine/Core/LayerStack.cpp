@@ -1,5 +1,6 @@
 #include "LayerStack.h"
 #include "Layer.h"
+#include "../Events/Events.h"
 
 Dimension::LayerStack::LayerStack() {
 	m_Insert = m_Layers.begin();
@@ -14,7 +15,7 @@ void Dimension::LayerStack::PushOverly(Layer * overlay) {
 }
 void Dimension::LayerStack::PopLayer(Layer * layer) {
 	//Remove from beggining of vector;
-	auto it = std::find(m_Layers.begin(), m_Layers.end(), m_Layers);
+	auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
 	if (it != m_Layers.end()) {
 		m_Layers.erase(it);
 		m_Insert--;
@@ -22,14 +23,21 @@ void Dimension::LayerStack::PopLayer(Layer * layer) {
 }
 void Dimension::LayerStack::PopOverlay(Layer * overlay) {
 	//Remove from end of vector;
-	auto it = std::find(m_Layers.begin(), m_Layers.end(), m_Layers);
+	auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
 	if (it != m_Layers.end()) {
 		m_Layers.erase(it);
 	}
 }
 void Dimension::LayerStack::Update() {
 	for (Layer* layer : m_Layers) {
-		Update();
+		layer->OnUpdate();
+	}
+}
+
+void Dimension::LayerStack::OnEvent(Events & events) {
+	for (Layer* layer : m_Layers) {
+		if (layer)
+			layer->OnEvent(events);
 	}
 }
 

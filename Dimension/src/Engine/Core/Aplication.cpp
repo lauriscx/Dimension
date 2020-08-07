@@ -2,7 +2,8 @@
 #include <iostream>
 #include "Input.h"
 #include "GLFW/glfw3.h"
-
+#include <functional>
+#include "Layer.h"
 
 Dimension::Aplication*	Dimension::Aplication::app;
 
@@ -11,11 +12,13 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 	Dimension::Aplication::app = this;
 	window = Window::Create(title, width, height);
 	window->EventsHandler(&events);
+	events.OnEvent(std::bind(&LayerStack::OnEvent, &m_Layers, std::placeholders::_1));
 }
 
 void Dimension::Aplication::Run() {
-	//std::function<void()> test = []() {std::cout << "Testas" << std::endl;};
 
+
+	m_Layers.PushLayer(new Layer("Test"));
 
 	//test();
 	std::string text;

@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Core\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Core\Layer.cpp" />
     <ClCompile Include="src\Engine\Core\Aplication.cpp" />
     <ClCompile Include="src\Engine\Core\Logger.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="src\Engine\Platforms\Window\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\Core\LayerStack.h" />
     <ClInclude Include="src\Engine\Core\Layer.h" />
     <ClInclude Include="src\Engine\Core\Aplication.h" />
     <ClInclude Include="src\Engine\Core\Input.h" />

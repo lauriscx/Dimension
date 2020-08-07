@@ -8,7 +8,11 @@
 namespace Dimension {
 	class Events {
 	public:
-		void AddEvent(Event event) { events.push_back(event); }
+		void AddEvent(Event event) {
+			events.push_back(event);
+			callBack(*this);
+		}
+		void OnEvent(std::function<void(Events&)> function) { callBack = function; }
 
 		template <typename T, typename F>
 		bool Dispacth(F function) {
@@ -29,5 +33,6 @@ namespace Dimension {
 
 	private:
 		std::vector<Event> events;
+		std::function<void(Events&)> callBack;
 	};
 }

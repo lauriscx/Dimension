@@ -9,6 +9,7 @@
     <ClCompile Include="src\Engine\Events\Events.h" />
     <ClCompile Include="src\Engine\Platforms\Window\WindowsInput.cpp" />
     <ClCompile Include="src\Engine\Core\Layer.cpp" />
+    <ClCompile Include="src\Engine\Core\LayerStack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Core\Logger.h" />
@@ -21,5 +22,6 @@
     <ClInclude Include="src\Engine\Core\Aplication.h" />
     <ClInclude Include="src\Engine\Core\Input.h" />
     <ClInclude Include="src\Engine\Core\Layer.h" />
+    <ClInclude Include="src\Engine\Core\LayerStack.h" />
   </ItemGroup>
 </Project>

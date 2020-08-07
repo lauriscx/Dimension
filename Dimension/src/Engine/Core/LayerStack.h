@@ -3,6 +3,7 @@
 
 namespace Dimension {
 	class Layer;
+	class Events;
 
 	class LayerStack {
 	public:
@@ -13,6 +14,7 @@ namespace Dimension {
 		void PopLayer	(Layer* layer	);
 		void PopOverlay	(Layer* overlay	);
 		void Update		(				);
+		void OnEvent	(Events& events	);
 
 		~LayerStack();
 	private:

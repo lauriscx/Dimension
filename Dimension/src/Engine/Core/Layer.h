@@ -3,7 +3,7 @@
 
 namespace Dimension {
 	/*Define class*/
-	class Event;
+	class Events;
 
 	class Layer {
 	public:
@@ -12,7 +12,7 @@ namespace Dimension {
 		virtual void OnAttach	();
 		virtual void OnDetach	();
 		virtual void OnUpdate	();
-		virtual void OnEvent	(Event& event);
+		virtual void OnEvent	(Events& events);
 		virtual void Enable		();
 		virtual void Disable	();
 
