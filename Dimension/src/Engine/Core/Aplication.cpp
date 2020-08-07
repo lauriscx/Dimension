@@ -17,8 +17,8 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 
 void Dimension::Aplication::Run() {
 
-
-	m_Layers.PushLayer(new Layer("Test"));
+	Layer * layer = new Layer("Test");
+	m_Layers.PushLayer(layer);
 
 	//test();
 	std::string text;
@@ -31,6 +31,7 @@ void Dimension::Aplication::Run() {
 		
 		if (Input::IsKeyPressed(GLFW_KEY_R)) {
 			std::cout << "R is pressed!" << std::endl;
+			m_Layers.PopLayer(layer);
 		}
 
 		/*events.Dispacth<KeyTypedEvent>([&text](Event& e) {

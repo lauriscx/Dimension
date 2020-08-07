@@ -18,6 +18,8 @@ namespace Dimension {
 
 		virtual ~Layer();
 
+		void SetEnable(bool Enable);
+
 		inline const bool			IsEnable() { return m_Enabled;	}
 		inline const std::string&	GetName	() { return m_Name;		}
 
