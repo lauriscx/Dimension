@@ -20,6 +20,9 @@ namespace Dimension {
 		logger->flush_on(spdlog::level::trace);
 	}
 
+	void Logger::Succes	(const char * message) {
+		logger->info(message);
+	}
 	void Logger::Info	(const char * message) {
 		logger->info(message);
 	}

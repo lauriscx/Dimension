@@ -1,9 +1,9 @@
 #include "WindowsWindow.h"
 #include "GLFW/glfw3.h"
-#include "../../Events/Events.h"
-#include "../../Events/AplicationEvent.h"
-#include "../../Events/MouseEvent.h"
-#include "../../Events/KeyEvent.h"
+#include "../../Core/Input/Events/Events.h"
+#include "../../Core/Input/Events/AplicationEvent.h"
+#include "../../Core/Input/Events/MouseEvent.h"
+#include "../../Core/Input/Events/KeyEvent.h"
 #include <iostream>
 
 
@@ -19,6 +19,8 @@ Dimension::WindowsWindow::WindowsWindow	(const char * title, const uint32_t widt
 		glfwTerminate();
 		return;
 	}
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
@@ -40,6 +42,10 @@ float		Dimension::WindowsWindow::GetAspectRation	() {
 void		Dimension::WindowsWindow::Update			() {
 	/* Render here */
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	int display_w, display_h;
+	glfwGetFramebufferSize(window, &display_w, &display_h);
+	glViewport(0, 0, display_w, display_h);
 
 	/* Swap front and back buffers */
 	glfwSwapBuffers(window);

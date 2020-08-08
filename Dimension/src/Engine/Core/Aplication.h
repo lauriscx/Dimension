@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 #include "Window.h"
-#include "../Events/Event.h"
-#include "../Events/Events.h"
-#include "../Events/AplicationEvent.h"
-#include "../Events/MouseEvent.h"
-#include "../Events/KeyEvent.h"
-#include "LayerStack.h"
+#include "Input/Events/Event.h"
+#include "Input/Events/Events.h"
+#include "Input/Events/AplicationEvent.h"
+#include "Input/Events/MouseEvent.h"
+#include "Input/Events/KeyEvent.h"
+#include "Layers/LayerStack.h"
 
 namespace Dimension {
 	class Aplication {

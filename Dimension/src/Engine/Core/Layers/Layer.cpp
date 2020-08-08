@@ -1,5 +1,5 @@
 #include "Layer.h"
-#include "../Events/Events.h"
+#include "../Input/Events/Events.h"
 #include <iostream>
 #include <string>
 
@@ -14,16 +14,18 @@ void Dimension::Layer::OnDetach() {
 void Dimension::Layer::OnUpdate() {
 }
 void Dimension::Layer::OnEvent(Events & events) {
-	std::cout << (m_Name + " callback event") << std::endl;
+	//std::cout << (m_Name + " callback event") << std::endl;
 }
 void Dimension::Layer::Enable() {
+	m_Enabled = true;
 }
 void Dimension::Layer::Disable() {
+	m_Enabled = false;
 }
 
 Dimension::Layer::~Layer() {
 }
 
-void Dimension::Layer::SetEnable(bool Enable) {
-	m_Enabled = Enable;
+void Dimension::Layer::SetEnabled(bool Enabled) {
+	m_Enabled = Enabled;
 }

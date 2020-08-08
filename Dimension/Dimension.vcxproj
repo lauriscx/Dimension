@@ -95,8 +95,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW;$(SolutionDir)lib\GLEW</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,8 +109,8 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW;$(SolutionDir)lib\GLEW</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,8 +127,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW;$(SolutionDir)lib\GLEW</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,32 +145,48 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\GLFW;$(SolutionDir)lib\GLEW</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Engine\Core\LayerStack.cpp" />
-    <ClCompile Include="src\Engine\Core\Layer.cpp" />
+    <ClCompile Include="src\Engine\Core\GUI\GUI.cpp" />
+    <ClCompile Include="src\Engine\Core\Layers\LayerStack.cpp" />
+    <ClCompile Include="src\Engine\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Engine\Core\Aplication.cpp" />
-    <ClCompile Include="src\Engine\Core\Logger.cpp" />
+    <ClCompile Include="src\Engine\Core\Temporary\Logger.cpp" />
     <ClCompile Include="src\Engine\Core\Window.cpp" />
-    <ClCompile Include="src\Engine\Events\Events.h" />
+    <ClCompile Include="src\Engine\Core\Input\Events\Events.h" />
+    <ClCompile Include="src\Engine\imgui\imgui.cpp" />
+    <ClCompile Include="src\Engine\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\Engine\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\Engine\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Engine\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Engine\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Engine\Platforms\Window\WindowsInput.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Engine\Platforms\Window\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Engine\Core\LayerStack.h" />
-    <ClInclude Include="src\Engine\Core\Layer.h" />
+    <ClInclude Include="src\Engine\Core\GUI\GUI.h" />
+    <ClInclude Include="src\Engine\Core\Layers\LayerStack.h" />
+    <ClInclude Include="src\Engine\Core\Layers\Layer.h" />
     <ClInclude Include="src\Engine\Core\Aplication.h" />
-    <ClInclude Include="src\Engine\Core\Input.h" />
-    <ClInclude Include="src\Engine\Events\AplicationEvent.h" />
-    <ClInclude Include="src\Engine\Events\KeyEvent.h" />
-    <ClInclude Include="src\Engine\Events\MouseEvent.h" />
-    <ClInclude Include="src\Engine\Core\Logger.h" />
+    <ClInclude Include="src\Engine\Core\Input\Input.h" />
+    <ClInclude Include="src\Engine\Core\Input\Events\AplicationEvent.h" />
+    <ClInclude Include="src\Engine\Core\Input\Events\KeyEvent.h" />
+    <ClInclude Include="src\Engine\Core\Input\Events\MouseEvent.h" />
+    <ClInclude Include="src\Engine\Core\Temporary\Logger.h" />
     <ClInclude Include="src\Engine\Core\Window.h" />
-    <ClInclude Include="src\Engine\Events\Event.h" />
+    <ClInclude Include="src\Engine\Core\Input\Events\Event.h" />
+    <ClInclude Include="src\Engine\imgui\imconfig.h" />
+    <ClInclude Include="src\Engine\imgui\imgui.h" />
+    <ClInclude Include="src\Engine\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Engine\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Engine\imgui\imgui_internal.h" />
+    <ClInclude Include="src\Engine\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\Engine\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\Engine\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Engine\Platforms\Window\WindowsWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

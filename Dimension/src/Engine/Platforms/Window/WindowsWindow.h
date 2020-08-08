@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Core/Window.h"
+#include <string>
 
 struct GLFWwindow;
 

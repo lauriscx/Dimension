@@ -1,6 +1,5 @@
 #pragma once
-#include <string>
-
+#include <memory>
 
 namespace Dimension {
 	class Events;

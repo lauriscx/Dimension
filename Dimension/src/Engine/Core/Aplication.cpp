@@ -1,9 +1,11 @@
+#include <GLEW/include/GL/glew.h>
 #include "Aplication.h"
 #include <iostream>
-#include "Input.h"
+#include "Input/Input.h"
 #include "GLFW/glfw3.h"
 #include <functional>
-#include "Layer.h"
+#include "Layers/Layer.h"
+#include "GUI/GUI.h"
 
 Dimension::Aplication*	Dimension::Aplication::app;
 
@@ -13,6 +15,11 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 	window = Window::Create(title, width, height);
 	window->EventsHandler(&events);
 	events.OnEvent(std::bind(&LayerStack::OnEvent, &m_Layers, std::placeholders::_1));
+
+	GUI* gui = new GUI(window->Context());
+
+	m_Layers.PushLayer(gui);
+
 }
 
 void Dimension::Aplication::Run() {

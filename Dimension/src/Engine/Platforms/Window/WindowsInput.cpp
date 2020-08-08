@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Core/Input.h"
+#include "../../Core/Input/Input.h"
 #include "../../Core/Aplication.h"
 #include "WindowsWindow.h"
 #include <GLFW/glfw3.h>
