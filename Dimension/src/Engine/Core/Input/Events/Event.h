@@ -3,6 +3,7 @@
 namespace Dimension {
 	enum class EventType {
 		None,
+		Error,
 		WindowResize,
 		WindowClose,
 		KeyPressed,
@@ -17,13 +18,7 @@ namespace Dimension {
 
 	class Event {
 		public:
-			EventType GetType() {
-				return type;
-			}
-			void  SetType(EventType type) {
-				this->type = type;
-			}
-		private:
-			EventType type;
+			virtual ~Event() {};
+			virtual EventType GetType() const { return EventType::None; };
 	};
 }

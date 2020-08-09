@@ -7,12 +7,11 @@ namespace Dimension {
 		public:
 			MausePressedEvent(int key) {
 				this->key = key;
-				SetType(GetEventType());
 			}
-
 			static EventType GetEventType() {
 				return EventType::MousePressed;
 			}
+			virtual EventType GetType() const override { return GetEventType(); };
 			int GetKey() {
 				return key;
 			}
@@ -24,12 +23,11 @@ namespace Dimension {
 	public:
 		MauseReleaseEvent(int key) {
 			this->key = key;
-			SetType(GetEventType());
 		}
-
 		static EventType GetEventType() {
 			return EventType::MouseReleased;
 		}
+		virtual EventType GetType() const override { return GetEventType(); };
 		int GetKey() {
 			return key;
 		}
@@ -42,12 +40,12 @@ namespace Dimension {
 		MauseScrollEvent(double x, double y) {
 			this->x = x;
 			this->y = y;
-			SetType(GetEventType());
 		}
 
 		static EventType GetEventType() {
 			return EventType::MouseScroll;
 		}
+		virtual EventType GetType() const override { return GetEventType(); };
 		double GetX() {
 			return x;
 		}
@@ -65,12 +63,13 @@ namespace Dimension {
 		MauseCursorEvent(double x, double y) {
 			this->x = x;
 			this->y = y;
-			SetType(GetEventType());
 		}
 
 		static EventType GetEventType() {
 			return EventType::MouseCursor;
 		}
+
+		virtual EventType GetType() const override { return GetEventType(); };
 		double GetX() {
 			return x;
 		}

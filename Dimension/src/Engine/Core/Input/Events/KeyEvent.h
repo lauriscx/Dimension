@@ -6,12 +6,11 @@ namespace Dimension {
 	public:
 		KeyReleasedEvent(int Code) {
 			this->Code = Code;
-			SetType(GetEventType());
 		}
-
 		static EventType GetEventType() {
 			return EventType::KeyReleased;
 		}
+		virtual EventType GetType() const override { return GetEventType(); }
 		int GetKey() {
 			return Code;
 		}
@@ -23,12 +22,11 @@ namespace Dimension {
 	public:
 		KeyTypedEvent(char Code) {
 			this->Code = Code;
-			SetType(GetEventType());
 		}
-
 		static EventType GetEventType() {
 			return EventType::Char;
 		}
+		virtual EventType GetType() const override { return GetEventType(); };
 		char GetKey() {
 			return Code;
 		}
@@ -41,12 +39,11 @@ namespace Dimension {
 		KeyPressedEvent(int Code, int Repeat) {
 			this->Code = Code;
 			this->Repeat = Repeat;
-			SetType(GetEventType());
 		}
-
 		static EventType GetEventType() {
 			return EventType::KeyRepeat;
 		}
+		virtual EventType GetType() const override { return GetEventType(); };
 		int GetKey() {
 			return Code;
 		}

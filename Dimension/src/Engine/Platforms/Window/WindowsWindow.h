@@ -5,6 +5,9 @@
 struct GLFWwindow;
 
 namespace Dimension {
+	class Error;
+	class Events;
+
 	class WindowsWindow : public Window {
 	public:
 		WindowsWindow(const char* title, const uint32_t width, const uint32_t height);
@@ -21,5 +24,10 @@ namespace Dimension {
 		uint32_t	width, height;
 		std::string title;
 		GLFWwindow* window;
+		Events* events;
+	public:
+		//Temporary
+		static Error* s_error;
+		static bool errorOccour;
 	};
 }

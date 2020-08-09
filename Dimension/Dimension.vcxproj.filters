@@ -10,13 +10,13 @@
     <ClCompile Include="src\Engine\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Core\Temporary\Logger.cpp" />
     <ClCompile Include="src\Engine\Core\Input\Events\Events.h" />
-    <ClCompile Include="src\Engine\Core\GUI\GUI.cpp" />
-    <ClCompile Include="src\Engine\imgui\imgui.cpp" />
-    <ClCompile Include="src\Engine\imgui\imgui_demo.cpp" />
-    <ClCompile Include="src\Engine\imgui\imgui_draw.cpp" />
-    <ClCompile Include="src\Engine\imgui\imgui_impl_glfw.cpp" />
-    <ClCompile Include="src\Engine\imgui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="src\Engine\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Engine\Core\GLAD\glad.c" />
+    <ClCompile Include="src\Engine\Core\GUI\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Engine\Core\GUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Engine\Core\GUI\imgui.cpp" />
+    <ClCompile Include="src\Engine\Core\GUI\imgui_demo.cpp" />
+    <ClCompile Include="src\Engine\Core\GUI\imgui_draw.cpp" />
+    <ClCompile Include="src\Engine\Core\GUI\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Platforms\Window\WindowsWindow.h" />
@@ -30,14 +30,8 @@
     <ClInclude Include="src\Engine\Core\Input\Events\Event.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\KeyEvent.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\MouseEvent.h" />
-    <ClInclude Include="src\Engine\Core\GUI\GUI.h" />
-    <ClInclude Include="src\Engine\imgui\imconfig.h" />
-    <ClInclude Include="src\Engine\imgui\imgui.h" />
-    <ClInclude Include="src\Engine\imgui\imgui_impl_glfw.h" />
-    <ClInclude Include="src\Engine\imgui\imgui_impl_opengl3.h" />
-    <ClInclude Include="src\Engine\imgui\imgui_internal.h" />
-    <ClInclude Include="src\Engine\imgui\imstb_rectpack.h" />
-    <ClInclude Include="src\Engine\imgui\imstb_textedit.h" />
-    <ClInclude Include="src\Engine\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\Engine\Core\GUI\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Engine\Core\GUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Engine\Core\Input\Events\Error.h" />
   </ItemGroup>
 </Project>

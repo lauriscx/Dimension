@@ -5,23 +5,19 @@ namespace Dimension {
 	
 	class WindowCloseEvent : public Event {
 		public:
-			WindowCloseEvent() {
-				SetType(GetEventType());
-			}
 
 			static EventType GetEventType() {
 				return EventType::WindowClose;
 			}
+			virtual EventType GetType() const override { return GetEventType(); }
 	};
 
 	class WindowResizeEvent : public Event {
 		public:
-			WindowResizeEvent() {
-				SetType(GetEventType());
-			}
 			static EventType GetEventType() {
 				return EventType::WindowResize;
 			}
+			virtual EventType GetType() const override { return GetEventType(); }
 
 			inline void SetWidth	(int width	) { this->width = width;	}
 			inline void SetHeight	(int height	) { this->height = height;	}
