@@ -14,23 +14,6 @@ namespace Dimension {
 	public:
 		void AddEvent(Event* event) {
 			events.push_back(event);
-			/*
-			Dispacth<WindowResizeEvent>([](WindowResizeEvent* e) {
-				//std::string er = e.GetErrorReport();
-				std::cout << "Window width: " << e->GetWidth() << std::endl;
-				return true;
-			});
-
-			Dispacth<Error>([](Error* e) {
-				//std::string er = e.GetErrorReport();
-				std::cout << "Error " << e->GetErrorReport() << std::endl;
-				return true;
-			});
-			Dispacth<WindowCloseEvent>([](WindowCloseEvent* e) {
-				//std::string er = e.GetErrorReport();
-				std::cout << "Close " << std::endl;
-				return true;
-			});*/
 			//callBack(*this);
 		}
 		void OnEvent(std::function<void(Events&)> function) { callBack = function; }
