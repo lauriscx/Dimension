@@ -17,6 +17,11 @@
     <ClCompile Include="src\Engine\Core\GUI\imgui_demo.cpp" />
     <ClCompile Include="src\Engine\Core\GUI\imgui_draw.cpp" />
     <ClCompile Include="src\Engine\Core\GUI\imgui_widgets.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Shader.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Render2D.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Material.cpp" />
+    <ClCompile Include="src\Engine\Core\FileReader.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Platforms\Window\WindowsWindow.h" />
@@ -33,5 +38,10 @@
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_glfw.h" />
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\Error.h" />
+    <ClInclude Include="src\Engine\Core\Render\Shader.h" />
+    <ClInclude Include="src\Engine\Core\Render\Render2D.h" />
+    <ClInclude Include="src\Engine\Core\Render\Material.h" />
+    <ClInclude Include="src\Engine\Core\FileReader.h" />
+    <ClInclude Include="src\Engine\Core\Render\Texture.h" />
   </ItemGroup>
 </Project>

@@ -12,6 +12,9 @@
 #include "Input/Events/Error.h"
 #include <string>
 
+#include "Render/Shader.h"
+#include "FileReader.h"
+
 Dimension::Aplication*	Dimension::Aplication::app;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
@@ -40,6 +43,12 @@ void Dimension::Aplication::Run() {
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	// Setup Dear ImGui style
 	//ImGui::StyleColorsDark();
+
+	FileReader reader;
+
+	Shader shader;
+	shader.addVertexCode("", reader.ReadFile(""));
+	shader.addFragmentCode("", reader.ReadFile(""));
 
 	//test();
 	std::string text;

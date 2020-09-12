@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\Core\FileReader.cpp" />
     <ClCompile Include="src\Engine\Core\GLAD\glad.c" />
     <ClCompile Include="src\Engine\Core\GUI\imgui.cpp" />
     <ClCompile Include="src\Engine\Core\GUI\imgui_demo.cpp" />
@@ -160,6 +161,10 @@
     <ClCompile Include="src\Engine\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Engine\Core\Aplication.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Material.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Render2D.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Shader.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\Texture.cpp" />
     <ClCompile Include="src\Engine\Core\Temporary\Logger.cpp" />
     <ClCompile Include="src\Engine\Core\Window.cpp" />
     <ClCompile Include="src\Engine\Core\Input\Events\Events.h" />
@@ -168,6 +173,7 @@
     <ClCompile Include="src\Engine\Platforms\Window\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\Core\FileReader.h" />
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_glfw.h" />
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\Error.h" />
@@ -178,6 +184,10 @@
     <ClInclude Include="src\Engine\Core\Input\Events\AplicationEvent.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\KeyEvent.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\MouseEvent.h" />
+    <ClInclude Include="src\Engine\Core\Render\Material.h" />
+    <ClInclude Include="src\Engine\Core\Render\Render2D.h" />
+    <ClInclude Include="src\Engine\Core\Render\Shader.h" />
+    <ClInclude Include="src\Engine\Core\Render\Texture.h" />
     <ClInclude Include="src\Engine\Core\Temporary\Logger.h" />
     <ClInclude Include="src\Engine\Core\Window.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\Event.h" />
