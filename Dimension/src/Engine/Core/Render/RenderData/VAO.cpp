@@ -1,5 +1,6 @@
 #include "VAO.h"
 #include <glad/glad.h>
+#include <iostream>
 
 VAO::VAO() {
 	//Generate vertex array object.

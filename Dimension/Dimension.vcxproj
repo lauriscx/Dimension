@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\;$(SolutionDir)includes\glm-master\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -105,7 +105,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\;$(SolutionDir)includes\glm-master\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -121,7 +121,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\;$(SolutionDir)includes\glm-master\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -139,7 +139,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)includes\;$(SolutionDir)includes\imgui\;$(SolutionDir)includes\glm-master\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -161,10 +161,13 @@
     <ClCompile Include="src\Engine\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Engine\Core\Aplication.cpp" />
-    <ClCompile Include="src\Engine\Core\Render\Material.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Material.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Render2D.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Mesh.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\VAO.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\VBO.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Shader.cpp" />
-    <ClCompile Include="src\Engine\Core\Render\Texture.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Texture.cpp" />
     <ClCompile Include="src\Engine\Core\Temporary\Logger.cpp" />
     <ClCompile Include="src\Engine\Core\Window.cpp" />
     <ClCompile Include="src\Engine\Core\Input\Events\Events.h" />
@@ -184,10 +187,13 @@
     <ClInclude Include="src\Engine\Core\Input\Events\AplicationEvent.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\KeyEvent.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\MouseEvent.h" />
-    <ClInclude Include="src\Engine\Core\Render\Material.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\Material.h" />
     <ClInclude Include="src\Engine\Core\Render\Render2D.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\Mesh.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\VAO.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\VBO.h" />
     <ClInclude Include="src\Engine\Core\Render\Shader.h" />
-    <ClInclude Include="src\Engine\Core\Render\Texture.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\Texture.h" />
     <ClInclude Include="src\Engine\Core\Temporary\Logger.h" />
     <ClInclude Include="src\Engine\Core\Window.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\Event.h" />

@@ -14,6 +14,8 @@
 
 #include "Render/Shader.h"
 #include "FileReader.h"
+#include "Render/RenderData/Mesh.h"
+#include <fstream>
 
 Dimension::Aplication*	Dimension::Aplication::app;
 
@@ -42,16 +44,19 @@ void Dimension::Aplication::Run() {
 	const char* glsl_version = "#version 330";
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	// Setup Dear ImGui style
-	//ImGui::StyleColorsDark();
+	ImGui::StyleColorsDark();
 
 	FileReader reader;
-
 	Shader shader;
-	shader.addVertexCode("", reader.ReadFile(""));
-	shader.addFragmentCode("", reader.ReadFile(""));
+	shader.addVertexCode("/res/Vertex.glsl", reader.ReadFile("../res/Vertex.glsl"));
+	shader.addFragmentCode("/res/Fragment.glsl", reader.ReadFile("../res/Fragment.glsl"));
+	shader.compile();
 
-	//test();
+	Mesh mesh;
+	mesh.GenTriangle(1.25f, 0.25f);
+
 	std::string text;
+	shader.start();
 	while (Running) {
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -76,6 +81,13 @@ void Dimension::Aplication::Run() {
 		// Render dear imgui into screen
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		int count = mesh.getVertexCount();
+		unsigned int indices[] = { 0, 1, 2 };
+		mesh.GetVAO().Bind();
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices);
+		//glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+
 
 		window->Update();
 		Close();

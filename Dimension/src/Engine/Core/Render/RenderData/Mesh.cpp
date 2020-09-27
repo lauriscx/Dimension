@@ -1,6 +1,82 @@
 #include "Mesh.h"
+#include "GLAD/glad.h"
 
-Mesh::Mesh() {
+Mesh::Mesh() : vertexCount(0) {
+}
+
+void Mesh::GenTriangle(float width, float height) {
+	unsigned int indices[] = {0, 1, 2};
+	vertexCount = sizeof(indices) / sizeof(unsigned int);
+
+	float positions[] = {
+						-width/2.0f, -height / 2.0f, 0.0f,
+						width / 2.0f, -height / 2.0f, 0.0f,
+						0.0f, height / 2.0f, 0.0f
+						};
+
+
+	vao.Bind();
+
+	VBO* ibo_indices = new VBO();
+	ibo_indices->setBufferType(GL_ELEMENT_ARRAY_BUFFER);
+	ibo_indices->setStorageType(GL_STATIC_DRAW);
+	ibo_indices->setDataType(GL_UNSIGNED_INT);
+
+	ibo_indices->bind();
+	ibo_indices->StoreData(indices, sizeof(indices));
+
+	vbos.push_back(ibo_indices);
+
+	VBO* vbo_position = new VBO();
+
+	vbo_position->setBufferType(GL_ARRAY_BUFFER);
+	vbo_position->setStorageType(GL_STATIC_DRAW);
+	vbo_position->setDataType(GL_FLOAT);
+	vbo_position->setLocation(0);
+	vbo_position->setSize(3);
+
+	vbo_position->bind();
+	vbo_position->StoreData(positions, sizeof(positions));
+	vbo_position->AttributeSetup();
+
+	vbos.push_back(vbo_position);
+}
+
+void Mesh::GenRectangle(float width, float height) {
+	int indices[] = {0, 1, 2, 3, 1, 0};
+	vertexCount = sizeof(indices) / sizeof(int);
+	float positions[] = {
+			-width / 2.0f, -height / 2.0f, 0.0f,
+			-width, height / 2.0f, 0.0f,
+			width / 2.0f, height / 2.0f, 0.0f,
+			width / 2.0f, -height / 2.0f, 0.0f
+
+	};
+
+	vao.Bind();
+	/*VBO ibo_indices;
+	ibo_indices.setBufferType(GL_ELEMENT_ARRAY_BUFFER);
+	ibo_indices.setStorageType(GL_STATIC_DRAW);
+	ibo_indices.setDataType(GL_UNSIGNED_INT);
+
+	ibo_indices.bind();
+	ibo_indices.StoreData(indices);
+
+	vbos.push_back(ibo_indices);*/
+
+	VBO* vbo_position = new VBO();
+
+	vbo_position->setBufferType(GL_ARRAY_BUFFER);
+	vbo_position->setStorageType(GL_STATIC_DRAW);
+	vbo_position->setDataType(GL_FLOAT);
+	vbo_position->setLocation(0);
+	vbo_position->setSize(3);
+
+	vbo_position->bind();
+	vbo_position->AttributeSetup();
+	vbo_position->StoreData(positions, sizeof(positions) / sizeof(int));
+
+	vbos.push_back(vbo_position);
 }
 
 //Load data from file.
@@ -131,24 +207,24 @@ VAO Mesh::GetVAO() {
 	return vao;
 }
 //Get VBO list.
-std::vector<VBO> Mesh::GetVBOs() {
+std::vector<VBO*> Mesh::GetVBOs() {
 	return vbos;
 }
 
 //Get vertex count of mesh.
 int Mesh::getVertexCount() {
-	return 0;//objectFile.getPositions().length;
+	return vertexCount;//objectFile.getPositions().length;
 }
 
 //Clear object data from memory.
 void Mesh::clean() {
 	//Disable VAO if active.
-	vao.Bind();
+	//vao.Bind();
 	//Call function to clear objects they own data.
-	for (VBO vbo : vbos) {
+	/*for (VBO vbo : vbos) {
 		vbo.CleanUp();
 	}
-	vao.CleanUp();
+	vao.CleanUp();*/
 }
 Mesh::~Mesh()
 {

@@ -72,6 +72,7 @@ namespace Dimension {
 		~Shader();
 	private:
 		int getLocation(std::string name);
+		void Check(unsigned int& Shader, unsigned int Flag, bool IsProgram, const std::string& ErrorMessage);
 
 	private:
 		int ID;//Will be used in shader manager

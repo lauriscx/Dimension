@@ -6,6 +6,15 @@ public:
 	//Activate buffer.
 	void bind();
 
+	void setStorageType	(int storageType);
+	void setNormalized	(bool normalized);
+	void setBufferType	(int bufferType);
+	void setDataType	(int dataType);
+	void setLocation	(int location);
+	void setStride		(int stride);
+	void setOffset		(int offset);
+	void setSize		(int size);
+
 	//Disable buffer.
 	void unbind();
 
@@ -23,13 +32,14 @@ public:
 
 	/*Store data functions*/
 	void StoreData(long* data);
-	void StoreData(int* data);
-	void StoreData(float* data);
+	void StoreData(int* data, int _size);
+	void StoreData(unsigned int* data, int _size);
+	void StoreData(float* data, int _size);
 	void StoreData(double* data);
 
 	void StoreData(long* Data, int Offset);
-	void StoreData(int* Data, int Offset);
-	void StoreData(float* Data, int Offset);
+	void StoreData(int* Data, int Offset, int size);
+	void StoreData(float* Data, int Offset, int size);
 	void StoreData(double* Data, int Offset);
 	//Clean up data
 	void CleanUp();

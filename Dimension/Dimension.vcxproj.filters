@@ -19,9 +19,12 @@
     <ClCompile Include="src\Engine\Core\GUI\imgui_widgets.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Shader.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Render2D.cpp" />
-    <ClCompile Include="src\Engine\Core\Render\Material.cpp" />
     <ClCompile Include="src\Engine\Core\FileReader.cpp" />
-    <ClCompile Include="src\Engine\Core\Render\Texture.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Texture.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Material.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\VAO.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\VBO.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Platforms\Window\WindowsWindow.h" />
@@ -40,8 +43,11 @@
     <ClInclude Include="src\Engine\Core\Input\Events\Error.h" />
     <ClInclude Include="src\Engine\Core\Render\Shader.h" />
     <ClInclude Include="src\Engine\Core\Render\Render2D.h" />
-    <ClInclude Include="src\Engine\Core\Render\Material.h" />
     <ClInclude Include="src\Engine\Core\FileReader.h" />
-    <ClInclude Include="src\Engine\Core\Render\Texture.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\Material.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\Texture.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\VAO.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\VBO.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\Mesh.h" />
   </ItemGroup>
 </Project>

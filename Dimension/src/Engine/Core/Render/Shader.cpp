@@ -2,18 +2,19 @@
 #include "GLAD/glad.h"
 #include <string>
 #include <stdarg.h>
+#include <iostream>
 
 Dimension::Shader::Shader() {
 	this->programID = glCreateProgram();
 
 	addAttribute("Position", 0);
-	addAttribute("UV", 1);
+	/*addAttribute("UV", 1);
 	addAttribute("Color", 2);
 	addAttribute("Normal", 3);
 	addAttribute("Tangent", 4);
 	addAttribute("BiTangent", 5);
 	addAttribute("WeightValue", 6);
-	addAttribute("VertexIndex", 7);
+	addAttribute("VertexIndex", 7);*/
 }
 
 void Dimension::Shader::addVertexCode(std::string name, std::string code) {
@@ -39,24 +40,52 @@ int 	Dimension::Shader::program() {
 	return this->programID;
 }
 void Dimension::Shader::compile() {
-	for (std::pair<std::string, std::pair<std::string, int>> code : vertex) {
+	for (std::pair<std::string, std::pair<std::string, unsigned int>> code : vertex) {
+
+		const char* shaderCode = "#version 430\n"
+			"in vec3 Position;\n"
+			"\n"
+			"uniform mat4 ModelTransformation;\n"
+			"uniform mat4 Camera;\n"
+			"uniform mat4 Projection;\n"
+			"\n"
+			"void main() {\n"
+			"	//vec4 worldPosition = ModelTransformation * vec4(Position, 1.0f);\n"
+			"	gl_Position = vec4(Position, 1.0f);\n"
+			"}";
+
 		code.second.second = (glCreateShader(GL_VERTEX_SHADER));
-		glShaderSource(code.second.second, 1, (const char**)&code.second.first, NULL);
+		glShaderSource(code.second.second, 1, (const char**)&shaderCode, NULL);
 		glCompileShader(code.second.second);
+
+		Check(code.second.second, GL_COMPILE_STATUS, false, "Shader: Error compiling vertex shader!");
+
 		glAttachShader(programID, code.second.second);
 	}
 
-	for (std::pair<std::string, std::pair<std::string, int>> code : geometry) {
+	for (std::pair<std::string, std::pair<std::string, unsigned int>> code : geometry) {
 		code.second.second = (glCreateShader(GL_GEOMETRY_SHADER));
 		glShaderSource(code.second.second, 1, (const char**)&code.second.first, NULL);
 		glCompileShader(code.second.second);
+
+		Check(code.second.second, GL_COMPILE_STATUS, false, "Shader: Error compiling geometry shader!");
+
 		glAttachShader(programID, code.second.second);
 	}
 
-	for (std::pair<std::string, std::pair<std::string, int>> code : fragment) {
+	for (std::pair<std::string, std::pair<std::string, unsigned int>> code : fragment) {
+		const char* shaderCode =	"#version 430\n"
+									"out vec4 Pixel;\n"
+									"void main() {\n"
+										"Pixel = vec4(0.0, 0.5, 0.7, 1);// * (texture2D(DiffuseMap, Paralax) + material.color);\n"
+									"}";
+
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
-		glShaderSource(code.second.second, 1, (const char**)&code.second.first, NULL);
+		glShaderSource(code.second.second, 1, (const char**)&shaderCode, NULL);
 		glCompileShader(code.second.second);
+		
+		Check(code.second.second, GL_COMPILE_STATUS, false, "Shader: Error compiling fragment shader!");
+
 		glAttachShader(programID, code.second.second);
 	}
 
@@ -65,9 +94,11 @@ void Dimension::Shader::compile() {
 	glLinkProgram(programID);
 	int result;
 	glGetProgramiv(programID, GL_LINK_STATUS, &result);
-	if (result == GL_FALSE) {
+	if (result == -1) {
+		int a = 5;
 		//td::_Count_pr << "Shader: " + programID + "\ncompaling error: " + glGetProgramInfoLog(programID, glGetProgramiv(programID, GL_INFO_LOG_LENGTH));
 	}
+
 
 	glValidateProgram(programID);
 
@@ -194,6 +225,18 @@ int Dimension::Shader::getLocation(std::string name) {
 		return uniforms[name];
 	}
 	return 0;
+}
+
+void Dimension::Shader::Check(unsigned int& Shader, unsigned int Flag, bool IsProgram, const std::string& ErrorMessage) {
+	GLint success = 0;
+	GLchar error[1024] = { 0 };
+
+	IsProgram ? glGetProgramiv(Shader, Flag, &success) : glGetShaderiv(Shader, Flag, &success);
+
+	if (success == GL_FALSE) {
+		IsProgram ? glGetProgramInfoLog(Shader, sizeof(error), NULL, error) : glGetShaderInfoLog(Shader, sizeof(error), NULL, error);
+		std::cout << ErrorMessage << " : " << error << "!\n";
+	}
 }
 
 void Dimension::Shader::sendUniform(std::string name, int 		value) {

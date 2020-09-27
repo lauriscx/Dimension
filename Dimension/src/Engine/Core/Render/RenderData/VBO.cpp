@@ -1,15 +1,24 @@
 #include "VBO.h"
 #include <glad/glad.h>
+#include <iostream>
 
-VBO::VBO()
-{
+VBO::VBO() {
+	glGenBuffers(1, &id);
+	std::cout << "VBO constructed" << std::endl;
+	bufferType = GL_ARRAY_BUFFER;
+	storageType = GL_STATIC_DRAW;
+	dataType = GL_FLOAT;
+	location = 0;
+	stride = 0;
+	offset = 0;
+	normalized = false;
 }
 
 
 //Activate buffer.
 void VBO::bind() {
 	/*Enables vertex buffer object*/
-	glBindBuffer(bufferType, id);
+	glBindBuffer(GL_ARRAY_BUFFER, id);
 
 	/*Enables vertex array buffer attribute location if it is not element array*/
 	if (bufferType != GL_ELEMENT_ARRAY_BUFFER) {
@@ -17,10 +26,35 @@ void VBO::bind() {
 	}
 }
 
+void VBO::setStorageType(int storageType) {
+	this->storageType = storageType;
+}
+void VBO::setNormalized	(bool normalized) {
+	this->normalized = normalized;
+}
+void VBO::setBufferType	(int bufferType) {
+	this->bufferType = bufferType;
+}
+void VBO::setDataType	(int dataType) {
+	this->dataType = dataType;
+}
+void VBO::setLocation	(int location) {
+	this->location = location;
+}
+void VBO::setStride		(int stride) {
+	this->stride = stride;
+}
+void VBO::setOffset		(int offset) {
+	this->offset = offset;
+}
+void VBO::setSize		(int size) {
+	this->size = size;
+}
+
 //Disable buffer.
 void VBO::unbind() {
 	/*Disables vertex buffer object*/
-	glBindBuffer(bufferType, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	/*Disables vertex array buffer attribute location if it is not element array*/
 	if (bufferType != GL_ELEMENT_ARRAY_BUFFER) {
@@ -30,11 +64,11 @@ void VBO::unbind() {
 
 //Enable attribute array by index witch is set in shader class.
 void VBO::enableAttributeArray() {
-	glEnableVertexAttribArray(location);
+	glEnableVertexAttribArray(0);
 }
 //Disable attribute array by index witch is set in shader class.
 void VBO::disableAttributeArray() {
-	glDisableVertexAttribArray(location);
+	glDisableVertexAttribArray(0);
 }
 
 
@@ -58,6 +92,14 @@ void VBO::AttributeSetup() {
 	 * stride how many variables to skip,
 	 * offset from witch variable to start.
 	 * */
+	/* glVertexAttribPointer(
+	 0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	 3,                  // size
+	 GL_FLOAT,           // type
+	 GL_FALSE,           // normalized?
+	 0,                  // stride
+	 (void*)0            // array buffer offset
+		);*/
 	glVertexAttribPointer(location, size, dataType, normalized, stride, (void*)offset);
 }
 void VBO::AttributeISetup() {
@@ -78,25 +120,30 @@ void VBO::ReserveData(int Size) {
 
 /*Store data functions*/
 void VBO::StoreData(long* data) {
+	glBufferData(bufferType, 3, data, storageType);
 	//glBufferData(bufferType, sizeof(long) * Size, (void*)Size, storageType);
 }
-void VBO::StoreData(int* data) {
-	//glBufferData(bufferType, sizeof(int) * Size, (void*)Size, storageType);
+void VBO::StoreData(int* data, int _size) {
+	glBufferData(bufferType, _size, data, storageType);
 }
-void VBO::StoreData(float* data) {
-	//glBufferData(bufferType, sizeof(float) * Size, (void*)Size, storageType);
+void VBO::StoreData(unsigned int* data, int _size) {
+	glBufferData(bufferType, _size, data, storageType);
+}
+void VBO::StoreData(float* data, int _size) {
+	glBufferData(bufferType, _size, data, storageType);
 }
 void VBO::StoreData(double* data) {
+	glBufferData(bufferType, 3, data, storageType);
 	//glBufferData(bufferType, sizeof(double) * Size, (void*)Size, storageType);
 }
 
 void VBO::StoreData(long* Data, int Offset) {
 	//glBufferSubData(bufferType, Offset, Data);
 }
-void VBO::StoreData(int* Data, int Offset) {
+void VBO::StoreData(int* Data, int Offset, int size) {
 	//glBufferSubData(bufferType, Offset, Data);
 }
-void VBO::StoreData(float* Data, int Offset) {
+void VBO::StoreData(float* Data, int Offset, int size) {
 	//glBufferSubData(bufferType, Offset, Data);
 }
 void VBO::StoreData(double* Data, int Offset) {
@@ -107,9 +154,11 @@ void VBO::StoreData(double* Data, int Offset) {
 void VBO::CleanUp() {
 	unbind();
 	glDeleteBuffers(1, &id);
+	std::cout << "VBO deleted" << std::endl;
 }
 
 
 VBO::~VBO()
 {
+	std::cout << "VBO deconstructed" << std::endl;
 }
