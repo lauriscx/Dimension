@@ -11,10 +11,10 @@
 #include "Temporary/Logger.h"
 #include "Input/Events/Error.h"
 #include <string>
+#include "Render/RenderData/Texture.h"
 
-#include "Render/Shader.h"
 #include "FileReader.h"
-#include "Render/RenderData/Mesh.h"
+#include "Render/Render2D.h"
 #include <fstream>
 
 Dimension::Aplication*	Dimension::Aplication::app;
@@ -52,11 +52,20 @@ void Dimension::Aplication::Run() {
 	shader.addFragmentCode("/res/Fragment.glsl", reader.ReadFile("../res/Fragment.glsl"));
 	shader.compile();
 
-	Mesh mesh;
-	mesh.GenTriangle(1.25f, 0.25f);
+	Texture texture;
+	texture.Bind();
+	texture.LoadPNG("../res/texture.png");
+	texture.LoadData();
+	texture.SetParameters();
 
-	std::string text;
-	shader.start();
+	GraphicObject sprite;
+	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 });
+	sprite.GetMaterial()->AddTexture(texture, "diffuseMap");
+	sprite.GetMesh()->GenRectangle(0.5f, 0.5f);
+
+
+	Render2D render;
+
 	while (Running) {
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -82,12 +91,7 @@ void Dimension::Aplication::Run() {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		int count = mesh.getVertexCount();
-		unsigned int indices[] = { 0, 1, 2 };
-		mesh.GetVAO().Bind();
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices);
-		//glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-
+		render.draw(sprite, shader);
 
 		window->Update();
 		Close();

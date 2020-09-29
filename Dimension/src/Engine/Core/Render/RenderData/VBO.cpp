@@ -64,11 +64,11 @@ void VBO::unbind() {
 
 //Enable attribute array by index witch is set in shader class.
 void VBO::enableAttributeArray() {
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(location);
 }
 //Disable attribute array by index witch is set in shader class.
 void VBO::disableAttributeArray() {
-	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(location);
 }
 
 

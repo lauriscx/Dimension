@@ -161,6 +161,7 @@
     <ClCompile Include="src\Engine\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Engine\Core\Aplication.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\GraphicObject.cpp" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\Material.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Render2D.cpp" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\Mesh.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="src\Engine\Platforms\Window\WindowsInput.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Engine\Platforms\Window\WindowsWindow.cpp" />
+    <ClCompile Include="src\Utils\stb_image.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Core\FileReader.h" />
@@ -187,6 +189,7 @@
     <ClInclude Include="src\Engine\Core\Input\Events\AplicationEvent.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\KeyEvent.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\MouseEvent.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\GraphicObject.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\Material.h" />
     <ClInclude Include="src\Engine\Core\Render\Render2D.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\Mesh.h" />
@@ -198,6 +201,7 @@
     <ClInclude Include="src\Engine\Core\Window.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\Event.h" />
     <ClInclude Include="src\Engine\Platforms\Window\WindowsWindow.h" />
+    <ClInclude Include="src\Utils\stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

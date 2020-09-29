@@ -1,5 +1,6 @@
 #include <map>
 #include <vector>
+#include <glm/glm.hpp>
 
 namespace Dimension {
 	class Shader {
@@ -23,7 +24,7 @@ namespace Dimension {
 		void setAttributes();
 
 		void addUniform(std::string name);
-		void addUniform(std::string name, ...);
+		//void addUniform(std::string name, ...);
 		void AddStructureUniform(std::string name, std::string variables, ...);
 
 		void AddUniformArray(std::string name, int from, int to);
@@ -42,26 +43,27 @@ namespace Dimension {
 		void SetUpUniformBlocks();
 		void SendUniformBlocks(std::string name, void* data);
 
-		void sendUniform(std::string name, int 		value);
+		void sendUniform(std::string name, int 			value);
 		void sendUniform(std::string name, float 		value);
-		void sendUniform(std::string name, double 	value);
-		void sendUniform(std::string name, bool 	value);
-		/*void sendUniform(std::string name, Vector2f 	value);
-		void sendUniform(std::string name, Vector3f 	value);
-		void sendUniform(std::string name, Vector4f 	value);
-		void sendUniform(std::string name, Matrix2f 	value);
-		void sendUniform(std::string name, Matrix3f 	value);
-		void sendUniform(std::string name, Matrix4f 	value);*/
-		void sendUniform(std::string name, int* 		value);
-		void sendUniform(std::string name, float* 		value);
-		void sendUniform(std::string name, double* 		value);
-		void sendUniform(std::string name, bool* 		value);/*
-		void sendUniform(std::string name, Vector2f[] value);
-		void sendUniform(std::string name, Vector3f[] value);
-		void sendUniform(std::string name, Vector4f[] value);
-		void sendUniform(std::string name, Matrix2f[] value);
-		void sendUniform(std::string name, Matrix3f[] value);
-		void sendUniform(std::string name, Matrix4f[] value);*/
+		void sendUniform(std::string name, double 		value);
+		void sendUniform(std::string name, bool 		value);
+		void sendUniform(std::string name, glm::vec2 	value);
+		void sendUniform(std::string name, glm::vec3 	value);
+		void sendUniform(std::string name, glm::vec4 	value);
+		void sendUniform(std::string name, glm::mat2 	value);
+		void sendUniform(std::string name, glm::mat3 	value);
+		void sendUniform(std::string name, glm::mat4 	value);
+
+		void sendUniform(std::string name, int* 		value, size_t size);
+		void sendUniform(std::string name, float* 		value, size_t size);
+		void sendUniform(std::string name, double* 		value, size_t size);
+		void sendUniform(std::string name, bool* 		value, size_t size);
+		void sendUniform(std::string name, glm::vec2*	value, size_t size);
+		void sendUniform(std::string name, glm::vec3*	value, size_t size);
+		void sendUniform(std::string name, glm::vec4*	value, size_t size);
+		void sendUniform(std::string name, glm::mat2*	value, size_t size);
+		void sendUniform(std::string name, glm::mat3*	value, size_t size);
+		void sendUniform(std::string name, glm::mat4*	value, size_t size);
 
 		/*void sendUniformDirectionLight(std::string name, std::vector<DirectionLight> value);
 		void sendUniformPointLight(std::string name, std::vector<PointLight> 	value);
@@ -76,7 +78,7 @@ namespace Dimension {
 
 	private:
 		int ID;//Will be used in shader manager
-		int programID;
+		unsigned int programID;
 
 		std::map<std::string, std::pair<std::string, int>> vertex;/*FileName, <Code, ShaderID>*/
 		std::map<std::string, std::pair<std::string, int>> geometry;/*FileName, <Code, ShaderID>*/

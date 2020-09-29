@@ -8,8 +8,11 @@ Dimension::Shader::Shader() {
 	this->programID = glCreateProgram();
 
 	addAttribute("Position", 0);
-	/*addAttribute("UV", 1);
-	addAttribute("Color", 2);
+	addAttribute("TextureCoordinates", 1);
+
+	addUniform("diffuseMap");
+	addUniform("Ocolor");
+	/*addAttribute("Color", 2);
 	addAttribute("Normal", 3);
 	addAttribute("Tangent", 4);
 	addAttribute("BiTangent", 5);
@@ -44,12 +47,15 @@ void Dimension::Shader::compile() {
 
 		const char* shaderCode = "#version 430\n"
 			"in vec3 Position;\n"
+			"in vec3 TextureCoordinates;\n"
 			"\n"
 			"uniform mat4 ModelTransformation;\n"
 			"uniform mat4 Camera;\n"
 			"uniform mat4 Projection;\n"
+			"out vec3 _TextureCoordinates;\n"
 			"\n"
 			"void main() {\n"
+			"	_TextureCoordinates = TextureCoordinates;\n"
 			"	//vec4 worldPosition = ModelTransformation * vec4(Position, 1.0f);\n"
 			"	gl_Position = vec4(Position, 1.0f);\n"
 			"}";
@@ -76,8 +82,11 @@ void Dimension::Shader::compile() {
 	for (std::pair<std::string, std::pair<std::string, unsigned int>> code : fragment) {
 		const char* shaderCode =	"#version 430\n"
 									"out vec4 Pixel;\n"
+									"in vec3 _TextureCoordinates;\n"
+									"uniform sampler2D diffuseMap;\n"
+									"uniform vec4 Ocolor;\n"
 									"void main() {\n"
-										"Pixel = vec4(0.0, 0.5, 0.7, 1);// * (texture2D(DiffuseMap, Paralax) + material.color);\n"
+										"Pixel = texture2D(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
 									"}";
 
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
@@ -92,12 +101,6 @@ void Dimension::Shader::compile() {
 	setAttributes();
 
 	glLinkProgram(programID);
-	int result;
-	glGetProgramiv(programID, GL_LINK_STATUS, &result);
-	if (result == -1) {
-		int a = 5;
-		//td::_Count_pr << "Shader: " + programID + "\ncompaling error: " + glGetProgramInfoLog(programID, glGetProgramiv(programID, GL_INFO_LOG_LENGTH));
-	}
 
 
 	glValidateProgram(programID);
@@ -135,15 +138,15 @@ void Dimension::Shader::setAttributes() {
 void Dimension::Shader::addUniform(std::string name) {
 	uniforms[name] = -1;
 }
-void Dimension::Shader::addUniform(std::string name, ...) {
+/*void Dimension::Shader::addUniform(std::string name, ...) {
 	va_list ap;
 	va_start(ap, name);
 	uniforms[va_arg(ap, std::string)] = -1;//loop throught all names.
 	va_end(ap);
-	/*for (std::string _name : name) {
+	for (std::string _name : name) {
 		uniforms[_name] = -1;
-	}*/
-}
+	}
+}*/
 /*
 void Dimension::Shader::AddStructureUniform(std::string name, std::string variables, ...) {
 	for (std::string _name : variables) {
@@ -168,9 +171,9 @@ void Dimension::Shader::setupUniforms() {
 	for (std::pair<std::string, int> entry : uniforms) {
 		std::string Name = entry.first;
 		int Location = glGetUniformLocation(programID, Name.c_str());
-		entry.first = Location;
+		uniforms[Name] = Location;
 		if (Location == -1) {
-			//System.err.println("Uniform " + Name + " " + Location + " setup failed!");
+			std::cout << "Uniform " << Name << " " << Location << " setup failed!" << std::endl;
 		}
 	}
 	stop();
@@ -220,120 +223,93 @@ void Dimension::Shader::SetUpUniformBlocks() {
 void Dimension::Shader::SendUniformBlocks(std::string name, void* data) {
 }
 
-int Dimension::Shader::getLocation(std::string name) {
-	if (uniforms[name] != 0) {
-		return uniforms[name];
-	}
-	return 0;
-}
-
-void Dimension::Shader::Check(unsigned int& Shader, unsigned int Flag, bool IsProgram, const std::string& ErrorMessage) {
-	GLint success = 0;
-	GLchar error[1024] = { 0 };
-
-	IsProgram ? glGetProgramiv(Shader, Flag, &success) : glGetShaderiv(Shader, Flag, &success);
-
-	if (success == GL_FALSE) {
-		IsProgram ? glGetProgramInfoLog(Shader, sizeof(error), NULL, error) : glGetShaderInfoLog(Shader, sizeof(error), NULL, error);
-		std::cout << ErrorMessage << " : " << error << "!\n";
-	}
-}
-
-void Dimension::Shader::sendUniform(std::string name, int 		value) {
+void Dimension::Shader::sendUniform(std::string name, int 			value) {
 	glUniform1i(getLocation(name), value);
 }
 void Dimension::Shader::sendUniform(std::string name, float 		value) {
 	glUniform1f(getLocation(name), value);
 }
-void Dimension::Shader::sendUniform(std::string name, double 	value) {
+void Dimension::Shader::sendUniform(std::string name, double 		value) {
 	glUniform1d(getLocation(name), value);
 }
-void Dimension::Shader::sendUniform(std::string name, bool 	value) {
+void Dimension::Shader::sendUniform(std::string name, bool 			value) {
 	int _value = 0;
 	if (value) {
 		_value = 1;
 	}
 	glUniform1i(getLocation(name), _value);
 }
-/*
-void Dimension::Shader::sendUniform(std::string name, Vector2f 	value) {
-	glUniform2f(getLocation(name), value.x, value.y);
-}
-void Dimension::Shader::sendUniform(std::string name, Vector3f 	value) {
-	glUniform3f(getLocation(name), value.x, value.y, value.z);
-}
-void Dimension::Shader::sendUniform(std::string name, Vector4f 	value) {
-	glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
-}
-void Dimension::Shader::sendUniform(std::string name, Matrix2f 	value) {
-	float[] data = new float[2 * 2];
-	value.get(data);
-	glUniformMatrix2fv(getLocation(name), false, data);
-}
-void Dimension::Shader::sendUniform(std::string name, Matrix3f 	value) {
-	float[] data = new float[3 * 3];
-	value.get(data);
-	//glUniformMatrix3fv(getLocation(name), false, MatrixBuffer3);
 
+void Dimension::Shader::sendUniform(std::string name, glm::vec2 	value) {
+	glUniform2fv(getLocation(name), 1, &value[0]);
 }
-void Dimension::Shader::sendUniform(std::string name, Matrix4f 	value) {
-	float[] data = new float[4 * 4];
-	value.get(data);
-	glUniformMatrix4fv(getLocation(name), false, data);
-}*/
-void Dimension::Shader::sendUniform(std::string name, int*		value) {
-	/*for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
-	}*/
+void Dimension::Shader::sendUniform(std::string name, glm::vec3 	value) {
+	glUniform3fv(getLocation(name), 1, &value[0]);
 }
-void Dimension::Shader::sendUniform(std::string name, float* 	value) {
-	/*for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
-	}*/
+void Dimension::Shader::sendUniform(std::string name, glm::vec4 	value) {
+	glUniform4f(getLocation(name), value.x, value.y, value.z, value.z);
 }
-void Dimension::Shader::sendUniform(std::string name, double* 	value) {
-	/*for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
-	}*/
+void Dimension::Shader::sendUniform(std::string name, glm::mat2 	value) {
+	glUniformMatrix2fv(getLocation(name), 1, false, &value[0][0]);
 }
-void Dimension::Shader::sendUniform(std::string name, bool* 	value) {
-	/*for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
-	}*/
+void Dimension::Shader::sendUniform(std::string name, glm::mat3 	value) {
+	glUniformMatrix3fv(getLocation(name), 1, false, &value[0][0]);
 }
-/*
-void Dimension::Shader::sendUniform(std::string name, Vector2f[] value) {
-	for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
+void Dimension::Shader::sendUniform(std::string name, glm::mat4 	value) {
+	glUniformMatrix4fv(getLocation(name), 1, false, &value[0][0]);
+}
+
+void Dimension::Shader::sendUniform(std::string name, int*		value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
 	}
 }
-void Dimension::Shader::sendUniform(std::string name, Vector3f[] value) {
-	for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
+void Dimension::Shader::sendUniform(std::string name, float* 	value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
 	}
 }
-void Dimension::Shader::sendUniform(std::string name, Vector4f[] value) {
-	for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
+void Dimension::Shader::sendUniform(std::string name, double* 	value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
 	}
 }
-void Dimension::Shader::sendUniform(std::string name, Matrix2f[] value) {
-	for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
+void Dimension::Shader::sendUniform(std::string name, bool* 	value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
 	}
 }
-void Dimension::Shader::sendUniform(std::string name, Matrix3f[] value) {
-	for (int i = 0; i < value.length; i++) {
-		sendUniform(name + "[" + i + "]", value[i]);
+
+void Dimension::Shader::sendUniform(std::string name, glm::vec2* value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
 	}
 }
-void Dimension::Shader::sendUniform(std::string name, Matrix4f[] value) {
-	for (int i = 0; i < value.length; i++) {
-		if (value[i] != null) {
-			sendUniform(name + "[" + i + "]", value[i]);
-		}
+void Dimension::Shader::sendUniform(std::string name, glm::vec3* value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
 	}
-}*/
+}
+void Dimension::Shader::sendUniform(std::string name, glm::vec4* value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
+	}
+}
+void Dimension::Shader::sendUniform(std::string name, glm::mat2* value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
+	}
+}
+void Dimension::Shader::sendUniform(std::string name, glm::mat3* value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
+	}
+}
+void Dimension::Shader::sendUniform(std::string name, glm::mat4* value, size_t size) {
+	for (int i = 0; i < size; i++) {
+		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
+	}
+}
 
 /*
 void Dimension::Shader::sendUniformDirectionLight(std::string name, List<DirectionLight> value) {
@@ -392,4 +368,25 @@ void Dimension::Shader::cleanUp() {
 
 
 Dimension::Shader::~Shader() {
+}
+
+/***********************************************************************Private helper functions***********************************************************************/
+
+int Dimension::Shader::getLocation(std::string name) {
+	if (uniforms[name] != 0) {
+		return uniforms[name];
+	}
+	return 0;
+}
+
+void Dimension::Shader::Check(unsigned int& Shader, unsigned int Flag, bool IsProgram, const std::string& ErrorMessage) {
+	GLint success = 0;
+	GLchar error[1024] = { 0 };
+
+	IsProgram ? glGetProgramiv(Shader, Flag, &success) : glGetShaderiv(Shader, Flag, &success);
+
+	if (success == GL_FALSE) {
+		IsProgram ? glGetProgramInfoLog(Shader, sizeof(error), NULL, error) : glGetShaderInfoLog(Shader, sizeof(error), NULL, error);
+		std::cout << ErrorMessage << " : " << error << "!\n";
+	}
 }

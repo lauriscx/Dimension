@@ -1,5 +1,8 @@
 #include "Texture.h"
 #include <iostream>
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include "../../../../Utils/stb_image.h"
 
 Texture::Texture() {
 	textureType				= GL_TEXTURE_2D;
@@ -13,15 +16,64 @@ Texture::Texture() {
 	compareMode				= GL_NONE;
 	dephtMode				= GL_NONE;
 	pixelDataType			= GL_UNSIGNED_BYTE;
+	/* Create texture buffer for data */
+	glGenTextures(1, &id);
+	std::cout << "Image Constructed" << std::endl;
+}
+
+void Texture::SetData(unsigned char * data) {
+	this->Data[0] = data;
+}
+
+void Texture::SetData(unsigned char * Right, unsigned char * Left, unsigned char * Top, unsigned char * Bottom, unsigned char * Back, unsigned char * Front) {
+	this->Data[0] = Right;
+	this->Data[1] = Left;
+	this->Data[2] = Top;
+	this->Data[3] = Bottom;
+	this->Data[4] = Back;
+	this->Data[5] = Front;
+}
+
+void Texture::LoadPNG(const char * filePath) {
+	int channels;
+	this->Data[0] = stbi_load(filePath, &width, &height, &channels, 4);
+	std::cout << width << " " << height << std::endl;
+	if (Data[0] == nullptr) {
+		std::cout << "Unable to load texture" << std::endl;
+	}
+}
+
+void Texture::LoadData() {
+	//Bind();
+
+	if (textureType == GL_TEXTURE_CUBE_MAP) {
+		/* Load cube map */
+		for (unsigned int i = 0; i < 6; i++) {
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, pixelDataFromat, pixelDataType, (const void*)Data[i]);
+		}
+	}
+	else {
+		/* Load others texture with have only one side */
+		if (textureType == GL_TEXTURE_2D_MULTISAMPLE) {
+			glTexImage2DMultisample(textureType, 4, internalFormat, width, height, GL_TRUE);
+		}
+		else {
+			glTexImage2D(textureType, 0, internalFormat, width, height, 0, pixelDataFromat, pixelDataType, (const void*)Data[0]);
+		}
+	}
+
+	//Unbind();
+}
+
+void Texture::ReloadData() {
+	glBindTexture(textureType, id);
+	glTexSubImage2D(textureType, 0, 0, 0, width, height, pixelDataFromat, pixelDataType, Data[0]);
 }
 
 //Set OpenGL texture object parameters.
-void Texture::Setup() {
+void Texture::SetParameters() {
 	//Activate texture object.
-	Bind();
-
-	//Set parameters to object but pass no data. So texture object know it's size but not have color data. it will be loaded leater.
-	glTexImage2D(textureType, 0, internalFormat, width, height, 0, pixelDataFromat, pixelDataType, NULL);
+	//Bind();
 
 	glGenerateMipmap(textureType);
 	glTexParameteri(textureType, GL_TEXTURE_COMPARE_FUNC, compareFunc);
@@ -37,19 +89,20 @@ void Texture::Setup() {
 	glTexParameteri(textureType, /*GL_DEPTH_TEXTURE_MODE*/GL_DEPTH_STENCIL_TEXTURE_MODE, dephtMode);// ???
 	
 	
-
-	/*if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic) {
-		float Amount = Math.min(antisotropyFilterLevel, glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-		glTexParameterf(textureType, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, Amount);
+	/* Anisotropic filtering */
+	if (true) {//Temporary
+		float Amount = glm::min(antisotropyFilterLevel, (float)GL_MAX_TEXTURE_MAX_ANISOTROPY);
+		glTexParameterf(textureType, GL_TEXTURE_MAX_ANISOTROPY, Amount);
 	}
 	else {
 		std::cout << "texture filter anisotropic not supported!" << std::endl;
-	}*/
+	}
 
-	Unbind();
+	//Unbind();
 }
 
 void Texture::Bind() {
+	/* Activate buffer for writing data */
 	glBindTexture(textureType, id);
 }
 
@@ -59,16 +112,19 @@ void Texture::Unbind() {
 
 //Activate slot for opelGL shader program to know in witch slot to represent loaded data.
 //Slot determined in GLSL program by sending slot number into variable.
-/*static void Texture::ActivateSlot(int Slot) {
+void Texture::ActivateSlot(int Slot) {
 	glActiveTexture(GL_TEXTURE0 + Slot);
-}*/
+	Bind();
+}
 
 //Clear data.
 void Texture::CleanUp() {
 	Unbind();
 	glDeleteTextures(1, &id);
-	data.clear();
+	//delete[] Data;
+	std::cout << "Image cleared" << std::endl;
 }
 
 Texture::~Texture() {
+	std::cout << "Image Deconstructed" << std::endl;
 }

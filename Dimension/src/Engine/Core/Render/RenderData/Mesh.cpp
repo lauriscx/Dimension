@@ -14,6 +14,11 @@ void Mesh::GenTriangle(float width, float height) {
 						0.0f, height / 2.0f, 0.0f
 						};
 
+	float TextureCoordinates[] = {
+					0.0f, 0.0f, 0.0f,
+					1.0f, 0.0f, 0.0f,
+					0.5f, 1.0f, 0.0f
+	};
 
 	vao.Bind();
 
@@ -40,29 +45,52 @@ void Mesh::GenTriangle(float width, float height) {
 	vbo_position->AttributeSetup();
 
 	vbos.push_back(vbo_position);
+
+
+	VBO* vbo_TextureCoords = new VBO();
+
+	vbo_TextureCoords->setBufferType(GL_ARRAY_BUFFER);
+	vbo_TextureCoords->setStorageType(GL_STATIC_DRAW);
+	vbo_TextureCoords->setDataType(GL_FLOAT);
+	vbo_TextureCoords->setLocation(1);
+	vbo_TextureCoords->setSize(3);
+
+	vbo_TextureCoords->bind();
+	vbo_TextureCoords->StoreData(TextureCoordinates, sizeof(TextureCoordinates));
+	vbo_TextureCoords->AttributeSetup();
+
+	vbos.push_back(vbo_TextureCoords);
 }
 
 void Mesh::GenRectangle(float width, float height) {
-	int indices[] = {0, 1, 2, 3, 1, 0};
-	vertexCount = sizeof(indices) / sizeof(int);
-	float positions[] = {
-			-width / 2.0f, -height / 2.0f, 0.0f,
-			-width, height / 2.0f, 0.0f,
-			width / 2.0f, height / 2.0f, 0.0f,
-			width / 2.0f, -height / 2.0f, 0.0f
+	unsigned int indices[] = { 2, 1, 0, 0, 2, 3 };
+	vertexCount = sizeof(indices) / sizeof(unsigned int);
 
+	float positions[] = {
+			-width / 2.0f,  height / 2.0f, 0.0f,   // top left
+			-width / 2.0f, -height / 2.0f, 0.0f,   // bottom left
+			width / 2.0f, -height / 2.0f, 0.0f,   // bottom right
+			width / 2.0f,  height / 2.0f, 0.0f  // top right
+	};
+
+	float TextureCoordinates[] = {
+					0.0f, 0.0f, 0.0f,//top left
+					1.0f, 0.0f, 0.0f,//bottom left
+					1.0f, 1.0f, 0.0f,//bottom right
+					0.0f, 1.0f, 0.0f,//top right
 	};
 
 	vao.Bind();
-	/*VBO ibo_indices;
-	ibo_indices.setBufferType(GL_ELEMENT_ARRAY_BUFFER);
-	ibo_indices.setStorageType(GL_STATIC_DRAW);
-	ibo_indices.setDataType(GL_UNSIGNED_INT);
 
-	ibo_indices.bind();
-	ibo_indices.StoreData(indices);
+	VBO* ibo_indices = new VBO();
+	ibo_indices->setBufferType(GL_ELEMENT_ARRAY_BUFFER);
+	ibo_indices->setStorageType(GL_STATIC_DRAW);
+	ibo_indices->setDataType(GL_UNSIGNED_INT);
 
-	vbos.push_back(ibo_indices);*/
+	ibo_indices->bind();
+	ibo_indices->StoreData(indices, sizeof(indices));
+
+	vbos.push_back(ibo_indices);
 
 	VBO* vbo_position = new VBO();
 
@@ -73,10 +101,25 @@ void Mesh::GenRectangle(float width, float height) {
 	vbo_position->setSize(3);
 
 	vbo_position->bind();
+	vbo_position->StoreData(positions, sizeof(positions));
 	vbo_position->AttributeSetup();
-	vbo_position->StoreData(positions, sizeof(positions) / sizeof(int));
 
 	vbos.push_back(vbo_position);
+
+
+	VBO* vbo_TextureCoords = new VBO();
+
+	vbo_TextureCoords->setBufferType(GL_ARRAY_BUFFER);
+	vbo_TextureCoords->setStorageType(GL_STATIC_DRAW);
+	vbo_TextureCoords->setDataType(GL_FLOAT);
+	vbo_TextureCoords->setLocation(1);
+	vbo_TextureCoords->setSize(3);
+
+	vbo_TextureCoords->bind();
+	vbo_TextureCoords->StoreData(TextureCoordinates, sizeof(TextureCoordinates));
+	vbo_TextureCoords->AttributeSetup();
+
+	vbos.push_back(vbo_TextureCoords);
 }
 
 //Load data from file.
