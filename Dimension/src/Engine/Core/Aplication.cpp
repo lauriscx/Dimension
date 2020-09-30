@@ -68,12 +68,12 @@ void Dimension::Aplication::Run() {
 
 	while (Running) {
 		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(1, 0.75f, 0, 1);
+
 
 		int display_w, display_h;
 		glfwGetFramebufferSize((GLFWwindow*)window->Context(), &display_w, &display_h);
-		glViewport(0, 0, display_w, display_h);
+		render.SetWindowSize({ display_w, display_h });
+		render.PrepareScene();
 		m_Layers.Update();
 
 
@@ -91,7 +91,7 @@ void Dimension::Aplication::Run() {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		render.draw(sprite, shader);
+		render.draw(&sprite, shader);
 
 		window->Update();
 		Close();

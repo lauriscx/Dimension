@@ -14,6 +14,7 @@ public:
 	std::vector<VBO*> GetVBOs();//Get VBO list.
 	int getVertexCount();//Get vertex count of mesh.
 	void clean();//Clear object data from memory.
+	std::vector<int> GetIndices();
 
 	~Mesh();
 
@@ -23,7 +24,7 @@ private:
 	//Save data in vbo about 3D or 2D object.
 	std::vector<VBO*> vbos;
 
-	int vertexCount;
+	std::vector<int> indices;
 
 	//Used to load data from file.
 	//ObjectFile	objectFile;

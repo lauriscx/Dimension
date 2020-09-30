@@ -3,13 +3,11 @@
 GraphicObject::GraphicObject() {
 }
 
-Material * GraphicObject::GetMaterial()
-{
+Material * GraphicObject::GetMaterial() {
 	return &material;
 }
 
-Mesh * GraphicObject::GetMesh()
-{
+Mesh * GraphicObject::GetMesh() {
 	return &mesh;
 }
 

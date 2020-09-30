@@ -2,27 +2,40 @@
 #include "GLAD/glad.h"
 #include "RenderData/Texture.h"
 
-
-Render2D::Render2D()
-{
+Render2D::Render2D() {
+	ClearColor = { 1, 0.75f, 0, 1 };
 }
 
-void Render2D::draw(int index, int size) {
-	glDrawElementsBaseVertex(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0, 0);
+void Render2D::SetWindowSize(glm::vec2 WindowSize) {
+	this->WindowSize = WindowSize;
 }
 
-void Render2D::draw(GraphicObject object, Dimension::Shader shader) {
+void Render2D::SetClearColor(glm::vec4 ClearColor) {
+	this->ClearColor = ClearColor;
+}
+
+void Render2D::PrepareScene() {
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(ClearColor.r, ClearColor.g, ClearColor.b, ClearColor.a);
+
+	glViewport(0, 0, WindowSize.x, WindowSize.y);
+}
+
+void Render2D::StartScene() {
+
+}
+
+void Render2D::draw(GraphicObject* object, Dimension::Shader shader) {
 	shader.start();
-	int count = object.GetMesh()->getVertexCount();
-	shader.sendUniform("Ocolor", object.GetMaterial()->GetColor());
-	//unsigned int indices[] = { 0, 1, 2 };
-	unsigned int indices[] = { 2, 1, 0, 0, 2, 3 };
+	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());
 
-	object.GetMesh()->GetVAO().Bind();
-	object.GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
-	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices);
+	object->GetMesh()->GetVAO().Bind();
+	object->GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
+
+	glDrawElements(GL_TRIANGLES, object->GetMesh()->getVertexCount(), GL_UNSIGNED_INT, &object->GetMesh()->GetIndices()[0]);
 }
 
-Render2D::~Render2D()
-{
+
+
+Render2D::~Render2D() {
 }

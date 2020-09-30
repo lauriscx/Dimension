@@ -3,6 +3,7 @@
 #include <string>
 #include <stdarg.h>
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 Dimension::Shader::Shader() {
 	this->programID = glCreateProgram();
@@ -241,10 +242,10 @@ void Dimension::Shader::sendUniform(std::string name, bool 			value) {
 }
 
 void Dimension::Shader::sendUniform(std::string name, glm::vec2 	value) {
-	glUniform2fv(getLocation(name), 1, &value[0]);
+	glUniform2f(getLocation(name), value.x, value.y);
 }
 void Dimension::Shader::sendUniform(std::string name, glm::vec3 	value) {
-	glUniform3fv(getLocation(name), 1, &value[0]);
+	glUniform3f(getLocation(name), value.x, value.y, value.z);
 }
 void Dimension::Shader::sendUniform(std::string name, glm::vec4 	value) {
 	glUniform4f(getLocation(name), value.x, value.y, value.z, value.z);
@@ -281,34 +282,23 @@ void Dimension::Shader::sendUniform(std::string name, bool* 	value, size_t size)
 }
 
 void Dimension::Shader::sendUniform(std::string name, glm::vec2* value, size_t size) {
-	for (int i = 0; i < size; i++) {
-		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
-	}
+	glUniform2fv(getLocation(name), size, glm::value_ptr(value[0]));
+	
 }
 void Dimension::Shader::sendUniform(std::string name, glm::vec3* value, size_t size) {
-	for (int i = 0; i < size; i++) {
-		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
-	}
+	glUniform3fv(getLocation(name), size, glm::value_ptr(value[0]));
 }
 void Dimension::Shader::sendUniform(std::string name, glm::vec4* value, size_t size) {
-	for (int i = 0; i < size; i++) {
-		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
-	}
+	glUniform4fv(getLocation(name), size, glm::value_ptr(value[0]));
 }
 void Dimension::Shader::sendUniform(std::string name, glm::mat2* value, size_t size) {
-	for (int i = 0; i < size; i++) {
-		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
-	}
+	glUniformMatrix2fv(getLocation(name), size, false, glm::value_ptr(value[0][0]));
 }
 void Dimension::Shader::sendUniform(std::string name, glm::mat3* value, size_t size) {
-	for (int i = 0; i < size; i++) {
-		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
-	}
+	glUniformMatrix3fv(getLocation(name), size, false, glm::value_ptr(value[0][0]));
 }
 void Dimension::Shader::sendUniform(std::string name, glm::mat4* value, size_t size) {
-	for (int i = 0; i < size; i++) {
-		sendUniform(name + "[" + std::to_string(i) + "]", value[i]);
-	}
+	glUniformMatrix4fv(getLocation(name), size, false, glm::value_ptr(value[0][0]));
 }
 
 /*

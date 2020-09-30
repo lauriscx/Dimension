@@ -1,12 +1,15 @@
 #include "Mesh.h"
 #include "GLAD/glad.h"
 
-Mesh::Mesh() : vertexCount(0) {
+Mesh::Mesh() {
 }
 
 void Mesh::GenTriangle(float width, float height) {
-	unsigned int indices[] = {0, 1, 2};
-	vertexCount = sizeof(indices) / sizeof(unsigned int);
+	indices.clear();
+	//unsigned int indices[] = {0, 1, 2};
+	indices.push_back(0);
+	indices.push_back(1);
+	indices.push_back(2);
 
 	float positions[] = {
 						-width/2.0f, -height / 2.0f, 0.0f,
@@ -28,7 +31,7 @@ void Mesh::GenTriangle(float width, float height) {
 	ibo_indices->setDataType(GL_UNSIGNED_INT);
 
 	ibo_indices->bind();
-	ibo_indices->StoreData(indices, sizeof(indices));
+	ibo_indices->StoreData(&indices[0], sizeof(int) * indices.size());
 
 	vbos.push_back(ibo_indices);
 
@@ -63,8 +66,15 @@ void Mesh::GenTriangle(float width, float height) {
 }
 
 void Mesh::GenRectangle(float width, float height) {
-	unsigned int indices[] = { 2, 1, 0, 0, 2, 3 };
-	vertexCount = sizeof(indices) / sizeof(unsigned int);
+	indices.clear();
+	//unsigned int indices[] = { 2, 1, 0, 0, 2, 3 };
+	//vertexCount = sizeof(indices) / sizeof(unsigned int);
+	indices.push_back(2);
+	indices.push_back(1);
+	indices.push_back(0);
+	indices.push_back(0);
+	indices.push_back(2);
+	indices.push_back(3);
 
 	float positions[] = {
 			-width / 2.0f,  height / 2.0f, 0.0f,   // top left
@@ -88,7 +98,7 @@ void Mesh::GenRectangle(float width, float height) {
 	ibo_indices->setDataType(GL_UNSIGNED_INT);
 
 	ibo_indices->bind();
-	ibo_indices->StoreData(indices, sizeof(indices));
+	ibo_indices->StoreData(&indices[0], sizeof(int) * indices.size());
 
 	vbos.push_back(ibo_indices);
 
@@ -256,7 +266,7 @@ std::vector<VBO*> Mesh::GetVBOs() {
 
 //Get vertex count of mesh.
 int Mesh::getVertexCount() {
-	return vertexCount;//objectFile.getPositions().length;
+	return indices.size();//objectFile.getPositions().length;
 }
 
 //Clear object data from memory.
@@ -268,6 +278,9 @@ void Mesh::clean() {
 		vbo.CleanUp();
 	}
 	vao.CleanUp();*/
+}
+std::vector<int> Mesh::GetIndices() {
+	return indices;
 }
 Mesh::~Mesh()
 {
