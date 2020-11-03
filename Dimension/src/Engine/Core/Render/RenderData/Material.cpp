@@ -6,15 +6,21 @@ Material::Material() {
 	specularity = glm::vec2(0.0f, 0.0f);
 }
 
-void Material::SetColor(glm::vec4 color) {
+Material* Material::SetColor(glm::vec4 color) {
 	this->color = color;
+
+	return this;
 }
-void Material::SetSpecularity(glm::vec2 specularity) {
+Material* Material::SetSpecularity(glm::vec2 specularity) {
 	this->specularity = specularity;
+
+	return this;
 }
 
-void Material::AddTexture(Texture texture, std::string name) {
+Material* Material::AddTexture(Texture texture, std::string name) {
 	textures.insert(std::pair(name, texture));
+
+	return this;
 }
 
 glm::vec4 Material::GetColor() {

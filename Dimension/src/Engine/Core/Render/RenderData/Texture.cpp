@@ -21,29 +21,33 @@ Texture::Texture() {
 	std::cout << "Image Constructed" << std::endl;
 }
 
-void Texture::SetData(unsigned char * data) {
+Texture* Texture::SetData(unsigned char * data) {
 	this->Data[0] = data;
 }
 
-void Texture::SetData(unsigned char * Right, unsigned char * Left, unsigned char * Top, unsigned char * Bottom, unsigned char * Back, unsigned char * Front) {
+Texture* Texture::SetData(unsigned char * Right, unsigned char * Left, unsigned char * Top, unsigned char * Bottom, unsigned char * Back, unsigned char * Front) {
 	this->Data[0] = Right;
 	this->Data[1] = Left;
 	this->Data[2] = Top;
 	this->Data[3] = Bottom;
 	this->Data[4] = Back;
 	this->Data[5] = Front;
+
+	return this;
 }
 
-void Texture::LoadPNG(const char * filePath) {
+Texture* Texture::LoadPNG(const char * filePath) {
 	int channels;
 	this->Data[0] = stbi_load(filePath, &width, &height, &channels, 4);
 	std::cout << width << " " << height << std::endl;
 	if (Data[0] == nullptr) {
 		std::cout << "Unable to load texture" << std::endl;
 	}
+
+	return this;
 }
 
-void Texture::LoadData() {
+Texture* Texture::LoadData() {
 	//Bind();
 
 	if (textureType == GL_TEXTURE_CUBE_MAP) {
@@ -63,15 +67,18 @@ void Texture::LoadData() {
 	}
 
 	//Unbind();
+	return this;
 }
 
-void Texture::ReloadData() {
+Texture* Texture::ReloadData() {
 	glBindTexture(textureType, id);
 	glTexSubImage2D(textureType, 0, 0, 0, width, height, pixelDataFromat, pixelDataType, Data[0]);
+
+	return this;
 }
 
 //Set OpenGL texture object parameters.
-void Texture::SetParameters() {
+Texture* Texture::SetParameters() {
 	//Activate texture object.
 	//Bind();
 
@@ -99,11 +106,14 @@ void Texture::SetParameters() {
 	}
 
 	//Unbind();
+	return this;
 }
 
-void Texture::Bind() {
+Texture* Texture::Bind() {
 	/* Activate buffer for writing data */
 	glBindTexture(textureType, id);
+
+	return this;
 }
 
 void Texture::Unbind() {

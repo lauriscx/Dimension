@@ -53,14 +53,10 @@ void Dimension::Aplication::Run() {
 	shader.compile();
 
 	Texture texture;
-	texture.Bind();
-	texture.LoadPNG("../res/texture.png");
-	texture.LoadData();
-	texture.SetParameters();
+	texture.Bind()->LoadPNG("../res/texture.png")->LoadData()->SetParameters();
 
 	GraphicObject sprite;
-	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 });
-	sprite.GetMaterial()->AddTexture(texture, "diffuseMap");
+	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
 	sprite.GetMesh()->GenRectangle(0.5f, 0.5f);
 
 
@@ -68,8 +64,6 @@ void Dimension::Aplication::Run() {
 
 	while (Running) {
 		/* Render here */
-
-
 		int display_w, display_h;
 		glfwGetFramebufferSize((GLFWwindow*)window->Context(), &display_w, &display_h);
 		render.SetWindowSize({ display_w, display_h });
@@ -77,22 +71,9 @@ void Dimension::Aplication::Run() {
 		m_Layers.Update();
 
 
-		// feed inputs to dear imgui, start new frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		// render your GUI
-		ImGui::Begin("Demo window");
-		ImGui::Button("Hello!");
-		ImGui::End();
-
-		// Render dear imgui into screen
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 		render.draw(&sprite, shader);
 
+		RenderUI();
 		window->Update();
 		Close();
 		
@@ -110,6 +91,22 @@ void Dimension::Aplication::Run() {
 		//std::cout << text << std::endl;
 	}
 
+}
+
+void RenderUI() {
+	// feed inputs to dear imgui, start new frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	// render your GUI
+	ImGui::Begin("Demo window");
+	ImGui::Button("Hello!");
+	ImGui::End();
+
+	// Render dear imgui into screen
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 Dimension::Aplication::~Aplication() {

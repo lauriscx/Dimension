@@ -8,10 +8,10 @@ class Material {
 public:
 	Material();
 
-	void SetColor(glm::vec4 color);
-	void SetSpecularity(glm::vec2 specularity);
+	Material* SetColor(glm::vec4 color);
+	Material* SetSpecularity(glm::vec2 specularity);
 
-	void AddTexture(Texture texture, std::string name);
+	Material* AddTexture(Texture texture, std::string name);
 
 	glm::vec4 GetColor();
 	glm::vec2 GetSpecularity();

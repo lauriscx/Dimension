@@ -1,0 +1,578 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FileReader">
+    <Position X="27.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABQAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\FileReader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GraphicObject">
+    <Position X="29.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACABAAAAAAAAAAABAAABAAAAAAAAAABAAAA=</HashCode>
+      <FileName>src\Engine\Core\Render\RenderData\GraphicObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Material">
+    <Position X="24.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAACAEAEAEAAAAAAAAAAAAAAAACAACwAAgACAAA=</HashCode>
+      <FileName>src\Engine\Core\Render\RenderData\Material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Render2D">
+    <Position X="27.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAABAAAAAAAABAAAIAAEAQAAAEAAgAAAAEAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Render\Render2D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mesh">
+    <Position X="26" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAwYCAIAEAAAACAAAAAAAAAAAAAAQACQBAAAAQAAA=</HashCode>
+      <FileName>src\Engine\Core\Render\RenderData\Mesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VAO">
+    <Position X="34.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAABAAAgAAAAAAAAAAAAAAAAAAAAEAEAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Render\RenderData\VAO.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VBO">
+    <Position X="36" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AQDIAgAAAYCEEEgAEIAQEAACACAABAEgACEAAEAEBgg=</HashCode>
+      <FileName>src\Engine\Core\Render\RenderData\VBO.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Texture">
+    <Position X="32" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EACAgEgBMCAQgAQASAAAECAAAAAAJBCAAQIEAEAACgA=</HashCode>
+      <FileName>src\Engine\Core\Render\RenderData\Texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Events">
+    <Position X="26" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAEBAAAAAAAAAAAIAAAAAAAAAAEA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\Events.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Error">
+    <Position X="17.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAACAAAAAAAAAIAAiAAAAAAAAAAkACAAAAACgAAg=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\Error.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Layer">
+    <Position X="24.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAQAAAAAAAAAAEEACAAAAIABAAAEAAAhAAEABIA=</HashCode>
+      <FileName>src\Engine\Core\Layers\Layer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::LayerStack">
+    <Position X="26" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAEACAGAAAAIGAAAAAAgAAAIAAAA=</HashCode>
+      <FileName>src\Engine\Core\Layers\LayerStack.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Aplication">
+    <Position X="24.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAIIACgAAACAFAI=</HashCode>
+      <FileName>src\Engine\Core\Aplication.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Input">
+    <Position X="27.5" Y="11.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAgAAAAABAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Input.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::WindowCloseEvent">
+    <Position X="8.5" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\AplicationEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::WindowResizeEvent">
+    <Position X="10.75" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAQAQAAAAABAAAQAAAEAAAAAAEAAAAQ=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\AplicationEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::KeyReleasedEvent">
+    <Position X="12.75" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAgAAQAAAAAAIEAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\KeyEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::KeyTypedEvent">
+    <Position X="15" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAgAAQAAAAAAAEAAAgAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\KeyEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::KeyPressedEvent">
+    <Position X="19.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAgAAQAAAAAAIEABAIAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\KeyEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::MausePressedEvent">
+    <Position X="21.75" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAEAAUAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\MouseEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::MauseReleaseEvent">
+    <Position X="1.25" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAEAAQAAAAAAAEAAAAAAAEAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\MouseEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::MauseScrollEvent">
+    <Position X="3.75" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAEAAAEAYABgAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\MouseEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::MauseCursorEvent">
+    <Position X="6" Y="2.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAACAAAAAAAAAAAAAAAAAAAAAAEAYABgAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\MouseEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Shader">
+    <Position X="29.5" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>QALRQAoAAEAAgADkQQgAgAAAAQkgGAQADAEAAwQEQAk=</HashCode>
+      <FileName>src\Engine\Core\Render\Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Logger">
+    <Position X="27.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQACAAAAABAAAAAAAAAABAACAEAAIAA=</HashCode>
+      <FileName>src\Engine\Core\Temporary\Logger.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Window">
+    <Position X="3.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQAAAAAAgAAAAAAAAAAAABAAUAAAEAAAAAAAEAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Window.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::Event">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\Event.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dimension::WindowsWindow">
+    <Position X="0.75" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACQAAAAAQgAAAAQAQAABQABAAEAAEAIIAAAAAEgAAAA=</HashCode>
+      <FileName>src\Engine\Platforms\Window\WindowsWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ImGuiStyleVarInfo">
+    <Position X="40.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQAAAAAAgAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ImGuiResizeGripDef">
+    <Position X="48.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAABAAAAAiAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ImGuiResizeBorderDef">
+    <Position X="46.5" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAgIAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ExampleAppConsole">
+    <Position X="48.75" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAABBgACACAAKhQAAAIAAQAAghAAQAAAAAACAgQAAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_demo.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ExampleAppLog">
+    <Position X="44.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgIAAAAACAAAAgAAAAAAAAAAAhAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_demo.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MyDocument">
+    <Position X="38.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACBABMgBQAAAAAgQAAAABAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_demo.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ExampleAppDocuments">
+    <Position X="42.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAQAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_demo.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ImFontBuildSrcData">
+    <Position X="42.25" Y="2.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAQABAAAAGAAAAAAAAAAAAAAAgIAAAAAACAAAoAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_draw.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ImFontBuildDstData">
+    <Position X="46.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAACAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_draw.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ImGuiPlotArrayGetterData">
+    <Position X="40.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAQAAAAAgAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_widgets.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_1">
+    <Position X="28.25" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAEAAAYAgAAgAAAAAAAhAAAAABACA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_3">
+    <Position X="9" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIIAAAAAAIAAACCAAAAAAAEAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_4">
+    <Position X="6" Y="13.5" Width="2" />
+    <NestedTypes>
+      <Struct Name="__unnamed_struct_0242_4::__unnamed_struct_0242_5" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>src\Utils\stb_image.c</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAACAABAAAIAAEDEAgIAAABAAAgAAABAoAAAAAgAgA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_6">
+    <Position X="3.5" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEEAAAAAAAAAAQAAAAAAAACAIABAIAAAgAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_7">
+    <Position X="17.25" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIIAAAAgIAAAACCAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_8">
+    <Position X="24.25" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAQAAAIEAJAAgAgAAAgAAAAAAIAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_9">
+    <Position X="0.75" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_10">
+    <Position X="14.25" Y="13.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAQAAAAAAAAAAAAAAAIAAAIAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_0242_12">
+    <Position X="11.75" Y="13.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAIAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="stbi_gif_lzw_struct">
+    <Position X="20.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAAAgAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="stbi_gif_struct">
+    <Position X="22.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAEICAgAIAAARAQAgAEBAYAAgAAAAQAggAAAAJAQ=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="__unnamed_struct_004c_2">
+    <Position X="26.25" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAEAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="PFNWGLGETPROCADDRESSPROC_PRIVATE" Collapsed="true">
+    <Position X="39" Y="15" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\GLAD\glad.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="PFNGLXGETPROCADDRESSPROC_PRIVATE" Collapsed="true">
+    <Position X="34.75" Y="13.5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Engine\Core\GLAD\glad.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="uint8" Collapsed="true">
+    <Position X="30.5" Y="15.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="uint16" Collapsed="true">
+    <Position X="34.75" Y="15" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="int16" Collapsed="true">
+    <Position X="30.5" Y="13.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="uint32" Collapsed="true">
+    <Position X="37" Y="15" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="int32" Collapsed="true">
+    <Position X="33" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="uint" Collapsed="true">
+    <Position X="33" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="validate_uint32" Collapsed="true">
+    <Position X="33" Y="15.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi" Collapsed="true">
+    <Position X="28.25" Y="17.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="huffman" Collapsed="true">
+    <Position X="8.5" Y="16.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="jpeg" Collapsed="true">
+    <Position X="5.75" Y="20" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_dequantize_t" Collapsed="true">
+    <Position X="33" Y="14.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="resample_row_func" Collapsed="true">
+    <Position X="30.5" Y="14.25" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_resample" Collapsed="true">
+    <Position X="2.75" Y="17.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="zhuffman" Collapsed="true">
+    <Position X="16.75" Y="17" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="zbuf" Collapsed="true">
+    <Position X="24.25" Y="17" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="chunk" Collapsed="true">
+    <Position X="0.5" Y="16" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="png" Collapsed="true">
+    <Position X="14.75" Y="15.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="pic_packet_t" Collapsed="true">
+    <Position X="11" Y="15.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_gif_lzw" Collapsed="true">
+    <Position X="19.25" Y="16.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_gif" Collapsed="true">
+    <Position X="22.25" Y="19.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_uc" Collapsed="true">
+    <Position X="30.5" Y="15" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_io_callbacks" Collapsed="true">
+    <Position X="25.75" Y="18.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_idct_8x8" Collapsed="true">
+    <Position X="37.25" Y="15.75" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="stbi_YCbCr_to_RGB_run" Collapsed="true">
+    <Position X="34.75" Y="14.25" Width="7.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="GlfwClientApi">
+    <Position X="47.5" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>src\Engine\Core\GUI\imgui_impl_glfw.cpp</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="__unnamed_enum_0242_2">
+    <Position X="43.25" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="__unnamed_enum_0242_11">
+    <Position X="40.75" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACBAAIAAABAAAAAAAACAAAAAAAAAEAAAAAAABAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.c</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="__unnamed_enum_004c_1">
+    <Position X="38.5" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAABAAAAAAAAAAEAAABAAAAAAAIAAAAAA=</HashCode>
+      <FileName>src\Utils\stb_image.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Dimension::EventType">
+    <Position X="45.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAYgAAAAQAAAAAAAgAAAAEAACgAIAAAABFAAAA=</HashCode>
+      <FileName>src\Engine\Core\Input\Events\Event.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

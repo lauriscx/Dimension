@@ -6,15 +6,15 @@ class Texture {
 public:
 	Texture();
 
-	void SetData(unsigned char* data);
-	void SetData(unsigned char * Right, unsigned char * Left, unsigned char * Top, unsigned char * Bottom, unsigned char * Back, unsigned char * Front);
+	Texture* SetData(unsigned char* data);
+	Texture* SetData(unsigned char * Right, unsigned char * Left, unsigned char * Top, unsigned char * Bottom, unsigned char * Back, unsigned char * Front);
 
-	void LoadPNG(const char* filePath);
+	Texture* LoadPNG(const char* filePath);
 
-	void LoadData();
-	void ReloadData();
-	void SetParameters();
-	void Bind();
+	Texture* LoadData();
+	Texture* ReloadData();
+	Texture* SetParameters();
+	Texture* Bind();
 	void Unbind();
 
 	void ActivateSlot(int Slot);
