@@ -7,6 +7,7 @@
 #include "Input/Events/MouseEvent.h"
 #include "Input/Events/KeyEvent.h"
 #include "Layers/LayerStack.h"
+#include <chrono>
 
 class GraphicObject;
 namespace Dimension {

@@ -9,7 +9,7 @@ public:
 
 	Material* GetMaterial();
 	Mesh* GetMesh();
-	glm::mat4* GetTransformation();
+	glm::mat4 GetTransformation();
 
 	glm::mat4* SetTransformation(glm::mat4& transformation);
 

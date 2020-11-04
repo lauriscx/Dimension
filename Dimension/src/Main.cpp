@@ -2,7 +2,7 @@
 #include "Engine/Core/Aplication.h"
 
 int main() {
-	Dimension::Aplication aplication("Dimension aplication", 1200, 800);
+	Dimension::Aplication aplication("Mano pirmoji aplikacija", 1200, 1200);
 
 	aplication.Run();
 }

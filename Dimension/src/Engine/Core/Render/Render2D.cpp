@@ -28,7 +28,7 @@ void Render2D::StartScene() {
 
 void Render2D::draw(GraphicObject* object, Dimension::Shader shader) {
 	shader.start();
-	shader.sendUniform("ModelTransformation", *object->GetTransformation());
+	shader.sendUniform("ModelTransformation", object->GetTransformation());
 	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());
 
 	object->GetMesh()->GetVAO().Bind();

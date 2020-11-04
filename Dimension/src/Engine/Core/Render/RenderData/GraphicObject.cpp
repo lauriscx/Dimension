@@ -11,8 +11,8 @@ Mesh * GraphicObject::GetMesh() {
 	return &mesh;
 }
 
-glm::mat4* GraphicObject::GetTransformation() {
-	return &transformation;
+glm::mat4 GraphicObject::GetTransformation() {
+	return transformation;
 }
 
 glm::mat4 * GraphicObject::SetTransformation(glm::mat4 & transformation) {

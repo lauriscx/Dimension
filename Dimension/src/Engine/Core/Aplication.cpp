@@ -58,9 +58,9 @@ void Dimension::Aplication::Run() {
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
 	sprite.GetMesh()->GenRectangle(0.5f, 0.5f);
 	glm::mat4 test(1.0f);
-	test = glm::translate(test, glm::vec3(0, 0.5f, 0));
+	/*test = glm::translate(test, glm::vec3(0, 0.5f, 0));
 	test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
-	test = glm::scale(test, glm::vec3(2, 2, 1));
+	test = glm::scale(test, glm::vec3(2, 2, 1));*/
 	sprite.SetTransformation(test);
 
 	objectsToRender.push_back(sprite);
@@ -75,17 +75,52 @@ void Dimension::Aplication::Run() {
 	test2 = glm::scale(test2, glm::vec3(2, 2, 1));
 	triangle.SetTransformation(test2);
 
-	objectsToRender.push_back(triangle);
+	//objectsToRender.push_back(triangle);
 
 	Render2D render;
-
+	auto t_end = std::chrono::high_resolution_clock::now();
+	auto t_start = std::chrono::high_resolution_clock::now();
+	double delta_time = 0;
 	while (Running) {
+		t_start = std::chrono::high_resolution_clock::now();
 		/* Render here */
 		int display_w, display_h;
 		glfwGetFramebufferSize((GLFWwindow*)window->Context(), &display_w, &display_h);
 		render.SetWindowSize({ display_w, display_h });
 		render.PrepareScene();
 		m_Layers.Update();
+
+		if (Input::IsKeyPressed(GLFW_KEY_D)) {
+			objectsToRender.clear();
+			glm::mat4 moveMatrix = sprite.GetTransformation();
+			moveMatrix = glm::translate(moveMatrix, glm::vec3(1.0f * delta_time, 0.0f, 0.0f));
+			sprite.SetTransformation(moveMatrix);
+			objectsToRender.push_back(sprite);
+		}
+
+		if (Input::IsKeyPressed(GLFW_KEY_A)) {
+			objectsToRender.clear();
+			glm::mat4 moveMatrix = sprite.GetTransformation();
+			moveMatrix = glm::translate(moveMatrix, glm::vec3(-1.0f * delta_time, 0.0f, 0.0f));
+			sprite.SetTransformation(moveMatrix);
+			objectsToRender.push_back(sprite);
+		}
+
+		if (Input::IsKeyPressed(GLFW_KEY_S)) {
+			objectsToRender.clear();
+			glm::mat4 moveMatrix = sprite.GetTransformation();
+			moveMatrix = glm::translate(moveMatrix, glm::vec3(0.0f, -1.0f * delta_time, 0.0f));
+			sprite.SetTransformation(moveMatrix);
+			objectsToRender.push_back(sprite);
+		}
+
+		if (Input::IsKeyPressed(GLFW_KEY_W)) {
+			objectsToRender.clear();
+			glm::mat4 moveMatrix = sprite.GetTransformation();
+			moveMatrix = glm::translate(moveMatrix, glm::vec3(0.0f, 1.0f * delta_time, 0.0f));
+			sprite.SetTransformation(moveMatrix);
+			objectsToRender.push_back(sprite);
+		}
 
 		for (GraphicObject grpObj : objectsToRender) {
 			render.draw(&grpObj, shader);
@@ -94,10 +129,10 @@ void Dimension::Aplication::Run() {
 		RenderUI();
 		window->Update();
 		Close();
-		
-		if (Input::IsKeyPressed(GLFW_KEY_R)) {
-			std::cout << "R is pressed!" << std::endl;
-		}
+
+		// the work...
+		t_end = std::chrono::high_resolution_clock::now();
+		delta_time = (std::chrono::duration<double, std::milli>(t_end - t_start).count()) / 1000;
 	}
 }
 
@@ -140,7 +175,7 @@ void Dimension::Aplication::Close() {
 
 	events.Dispacth<KeyPressedEvent>([](KeyPressedEvent* e) {
 		//std::string er = e.GetErrorReport();
-		std::cout << "key: " << e->GetKey() << std::endl;
+		//std::cout << "key: " << e->GetKey() << std::endl;
 		return true;
 	});
 }
