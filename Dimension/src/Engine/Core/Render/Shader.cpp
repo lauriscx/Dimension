@@ -13,6 +13,7 @@ Dimension::Shader::Shader() {
 
 	addUniform("diffuseMap");
 	addUniform("Ocolor");
+	addUniform("ModelTransformation");
 	/*addAttribute("Color", 2);
 	addAttribute("Normal", 3);
 	addAttribute("Tangent", 4);
@@ -57,8 +58,8 @@ void Dimension::Shader::compile() {
 			"\n"
 			"void main() {\n"
 			"	_TextureCoordinates = TextureCoordinates;\n"
-			"	//vec4 worldPosition = ModelTransformation * vec4(Position, 1.0f);\n"
-			"	gl_Position = vec4(Position, 1.0f);\n"
+			"	vec4 worldPosition = ModelTransformation * vec4(Position, 1.0f);\n"
+			"	gl_Position = worldPosition;\n"
 			"}";
 
 		code.second.second = (glCreateShader(GL_VERTEX_SHADER));

@@ -13,6 +13,8 @@
 #include <string>
 #include "Render/RenderData/Texture.h"
 
+#include "glm/gtc/matrix_transform.hpp"
+
 #include "FileReader.h"
 #include "Render/Render2D.h"
 #include <fstream>
@@ -23,28 +25,25 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 	
 	Dimension::Aplication::app = this;
 	window = Window::Create(title, width, height);
-	//events.OnEvent(std::bind(&LayerStack::OnEvent, &m_Layers, std::placeholders::_1));
+	events.OnEvent(std::bind(&LayerStack::OnEvent, &m_Layers, std::placeholders::_1));
 	window->EventsHandler(&events);
 	if (gladLoadGL() == 0) {
 		DERROR("Failed to load glad");
 	}
 }
+void RenderUI();
 
 void Dimension::Aplication::Run() {
-
 	Layer * layer = new Layer("Test");
 	m_Layers.PushLayer(layer);
 
-	// Setup Dear ImGui context
-	IMGUI_CHECKVERSION();
+	IMGUI_CHECKVERSION();	// Setup Dear ImGui context
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO();
-	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->Context(), true);
+	ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window->Context(), true);	// Setup Platform/Renderer bindings
 	const char* glsl_version = "#version 330";
 	ImGui_ImplOpenGL3_Init(glsl_version);
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
+	ImGui::StyleColorsDark();	// Setup Dear ImGui style
 
 	FileReader reader;
 	Shader shader;
@@ -59,7 +58,6 @@ void Dimension::Aplication::Run() {
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
 	sprite.GetMesh()->GenRectangle(0.5f, 0.5f);
 
-
 	Render2D render;
 
 	while (Running) {
@@ -70,6 +68,12 @@ void Dimension::Aplication::Run() {
 		render.PrepareScene();
 		m_Layers.Update();
 
+		shader.start();
+		glm::mat4 tr(1.0f);
+		tr = glm::translate(tr, glm::vec3(0, 0.5f, 0));
+		tr = glm::rotate(tr, 45.0f, glm::vec3(0, 0, 1.0f));
+		tr = glm::scale(tr, glm::vec3(2, 2, 1));
+		shader.sendUniform("ModelTransformation", tr);
 
 		render.draw(&sprite, shader);
 
@@ -79,18 +83,8 @@ void Dimension::Aplication::Run() {
 		
 		if (Input::IsKeyPressed(GLFW_KEY_R)) {
 			std::cout << "R is pressed!" << std::endl;
-			//m_Layers.PopLayer(layer);
 		}
-
-		/*events.Dispacth<KeyTypedEvent>([&text](Event& e) {
-			KeyTypedEvent& event = (KeyTypedEvent&)e;
-			
-			text += event.GetKey();
-			return true;
-		});*/
-		//std::cout << text << std::endl;
 	}
-
 }
 
 void RenderUI() {
@@ -100,8 +94,8 @@ void RenderUI() {
 	ImGui::NewFrame();
 
 	// render your GUI
-	ImGui::Begin("Demo window");
-	ImGui::Button("Hello!");
+	ImGui::Begin("Demo langas");
+	ImGui::Button("Sveiki!");
 	ImGui::End();
 
 	// Render dear imgui into screen

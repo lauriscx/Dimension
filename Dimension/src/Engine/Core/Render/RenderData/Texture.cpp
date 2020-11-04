@@ -18,11 +18,13 @@ Texture::Texture() {
 	pixelDataType			= GL_UNSIGNED_BYTE;
 	/* Create texture buffer for data */
 	glGenTextures(1, &id);
-	std::cout << "Image Constructed" << std::endl;
+	//std::cout << "Image Constructed" << std::endl;
 }
 
 Texture* Texture::SetData(unsigned char * data) {
 	this->Data[0] = data;
+
+	return this;
 }
 
 Texture* Texture::SetData(unsigned char * Right, unsigned char * Left, unsigned char * Top, unsigned char * Bottom, unsigned char * Back, unsigned char * Front) {
@@ -136,5 +138,5 @@ void Texture::CleanUp() {
 }
 
 Texture::~Texture() {
-	std::cout << "Image Deconstructed" << std::endl;
+	//std::cout << "Image Deconstructed" << std::endl;
 }
