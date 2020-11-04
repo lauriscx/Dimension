@@ -8,6 +8,7 @@
 #include "Input/Events/KeyEvent.h"
 #include "Layers/LayerStack.h"
 
+class GraphicObject;
 namespace Dimension {
 	class Aplication {
 		public:
@@ -27,5 +28,7 @@ namespace Dimension {
 			void Close();
 
 			LayerStack m_Layers;
+
+			std::vector<GraphicObject> objectsToRender;
 	};
 }

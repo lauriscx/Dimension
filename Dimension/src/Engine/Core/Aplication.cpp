@@ -57,6 +57,25 @@ void Dimension::Aplication::Run() {
 	GraphicObject sprite;
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
 	sprite.GetMesh()->GenRectangle(0.5f, 0.5f);
+	glm::mat4 test(1.0f);
+	test = glm::translate(test, glm::vec3(0, 0.5f, 0));
+	test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
+	test = glm::scale(test, glm::vec3(2, 2, 1));
+	sprite.SetTransformation(test);
+
+	objectsToRender.push_back(sprite);
+
+
+	GraphicObject triangle;
+	triangle.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(texture, "diffuseMap");
+	triangle.GetMesh()->GenTriangle(0.5f, 0.5f);
+	glm::mat4 test2(1.0f);
+	test2 = glm::translate(test2, glm::vec3(0, -0.5f, 0));
+	test2 = glm::rotate(test2, -45.0f, glm::vec3(0, 0, 1.0f));
+	test2 = glm::scale(test2, glm::vec3(2, 2, 1));
+	triangle.SetTransformation(test2);
+
+	objectsToRender.push_back(triangle);
 
 	Render2D render;
 
@@ -68,14 +87,9 @@ void Dimension::Aplication::Run() {
 		render.PrepareScene();
 		m_Layers.Update();
 
-		shader.start();
-		glm::mat4 tr(1.0f);
-		tr = glm::translate(tr, glm::vec3(0, 0.5f, 0));
-		tr = glm::rotate(tr, 45.0f, glm::vec3(0, 0, 1.0f));
-		tr = glm::scale(tr, glm::vec3(2, 2, 1));
-		shader.sendUniform("ModelTransformation", tr);
-
-		render.draw(&sprite, shader);
+		for (GraphicObject grpObj : objectsToRender) {
+			render.draw(&grpObj, shader);
+		}
 
 		RenderUI();
 		window->Update();
