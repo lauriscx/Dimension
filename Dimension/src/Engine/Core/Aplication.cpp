@@ -57,7 +57,7 @@ void Dimension::Aplication::Run() {
 
 	GraphicObject sprite;
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
-	sprite.GetMesh()->GenRectangle(0.5f, 0.5f);
+	sprite.GetMesh()->GenRectangle(0.1f, 0.1f);
 	glm::mat4 test(1.0f);
 	/*test = glm::translate(test, glm::vec3(0, 0.5f, 0));
 	test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
@@ -92,7 +92,7 @@ void Dimension::Aplication::Run() {
 		render.PrepareScene();
 		m_Layers.Update();
 
-		if (Input::IsKeyPressed(GLFW_KEY_D)) {
+		/*if (Input::IsKeyPressed(GLFW_KEY_D)) {
 			objectsToRender.clear();
 			glm::mat4 moveMatrix = sprite.GetTransformation();
 			moveMatrix = glm::translate(moveMatrix, glm::vec3(1.0f * delta_time, 0.0f, 0.0f));
@@ -122,11 +122,14 @@ void Dimension::Aplication::Run() {
 			moveMatrix = glm::translate(moveMatrix, glm::vec3(0.0f, 1.0f * delta_time, 0.0f));
 			sprite.SetTransformation(moveMatrix);
 			objectsToRender.push_back(sprite);
-		}
+		}*/
 
 		for (GraphicObject grpObj : objectsToRender) {
-			render.draw(&grpObj, shader);
+			//render.draw(&grpObj, shader);
+			render.PackObject(&grpObj);
 		}
+
+		render.flush(&sprite, shader);
 
 		RenderUI();
 		window->Update();

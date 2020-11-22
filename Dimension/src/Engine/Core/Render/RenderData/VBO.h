@@ -37,10 +37,10 @@ public:
 	void StoreData(float* data, int _size);
 	void StoreData(double* data);
 
-	void StoreData(long* Data, int Offset);
-	void StoreData(int* Data, int Offset, int size);
-	void StoreData(float* Data, int Offset, int size);
-	void StoreData(double* Data, int Offset);
+	void StoreData(long* Data, int size, int Offset);
+	void StoreData(int* Data, int size, int Offset);
+	void StoreData(float* Data, int size, int Offset);
+	void StoreData(double* Data, int size, int Offset);
 	//Clean up data
 	void CleanUp();
 	~VBO();

@@ -1,6 +1,7 @@
 #include "VAO.h"
 #include "VBO.h"
 #include <vector>
+#include "Batch.h"
 
 class Mesh {
 public:
@@ -18,6 +19,7 @@ public:
 
 	~Mesh();
 
+	Batch batch;
 private:
 	//Vertex array object store all vertex buffer objects (vbo)
 	VAO vao;
@@ -25,6 +27,7 @@ private:
 	std::vector<VBO*> vbos;
 
 	std::vector<int> indices;
+
 
 	//Used to load data from file.
 	//ObjectFile	objectFile;

@@ -195,6 +195,7 @@
     <ClInclude Include="src\Engine\Core\Render\RenderData\Mesh.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\VAO.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\VBO.h" />
+    <ClInclude Include="src\Engine\Core\Render\RenderData\Batch.h" />
     <ClInclude Include="src\Engine\Core\Render\Shader.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\Texture.h" />
     <ClInclude Include="src\Engine\Core\Temporary\Logger.h" />

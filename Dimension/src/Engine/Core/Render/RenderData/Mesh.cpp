@@ -63,6 +63,16 @@ void Mesh::GenTriangle(float width, float height) {
 	vbo_TextureCoords->AttributeSetup();
 
 	vbos.push_back(vbo_TextureCoords);
+
+
+	batch.Indices = indices;
+	for (int i = 0; i < 3 * 3; i++) {
+		batch.Positions.push_back(positions[i]);
+	}
+
+	for (int i = 0; i < 3 * 3; i++) {
+		batch.TexturesCoordinates.push_back(TextureCoordinates[i]);
+	}
 }
 
 void Mesh::GenRectangle(float width, float height) {
@@ -116,7 +126,6 @@ void Mesh::GenRectangle(float width, float height) {
 
 	vbos.push_back(vbo_position);
 
-
 	VBO* vbo_TextureCoords = new VBO();
 
 	vbo_TextureCoords->setBufferType(GL_ARRAY_BUFFER);
@@ -130,6 +139,15 @@ void Mesh::GenRectangle(float width, float height) {
 	vbo_TextureCoords->AttributeSetup();
 
 	vbos.push_back(vbo_TextureCoords);
+
+	batch.Indices = indices;
+	for (int i = 0; i < 4 * 3; i++) {
+		batch.Positions.push_back(positions[i]);
+	}
+
+	for (int i = 0; i < 4 * 3; i++) {
+		batch.TexturesCoordinates.push_back(TextureCoordinates[i]);
+	}
 }
 
 //Load data from file.

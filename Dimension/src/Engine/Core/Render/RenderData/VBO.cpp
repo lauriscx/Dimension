@@ -115,7 +115,7 @@ void VBO::AttributeISetup() {
 
 /*Reserve data in buffer for latter to add*/
 void VBO::ReserveData(int Size) {
-	glBufferData(bufferType, sizeof(int) * Size, (void*)Size, storageType);
+	glBufferData(bufferType, sizeof(int) * Size, (void*)0, storageType);
 }
 
 /*Store data functions*/
@@ -137,17 +137,17 @@ void VBO::StoreData(double* data) {
 	//glBufferData(bufferType, sizeof(double) * Size, (void*)Size, storageType);
 }
 
-void VBO::StoreData(long* Data, int Offset) {
-	//glBufferSubData(bufferType, Offset, Data);
+void VBO::StoreData(long* Data, int size, int Offset) {
+	glBufferSubData(bufferType, Offset, sizeof(long) * size, Data);
 }
-void VBO::StoreData(int* Data, int Offset, int size) {
-	//glBufferSubData(bufferType, Offset, Data);
+void VBO::StoreData(int* Data, int size, int Offset) {
+	glBufferSubData(bufferType, Offset, sizeof(int) * size, Data);
 }
-void VBO::StoreData(float* Data, int Offset, int size) {
-	//glBufferSubData(bufferType, Offset, Data);
+void VBO::StoreData(float* Data, int size, int Offset) {
+	glBufferSubData(bufferType, Offset, sizeof(float) * size, Data);
 }
-void VBO::StoreData(double* Data, int Offset) {
-	//glBufferSubData(bufferType, Offset, Data);
+void VBO::StoreData(double* Data, int size, int Offset) {
+	glBufferSubData(bufferType, Offset, sizeof(double) * size, Data);
 }
 
 //Clean up data
