@@ -164,7 +164,6 @@
     <ClCompile Include="src\Engine\Core\Render\RenderData\GraphicObject.cpp" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\Material.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Render2D.cpp" />
-    <ClCompile Include="src\Engine\Core\Render\RenderData\Mesh.cpp" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\VAO.cpp" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\VBO.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Shader.cpp" />
@@ -192,7 +191,6 @@
     <ClInclude Include="src\Engine\Core\Render\RenderData\GraphicObject.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\Material.h" />
     <ClInclude Include="src\Engine\Core\Render\Render2D.h" />
-    <ClInclude Include="src\Engine\Core\Render\RenderData\Mesh.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\VAO.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\VBO.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\Batch.h" />

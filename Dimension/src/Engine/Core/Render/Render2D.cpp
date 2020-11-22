@@ -6,29 +6,6 @@
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
 
-	std::vector<int> indices;
-	indices.push_back(2);
-	indices.push_back(1);
-	indices.push_back(0);
-	indices.push_back(0);
-	indices.push_back(2);
-	indices.push_back(3);
-
-	float positions[] = {
-			-1 / 2.0f,  1 / 2.0f, 0.0f,   // top left
-			-1 / 2.0f, -1 / 2.0f, 0.0f,   // bottom left
-			1 / 2.0f, -1 / 2.0f, 0.0f,   // bottom right
-			1 / 2.0f,  1 / 2.0f, 0.0f  // top right
-	};
-
-	float TextureCoordinates[] = {
-					0.0f, 0.0f, 0.0f,//top left
-					1.0f, 0.0f, 0.0f,//bottom left
-					1.0f, 1.0f, 0.0f,//bottom right
-					0.0f, 1.0f, 0.0f,//top right
-	};
-
-
 	vao.Bind();
 
 	VBO* ibo_indices = new VBO();
@@ -92,18 +69,7 @@ void Render2D::StartScene() {
 }
 
 void Render2D::PackObject(GraphicObject * object) {
-	batch.AddBatch(object->GetMesh()->batch);
-}
-
-void Render2D::draw(GraphicObject* object, Dimension::Shader shader) {
-	shader.start();
-	shader.sendUniform("ModelTransformation", object->GetTransformation());
-	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());
-
-	object->GetMesh()->GetVAO().Bind();
-	object->GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
-
-	glDrawElements(GL_TRIANGLES, object->GetMesh()->getVertexCount(), GL_UNSIGNED_INT, &object->GetMesh()->GetIndices()[0]);
+	batch.AddBatch(*object->GetBatch());
 }
 
 void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {

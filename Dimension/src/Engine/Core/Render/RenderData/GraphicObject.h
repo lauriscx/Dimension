@@ -1,14 +1,14 @@
 #pragma once
-#include "Mesh.h"
 #include "Material.h"
 #include "glm/glm.hpp"
+#include "Batch.h"
 
 class GraphicObject {
 public:
 	GraphicObject();
 
 	Material* GetMaterial();
-	Mesh* GetMesh();
+	Batch* GetBatch();
 	glm::mat4 GetTransformation();
 
 	glm::mat4* SetTransformation(glm::mat4& transformation);
@@ -17,6 +17,7 @@ public:
 
 private:
 	Material material;
-	Mesh mesh;
+	Batch mesh;
+
 	glm::mat4 transformation;
 };

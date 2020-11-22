@@ -7,7 +7,7 @@ Material * GraphicObject::GetMaterial() {
 	return &material;
 }
 
-Mesh * GraphicObject::GetMesh() {
+Batch * GraphicObject::GetBatch() {
 	return &mesh;
 }
 

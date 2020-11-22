@@ -57,4 +57,6 @@ public:
 	//For animations 3D
 	std::vector<int> BonesIndex;
 	std::vector<float> BonesWeights;
+
+	std::vector<glm::mat4> transformations;
 };
