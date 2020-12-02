@@ -11,6 +11,11 @@ Batch * GraphicObject::GetBatch() {
 	return &mesh;
 }
 
+void GraphicObject::SetBatch(Batch * batch)
+{
+	this->mesh = *batch;
+}
+
 glm::mat4 GraphicObject::GetTransformation() {
 	return transformation;
 }

@@ -64,6 +64,43 @@ void Dimension::Aplication::Run() {
 	test = glm::scale(test, glm::vec3(2, 2, 1));*/
 	sprite.SetTransformation(test);
 
+	std::vector<int> indices;
+	indices.push_back(0);
+	indices.push_back(1);
+	indices.push_back(2);
+
+
+	float width = 0.5f;
+	float height = 0.5f;
+
+	std::vector<float> positions;
+	positions.push_back(-width / 2.0f);
+	positions.push_back(-height / 2.0f);
+	positions.push_back(0.0f);
+	positions.push_back(width / 2.0f);
+	positions.push_back(-height / 2.0f);
+	positions.push_back(0.0f);
+	positions.push_back(0.0f);
+	positions.push_back(height / 2.0f);
+	positions.push_back(0.0f);
+
+	std::vector<float> TextureCoordinates;
+	TextureCoordinates.push_back(0.0f);
+	TextureCoordinates.push_back(0.0f);
+	TextureCoordinates.push_back(0.0f);
+	TextureCoordinates.push_back(1.0f);
+	TextureCoordinates.push_back(0.0f);
+	TextureCoordinates.push_back(0.0f);
+	TextureCoordinates.push_back(0.5f);
+	TextureCoordinates.push_back(1.0f);
+	TextureCoordinates.push_back(0.0f);
+
+	Batch spriteBatch;
+	spriteBatch.Indices = indices;
+	spriteBatch.Positions = positions;
+	spriteBatch.TexturesCoordinates = TextureCoordinates;
+
+	sprite.SetBatch(&spriteBatch);
 	objectsToRender.push_back(sprite);
 
 
@@ -75,7 +112,7 @@ void Dimension::Aplication::Run() {
 	test2 = glm::rotate(test2, -45.0f, glm::vec3(0, 0, 1.0f));
 	test2 = glm::scale(test2, glm::vec3(2, 2, 1));
 	triangle.SetTransformation(test2);
-
+	triangle.SetBatch(&spriteBatch);
 	//objectsToRender.push_back(triangle);
 
 	Render2D render;

@@ -9,6 +9,7 @@ public:
 
 	Material* GetMaterial();
 	Batch* GetBatch();
+	void SetBatch(Batch* batch);
 	glm::mat4 GetTransformation();
 
 	glm::mat4* SetTransformation(glm::mat4& transformation);
