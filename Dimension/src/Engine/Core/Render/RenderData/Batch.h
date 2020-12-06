@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <vector>
+#include "GraphicObject.h"
 
 class Batch {
 public:
@@ -21,6 +22,26 @@ public:
 
 		this->BonesIndex.insert(std::end(this->BonesIndex), std::begin(batch.BonesIndex), std::end(batch.BonesIndex));
 		this->BonesWeights.insert(std::end(this->BonesWeights), std::begin(batch.BonesWeights), std::end(batch.BonesWeights));
+	}
+	void AddToBatch(GraphicObject GrahicObjectData) {
+		this->Indices.insert(std::end(this->Indices), std::begin(GrahicObjectData.Indices), std::end(GrahicObjectData.Indices));
+
+		this->UniformsIndex.insert(std::end(this->UniformsIndex), std::begin(GrahicObjectData.UniformsIndex), std::end(GrahicObjectData.UniformsIndex));
+		this->TexturesIndex.insert(std::end(this->TexturesIndex), std::begin(GrahicObjectData.TexturesIndex), std::end(GrahicObjectData.TexturesIndex));
+
+		this->Positions.insert(std::end(this->Positions), std::begin(GrahicObjectData.Positions), std::end(GrahicObjectData.Positions));
+		this->Normals.insert(std::end(this->Normals), std::begin(GrahicObjectData.Normals), std::end(GrahicObjectData.Normals));
+		this->Tangents.insert(std::end(this->Tangents), std::begin(GrahicObjectData.Tangents), std::end(GrahicObjectData.Tangents));
+		this->BiTangents.insert(std::end(this->BiTangents), std::begin(GrahicObjectData.BiTangents), std::end(GrahicObjectData.BiTangents));
+
+		this->Colors.insert(std::end(this->Colors), std::begin(GrahicObjectData.Colors), std::end(GrahicObjectData.Colors));
+
+		this->TexturesCoordinates.insert(std::end(this->TexturesCoordinates), std::begin(GrahicObjectData.TexturesCoordinates), std::end(GrahicObjectData.TexturesCoordinates));
+
+		this->BonesIndex.insert(std::end(this->BonesIndex), std::begin(GrahicObjectData.BonesIndex), std::end(GrahicObjectData.BonesIndex));
+		this->BonesWeights.insert(std::end(this->BonesWeights), std::begin(GrahicObjectData.BonesWeights), std::end(GrahicObjectData.BonesWeights));
+		
+		this->transformations.push_back(GrahicObjectData.GetTransformation());
 	}
 
 	void ClearBatch() {

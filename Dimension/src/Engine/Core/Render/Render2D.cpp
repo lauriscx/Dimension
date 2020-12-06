@@ -68,8 +68,8 @@ void Render2D::StartScene() {
 
 }
 
-void Render2D::PackObject(GraphicObject * object) {
-	batch.AddBatch(*object->GetBatch());
+void Render2D::PackObject(GraphicObject object) {
+	batch.AddToBatch(object);
 }
 
 void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {

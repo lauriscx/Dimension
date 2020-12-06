@@ -12,6 +12,7 @@
 #include "Input/Events/Error.h"
 #include <string>
 #include "Render/RenderData/Texture.h"
+#include "../Core/Render/RenderData/GraphicObject.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -64,43 +65,46 @@ void Dimension::Aplication::Run() {
 	test = glm::scale(test, glm::vec3(2, 2, 1));*/
 	sprite.SetTransformation(test);
 
-	std::vector<int> indices;
-	indices.push_back(0);
-	indices.push_back(1);
-	indices.push_back(2);
+	//sprite.Indices = new std::vector<int>();
+	sprite.Indices.push_back(2);
+	sprite.Indices.push_back(1);
+	sprite.Indices.push_back(0);
+	sprite.Indices.push_back(0);
+	sprite.Indices.push_back(2);
+	sprite.Indices.push_back(3);
 
+	float _width = 0.5f;
+	float _height = 0.5f;
 
-	float width = 0.5f;
-	float height = 0.5f;
+	sprite.Positions.push_back(-_width / 2.0f);
+	sprite.Positions.push_back(_height / 2.0f);
+	sprite.Positions.push_back(0.0f);
+	sprite.Positions.push_back(-_width / 2.0f);
+	sprite.Positions.push_back(-_height / 2.0f);
+	sprite.Positions.push_back(0.0f);
+	sprite.Positions.push_back(_width / 2.0f);
+	sprite.Positions.push_back(-_height / 2.0f);
+	sprite.Positions.push_back(0.0f);
+	sprite.Positions.push_back(_width / 2.0f);
+	sprite.Positions.push_back(_height / 2.0f);
+	sprite.Positions.push_back(0.0f);
 
-	std::vector<float> positions;
-	positions.push_back(-width / 2.0f);
-	positions.push_back(-height / 2.0f);
-	positions.push_back(0.0f);
-	positions.push_back(width / 2.0f);
-	positions.push_back(-height / 2.0f);
-	positions.push_back(0.0f);
-	positions.push_back(0.0f);
-	positions.push_back(height / 2.0f);
-	positions.push_back(0.0f);
+	sprite.TexturesCoordinates.push_back(0.0f);
+	sprite.TexturesCoordinates.push_back(0.0f);
+	sprite.TexturesCoordinates.push_back(0.0f);
 
-	std::vector<float> TextureCoordinates;
-	TextureCoordinates.push_back(0.0f);
-	TextureCoordinates.push_back(0.0f);
-	TextureCoordinates.push_back(0.0f);
-	TextureCoordinates.push_back(1.0f);
-	TextureCoordinates.push_back(0.0f);
-	TextureCoordinates.push_back(0.0f);
-	TextureCoordinates.push_back(0.5f);
-	TextureCoordinates.push_back(1.0f);
-	TextureCoordinates.push_back(0.0f);
+	sprite.TexturesCoordinates.push_back(1.0f);
+	sprite.TexturesCoordinates.push_back(0.0f);
+	sprite.TexturesCoordinates.push_back(0.0f);
 
-	Batch spriteBatch;
-	spriteBatch.Indices = indices;
-	spriteBatch.Positions = positions;
-	spriteBatch.TexturesCoordinates = TextureCoordinates;
+	sprite.TexturesCoordinates.push_back(1.0f);
+	sprite.TexturesCoordinates.push_back(1.0f);
+	sprite.TexturesCoordinates.push_back(0.0f);
 
-	sprite.SetBatch(&spriteBatch);
+	sprite.TexturesCoordinates.push_back(0.0f);
+	sprite.TexturesCoordinates.push_back(1.0f);
+	sprite.TexturesCoordinates.push_back(0.0f);
+
 	objectsToRender.push_back(sprite);
 
 
@@ -111,9 +115,37 @@ void Dimension::Aplication::Run() {
 	test2 = glm::translate(test2, glm::vec3(0, -0.5f, 0));
 	test2 = glm::rotate(test2, -45.0f, glm::vec3(0, 0, 1.0f));
 	test2 = glm::scale(test2, glm::vec3(2, 2, 1));
+
+
+	triangle.Indices.push_back(0);
+	triangle.Indices.push_back(1);
+	triangle.Indices.push_back(2);
+
+
+	float width = 0.5f;
+	float height = 0.5f;
+
+	triangle.Positions.push_back(-width / 2.0f);
+	triangle.Positions.push_back(-height / 2.0f);
+	triangle.Positions.push_back(0.0f);
+	triangle.Positions.push_back(width / 2.0f);
+	triangle.Positions.push_back(-height / 2.0f);
+	triangle.Positions.push_back(0.0f);
+	triangle.Positions.push_back(0.0f);
+	triangle.Positions.push_back(height / 2.0f);
+	triangle.Positions.push_back(0.0f);
+
+	triangle.TexturesCoordinates.push_back(0.0f);
+	triangle.TexturesCoordinates.push_back(0.0f);
+	triangle.TexturesCoordinates.push_back(0.0f);
+	triangle.TexturesCoordinates.push_back(1.0f);
+	triangle.TexturesCoordinates.push_back(0.0f);
+	triangle.TexturesCoordinates.push_back(0.0f);
+	triangle.TexturesCoordinates.push_back(0.5f);
+	triangle.TexturesCoordinates.push_back(1.0f);
+	triangle.TexturesCoordinates.push_back(0.0f);
+
 	triangle.SetTransformation(test2);
-	triangle.SetBatch(&spriteBatch);
-	//objectsToRender.push_back(triangle);
 
 	Render2D render;
 	auto t_end = std::chrono::high_resolution_clock::now();
@@ -163,7 +195,7 @@ void Dimension::Aplication::Run() {
 
 		for (GraphicObject grpObj : objectsToRender) {
 			//render.draw(&grpObj, shader);
-			render.PackObject(&grpObj);
+			render.PackObject(grpObj);
 		}
 
 		render.flush(&sprite, shader);
@@ -198,7 +230,9 @@ void RenderUI() {
 
 	// render your GUI
 	ImGui::Begin("Demo langas");
-	ImGui::Button("Sveiki!");
+	if (ImGui::Button("Sveiki!")) {
+		std::cout << "Paspaustas mygtukas Sveiki!" << std::endl;
+	}
 	ImGui::End();
 	bool showDemo = true;
 	ImGui::ShowDemoWindow(&showDemo);

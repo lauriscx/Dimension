@@ -7,14 +7,14 @@ Material * GraphicObject::GetMaterial() {
 	return &material;
 }
 
-Batch * GraphicObject::GetBatch() {
+/*Batch * GraphicObject::GetBatch() {
 	return &mesh;
 }
 
 void GraphicObject::SetBatch(Batch * batch)
 {
 	this->mesh = *batch;
-}
+}*/
 
 glm::mat4 GraphicObject::GetTransformation() {
 	return transformation;

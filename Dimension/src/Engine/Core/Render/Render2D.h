@@ -14,7 +14,7 @@ public:
 
 	void PrepareScene();
 	void StartScene();
-	void PackObject(GraphicObject* object);
+	void PackObject(GraphicObject object);
 	void draw(GraphicObject* object, Dimension::Shader shader);
 	void flush(GraphicObject* object, Dimension::Shader shader);
 

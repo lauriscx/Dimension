@@ -88,7 +88,7 @@ void Dimension::Shader::compile() {
 									"uniform sampler2D diffuseMap;\n"
 									"uniform vec4 Ocolor;\n"
 									"void main() {\n"
-										"Pixel = texture2D(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
+										"Pixel = texture(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
 									"}";
 
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
