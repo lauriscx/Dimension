@@ -10,6 +10,7 @@ Dimension::Shader::Shader() {
 
 	addAttribute("Position", 0);
 	addAttribute("TextureCoordinates", 1);
+	addAttribute("VertextObjectIndex", 2);
 
 	addUniform("diffuseMap");
 	addUniform("Ocolor");
@@ -50,15 +51,17 @@ void Dimension::Shader::compile() {
 		const char* shaderCode = "#version 430\n"
 			"in vec3 Position;\n"
 			"in vec3 TextureCoordinates;\n"
+			"in int VertextObjectIndex;\n"
 			"\n"
 			"uniform mat4 ModelTransformation;\n"
 			"uniform mat4 Camera;\n"
 			"uniform mat4 Projection;\n"
+			"uniform mat4 ModeltransformationArray[100];\n"
 			"out vec3 _TextureCoordinates;\n"
 			"\n"
 			"void main() {\n"
 			"	_TextureCoordinates = TextureCoordinates;\n"
-			"	vec4 worldPosition = ModelTransformation * vec4(Position, 1.0f);\n"
+			"	vec4 worldPosition = ModeltransformationArray[VertextObjectIndex - 1] * vec4(Position, 1.0f);\n"
 			"	gl_Position = worldPosition;\n"
 			"}";
 

@@ -24,7 +24,15 @@ public:
 		this->BonesWeights.insert(std::end(this->BonesWeights), std::begin(batch.BonesWeights), std::end(batch.BonesWeights));
 	}
 	void AddToBatch(GraphicObject GrahicObjectData) {
-		this->Indices.insert(std::end(this->Indices), std::begin(GrahicObjectData.Indices), std::end(GrahicObjectData.Indices));
+		ObjectCount++;
+		//this->Indices.insert(std::end(this->Indices), std::begin(GrahicObjectData.Indices), std::end(GrahicObjectData.Indices));
+		IndexNumber = Indices.size();
+		for (int i = 0; i < GrahicObjectData.Indices.size(); i++) {
+			this->Indices.push_back(IndexNumber + GrahicObjectData.Indices[i]);
+		}
+		for (int i = 0; i < GrahicObjectData.Indices.size(); i++) {
+			this->VertextObjectIndex.push_back(ObjectCount);
+		}
 
 		this->UniformsIndex.insert(std::end(this->UniformsIndex), std::begin(GrahicObjectData.UniformsIndex), std::end(GrahicObjectData.UniformsIndex));
 		this->TexturesIndex.insert(std::end(this->TexturesIndex), std::begin(GrahicObjectData.TexturesIndex), std::end(GrahicObjectData.TexturesIndex));
@@ -60,9 +68,16 @@ public:
 
 		BonesIndex.clear();
 		BonesWeights.clear();
+
+		VertextObjectIndex.clear();
+		transformations.clear();
+
+		ObjectCount = 0;
+		IndexNumber = 0;
 	}
 
 	std::vector<int> Indices;
+	std::vector<int> VertextObjectIndex;
 	std::vector<int> UniformsIndex;
 	std::vector<int> TexturesIndex;
 
@@ -80,4 +95,10 @@ public:
 	std::vector<float> BonesWeights;
 
 	std::vector<glm::mat4> transformations;
+
+	inline int GetObjectCount() { return ObjectCount; }
+
+private:
+	int IndexNumber = 0;
+	int ObjectCount = 0;
 };

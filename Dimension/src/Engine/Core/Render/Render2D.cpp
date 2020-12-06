@@ -14,7 +14,7 @@ Render2D::Render2D() {
 	ibo_indices->setDataType(GL_UNSIGNED_INT);
 
 	ibo_indices->bind();
-	ibo_indices->ReserveData(50);
+	ibo_indices->ReserveData(100);
 
 	vbos.push_back(ibo_indices);
 
@@ -27,7 +27,7 @@ Render2D::Render2D() {
 	vbo_position->setSize(3);
 
 	vbo_position->bind();
-	vbo_position->ReserveData(50);
+	vbo_position->ReserveData(100);
 	vbo_position->AttributeSetup();
 
 	vbos.push_back(vbo_position);
@@ -42,10 +42,24 @@ Render2D::Render2D() {
 	vbo_TextureCoords->setSize(3);
 
 	vbo_TextureCoords->bind();
-	vbo_TextureCoords->ReserveData(50);
+	vbo_TextureCoords->ReserveData(100);
 	vbo_TextureCoords->AttributeSetup();
 
 	vbos.push_back(vbo_TextureCoords);
+
+	VBO* vbo_Indexes = new VBO();
+
+	vbo_Indexes->setBufferType(GL_ARRAY_BUFFER);
+	vbo_Indexes->setStorageType(GL_STATIC_DRAW);
+	vbo_Indexes->setDataType(GL_INT);
+	vbo_Indexes->setLocation(2);
+	vbo_Indexes->setSize(1);
+
+	vbo_Indexes->bind();
+	vbo_Indexes->ReserveData(100);
+	vbo_Indexes->AttributeISetup();
+
+	vbos.push_back(vbo_Indexes);
 	vao.Unbind();
 }
 
@@ -86,10 +100,16 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 	vbos[2]->bind();
 	vbos[2]->StoreData(&batch.TexturesCoordinates[0], batch.TexturesCoordinates.size(), 0);
 	vbos[2]->unbind();
+
+	vbos[3]->bind();
+	vbos[3]->StoreData(&batch.VertextObjectIndex[0], batch.VertextObjectIndex.size(), 0);
+	vbos[3]->unbind();
 	
 
 	shader.start();
 	shader.sendUniform("ModelTransformation", object->GetTransformation());
+	//int count = batch.GetObjectCount();
+	shader.sendUniform("ModeltransformationArray", &batch.transformations[0], batch.GetObjectCount());
 	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());
 
 	//object->GetMesh()->GetVAO().Bind();

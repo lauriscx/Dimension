@@ -60,9 +60,9 @@ void Dimension::Aplication::Run() {
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
 	//sprite.GetBatch()->GenRectangle(0.1f, 0.1f);
 	glm::mat4 test(1.0f);
-	/*test = glm::translate(test, glm::vec3(0, 0.5f, 0));
+	test = glm::translate(test, glm::vec3(0, 0.5f, 0));
 	test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
-	test = glm::scale(test, glm::vec3(2, 2, 1));*/
+	test = glm::scale(test, glm::vec3(0.5f, 0.5f, 1));
 	sprite.SetTransformation(test);
 
 	//sprite.Indices = new std::vector<int>();
@@ -105,7 +105,6 @@ void Dimension::Aplication::Run() {
 	sprite.TexturesCoordinates.push_back(1.0f);
 	sprite.TexturesCoordinates.push_back(0.0f);
 
-	objectsToRender.push_back(sprite);
 
 
 	GraphicObject triangle;
@@ -113,8 +112,8 @@ void Dimension::Aplication::Run() {
 	//triangle.GetBatch()->GenTriangle(0.5f, 0.5f);
 	glm::mat4 test2(1.0f);
 	test2 = glm::translate(test2, glm::vec3(0, -0.5f, 0));
-	test2 = glm::rotate(test2, -45.0f, glm::vec3(0, 0, 1.0f));
-	test2 = glm::scale(test2, glm::vec3(2, 2, 1));
+	test2 = glm::rotate(test2, 0.0f, glm::vec3(0, 0, 1.0f));
+	test2 = glm::scale(test2, glm::vec3(2, 1, 1));
 
 
 	triangle.Indices.push_back(0);
@@ -146,6 +145,8 @@ void Dimension::Aplication::Run() {
 	triangle.TexturesCoordinates.push_back(0.0f);
 
 	triangle.SetTransformation(test2);
+	objectsToRender.push_back(triangle);
+	objectsToRender.push_back(sprite);
 
 	Render2D render;
 	auto t_end = std::chrono::high_resolution_clock::now();
