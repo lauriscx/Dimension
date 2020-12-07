@@ -32,6 +32,7 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 	if (gladLoadGL() == 0) {
 		DERROR("Failed to load glad");
 	}
+	glDisable(GL_CULL_FACE);
 }
 void RenderUI();
 
@@ -60,33 +61,33 @@ void Dimension::Aplication::Run() {
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
 	//sprite.GetBatch()->GenRectangle(0.1f, 0.1f);
 	glm::mat4 test(1.0f);
-	test = glm::translate(test, glm::vec3(0, 0.5f, 0));
 	test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
-	test = glm::scale(test, glm::vec3(0.5f, 0.5f, 1));
+	//test = glm::scale(test, glm::vec3(0.5f, 0.5f, 1));
+	//test = glm::translate(test, glm::vec3(0, 0.5f, 0));
 	sprite.SetTransformation(test);
 
 	//sprite.Indices = new std::vector<int>();
-	sprite.Indices.push_back(2);
 	sprite.Indices.push_back(1);
+	sprite.Indices.push_back(2);
 	sprite.Indices.push_back(0);
 	sprite.Indices.push_back(0);
 	sprite.Indices.push_back(2);
 	sprite.Indices.push_back(3);
 
 	float _width = 0.5f;
-	float _height = 0.5f;
+	float _height = 0.1f;
 
 	sprite.Positions.push_back(-_width / 2.0f);
-	sprite.Positions.push_back(_height / 2.0f);
+	sprite.Positions.push_back(_height / 2.0f + 0.5);
 	sprite.Positions.push_back(0.0f);
 	sprite.Positions.push_back(-_width / 2.0f);
-	sprite.Positions.push_back(-_height / 2.0f);
+	sprite.Positions.push_back(-_height / 2.0f + 0.5);
 	sprite.Positions.push_back(0.0f);
 	sprite.Positions.push_back(_width / 2.0f);
-	sprite.Positions.push_back(-_height / 2.0f);
+	sprite.Positions.push_back(-_height / 2.0f + 0.5);
 	sprite.Positions.push_back(0.0f);
 	sprite.Positions.push_back(_width / 2.0f);
-	sprite.Positions.push_back(_height / 2.0f);
+	sprite.Positions.push_back(_height / 2.0f + 0.5);
 	sprite.Positions.push_back(0.0f);
 
 	sprite.TexturesCoordinates.push_back(0.0f);
@@ -111,9 +112,10 @@ void Dimension::Aplication::Run() {
 	triangle.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(texture, "diffuseMap");
 	//triangle.GetBatch()->GenTriangle(0.5f, 0.5f);
 	glm::mat4 test2(1.0f);
-	test2 = glm::translate(test2, glm::vec3(0, -0.5f, 0));
+	//test2 = glm::translate(test2, glm::vec3(0, -1.0f, 0));
 	test2 = glm::rotate(test2, 0.0f, glm::vec3(0, 0, 1.0f));
-	test2 = glm::scale(test2, glm::vec3(2, 1, 1));
+	//test2 = glm::scale(test2, glm::vec3(2, 1, 1));
+	triangle.SetTransformation(test2);
 
 
 	triangle.Indices.push_back(0);
@@ -121,17 +123,17 @@ void Dimension::Aplication::Run() {
 	triangle.Indices.push_back(2);
 
 
-	float width = 0.5f;
-	float height = 0.5f;
+	float width = 0.25f;
+	float height = 0.25f;
 
-	triangle.Positions.push_back(-width / 2.0f);
-	triangle.Positions.push_back(-height / 2.0f);
+	triangle.Positions.push_back(-width / 1.0f);
+	triangle.Positions.push_back(-height / 1.0f - 0.5);
 	triangle.Positions.push_back(0.0f);
-	triangle.Positions.push_back(width / 2.0f);
-	triangle.Positions.push_back(-height / 2.0f);
+	triangle.Positions.push_back(width / 1.0f);
+	triangle.Positions.push_back(-height / 1.0f - 0.5);
 	triangle.Positions.push_back(0.0f);
 	triangle.Positions.push_back(0.0f);
-	triangle.Positions.push_back(height / 2.0f);
+	triangle.Positions.push_back(height / 1.0f - 0.5);
 	triangle.Positions.push_back(0.0f);
 
 	triangle.TexturesCoordinates.push_back(0.0f);
@@ -144,9 +146,8 @@ void Dimension::Aplication::Run() {
 	triangle.TexturesCoordinates.push_back(1.0f);
 	triangle.TexturesCoordinates.push_back(0.0f);
 
-	triangle.SetTransformation(test2);
-	objectsToRender.push_back(triangle);
 	objectsToRender.push_back(sprite);
+	objectsToRender.push_back(triangle);
 
 	Render2D render;
 	auto t_end = std::chrono::high_resolution_clock::now();

@@ -61,7 +61,7 @@ void Dimension::Shader::compile() {
 			"\n"
 			"void main() {\n"
 			"	_TextureCoordinates = TextureCoordinates;\n"
-			"	vec4 worldPosition = ModeltransformationArray[VertextObjectIndex - 1] * vec4(Position, 1.0f);\n"
+			"	vec4 worldPosition = ModeltransformationArray[VertextObjectIndex] * vec4(Position, 1.0f);\n"
 			"	gl_Position = worldPosition;\n"
 			"}";
 
@@ -91,7 +91,7 @@ void Dimension::Shader::compile() {
 									"uniform sampler2D diffuseMap;\n"
 									"uniform vec4 Ocolor;\n"
 									"void main() {\n"
-										"Pixel = texture(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
+										"Pixel = vec4(1, 1, 1, 1);//texture(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
 									"}";
 
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
@@ -302,7 +302,7 @@ void Dimension::Shader::sendUniform(std::string name, glm::mat3* value, size_t s
 	glUniformMatrix3fv(getLocation(name), size, false, glm::value_ptr(value[0][0]));
 }
 void Dimension::Shader::sendUniform(std::string name, glm::mat4* value, size_t size) {
-	glUniformMatrix4fv(getLocation(name), size, false, glm::value_ptr(value[0][0]));
+	glUniformMatrix4fv(getLocation(name), size, false, glm::value_ptr(value[0]));
 }
 
 /*
