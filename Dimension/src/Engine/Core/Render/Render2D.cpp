@@ -21,7 +21,7 @@ Render2D::Render2D() {
 	VBO* vbo_position = new VBO();
 
 	vbo_position->setBufferType(GL_ARRAY_BUFFER);
-	vbo_position->setStorageType(GL_STATIC_DRAW);
+	vbo_position->setStorageType(GL_STREAM_DRAW);
 	vbo_position->setDataType(GL_FLOAT);
 	vbo_position->setLocation(0);
 	vbo_position->setSize(3);
@@ -36,7 +36,7 @@ Render2D::Render2D() {
 	VBO* vbo_TextureCoords = new VBO();
 
 	vbo_TextureCoords->setBufferType(GL_ARRAY_BUFFER);
-	vbo_TextureCoords->setStorageType(GL_STATIC_DRAW);
+	vbo_TextureCoords->setStorageType(GL_STREAM_DRAW);
 	vbo_TextureCoords->setDataType(GL_FLOAT);
 	vbo_TextureCoords->setLocation(1);
 	vbo_TextureCoords->setSize(3);
@@ -50,7 +50,7 @@ Render2D::Render2D() {
 	VBO* vbo_Indexes = new VBO();
 
 	vbo_Indexes->setBufferType(GL_ARRAY_BUFFER);
-	vbo_Indexes->setStorageType(GL_STATIC_DRAW);
+	vbo_Indexes->setStorageType(GL_STREAM_DRAW);
 	vbo_Indexes->setDataType(GL_INT);
 	vbo_Indexes->setLocation(2);
 	vbo_Indexes->setSize(1);
@@ -105,14 +105,10 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 	vbos[3]->StoreData(&batch.VertextObjectIndex[0], batch.VertextObjectIndex.size(), 0);
 	vbos[3]->unbind();
 	
-
 	shader.start();
-	shader.sendUniform("ModelTransformation", object->GetTransformation());
-	//int count = batch.GetObjectCount();
 	shader.sendUniform("ModeltransformationArray", &batch.transformations[0], batch.GetObjectCount());
 	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());
 
-	//object->GetMesh()->GetVAO().Bind();
 	vao.Bind();
 	object->GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
 

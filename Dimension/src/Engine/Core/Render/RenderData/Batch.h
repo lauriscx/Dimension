@@ -24,7 +24,7 @@ public:
 		this->BonesWeights.insert(std::end(this->BonesWeights), std::begin(batch.BonesWeights), std::end(batch.BonesWeights));
 	}
 	void AddToBatch(GraphicObject GrahicObjectData) {
-		//this->Indices.insert(std::end(this->Indices), std::begin(GrahicObjectData.Indices), std::end(GrahicObjectData.Indices));
+		int prevIndexSize = Indices.size();
 		int NewMaxIndeci = 0;
 		for (int i = 0; i < GrahicObjectData.Indices.size(); i++) {
 			int newIndices = IndexNumber + GrahicObjectData.Indices[i];
@@ -33,12 +33,11 @@ public:
 				NewMaxIndeci = newIndices;
 			}
 		}
-		IndexNumber = NewMaxIndeci + 1;
-
-
-		for (int i = 0; i < GrahicObjectData.Indices.size(); i++) {
+		for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
 			this->VertextObjectIndex.push_back(ObjectCount);
 		}
+
+		IndexNumber = NewMaxIndeci + 1;
 
 		this->UniformsIndex.insert(std::end(this->UniformsIndex), std::begin(GrahicObjectData.UniformsIndex), std::end(GrahicObjectData.UniformsIndex));
 		this->TexturesIndex.insert(std::end(this->TexturesIndex), std::begin(GrahicObjectData.TexturesIndex), std::end(GrahicObjectData.TexturesIndex));

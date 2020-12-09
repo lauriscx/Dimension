@@ -14,7 +14,7 @@ Dimension::Shader::Shader() {
 
 	addUniform("diffuseMap");
 	addUniform("Ocolor");
-	addUniform("ModelTransformation");
+	addUniform("ModeltransformationArray");
 	/*addAttribute("Color", 2);
 	addAttribute("Normal", 3);
 	addAttribute("Tangent", 4);
@@ -53,7 +53,6 @@ void Dimension::Shader::compile() {
 			"in vec3 TextureCoordinates;\n"
 			"in int VertextObjectIndex;\n"
 			"\n"
-			"uniform mat4 ModelTransformation;\n"
 			"uniform mat4 Camera;\n"
 			"uniform mat4 Projection;\n"
 			"uniform mat4 ModeltransformationArray[100];\n"
@@ -91,7 +90,7 @@ void Dimension::Shader::compile() {
 									"uniform sampler2D diffuseMap;\n"
 									"uniform vec4 Ocolor;\n"
 									"void main() {\n"
-										"Pixel = vec4(1, 1, 1, 1);//texture(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
+										"Pixel = texture(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
 									"}";
 
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
