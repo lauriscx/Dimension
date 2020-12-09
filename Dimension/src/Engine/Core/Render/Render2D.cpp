@@ -2,6 +2,8 @@
 #include "GLAD/glad.h"
 #include "RenderData/Texture.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
@@ -72,7 +74,7 @@ void Render2D::SetClearColor(glm::vec4 ClearColor) {
 }
 
 void Render2D::PrepareScene() {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(ClearColor.r, ClearColor.g, ClearColor.b, ClearColor.a);
 
 	glViewport(0, 0, WindowSize.x, WindowSize.y);
@@ -81,6 +83,7 @@ void Render2D::PrepareScene() {
 void Render2D::StartScene() {
 
 }
+
 
 void Render2D::PackObject(GraphicObject object) {
 	batch.AddToBatch(object);
@@ -120,6 +123,13 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 }
 
 
+
+void Render2D::SetPerpectiveMatrix()
+{
+	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(80.0f), WindowSize.x / WindowSize.y, 0.01f, 10.0f);/*Near and far planes last 2*/
+	camera = projectionMatrix * view;
+}
 
 Render2D::~Render2D() {
 }

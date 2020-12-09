@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DemoApplication1.cpp" />
     <ClCompile Include="src\Engine\Core\FileReader.cpp" />
     <ClCompile Include="src\Engine\Core\GLAD\glad.c" />
     <ClCompile Include="src\Engine\Core\GUI\imgui.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="src\Utils\stb_image.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DemoApplication1.h" />
     <ClInclude Include="src\Engine\Core\FileReader.h" />
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_glfw.h" />
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_opengl3.h" />

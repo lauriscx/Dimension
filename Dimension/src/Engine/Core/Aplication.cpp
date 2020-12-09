@@ -33,9 +33,12 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 		DERROR("Failed to load glad");
 	}
 	glDisable(GL_CULL_FACE);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 }
 void RenderUI();
-
+glm::vec3 position(0);
 void Dimension::Aplication::Run() {
 	Layer * layer = new Layer("Test");
 	m_Layers.PushLayer(layer);
@@ -63,7 +66,7 @@ void Dimension::Aplication::Run() {
 	glm::mat4 test(1.0f);
 	test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
 	//test = glm::scale(test, glm::vec3(0.5f, 0.5f, 1));
-	//test = glm::translate(test, glm::vec3(0, 0.5f, 0));
+	test = glm::translate(test, position);
 	sprite.SetTransformation(test);
 
 	//sprite.Indices = new std::vector<int>();
@@ -163,6 +166,12 @@ void Dimension::Aplication::Run() {
 		render.PrepareScene();
 		m_Layers.Update();
 
+		glm::mat4 test(1.0f);
+		test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
+		//test = glm::scale(test, glm::vec3(0.5f, 0.5f, 1));
+		test = glm::translate(test, position);
+		objectsToRender[0].SetTransformation(test);
+
 		/*if (Input::IsKeyPressed(GLFW_KEY_D)) {
 			objectsToRender.clear();
 			glm::mat4 moveMatrix = sprite.GetTransformation();
@@ -231,14 +240,11 @@ void RenderUI() {
 	ImGui::NewFrame();
 
 	// render your GUI
-	ImGui::Begin("Demo langas");
-	if (ImGui::Button("Sveiki!")) {
-		std::cout << "Paspaustas mygtukas Sveiki!" << std::endl;
-	}
+	ImGui::Begin("Valdimas");
+	ImGui::SliderFloat3("Pozicija", &position[0], -1, 1, "%.3f", 1);
 	ImGui::End();
 	bool showDemo = true;
 	ImGui::ShowDemoWindow(&showDemo);
-
 
 
 
