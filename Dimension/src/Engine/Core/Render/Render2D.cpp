@@ -2,8 +2,7 @@
 #include "GLAD/glad.h"
 #include "RenderData/Texture.h"
 #include "glm/gtc/matrix_transform.hpp"
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include "Camera.h"
 
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
@@ -111,6 +110,7 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 	shader.start();
 	shader.sendUniform("ModeltransformationArray", &batch.transformations[0], batch.GetObjectCount());
 	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());
+	shader.sendUniform("ProjectionView", Camera::GetCameraViewMatrix());
 
 	vao.Bind();
 	object->GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
@@ -124,12 +124,6 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 
 
 
-void Render2D::SetPerpectiveMatrix()
-{
-	glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(80.0f), WindowSize.x / WindowSize.y, 0.01f, 10.0f);/*Near and far planes last 2*/
-	camera = projectionMatrix * view;
-}
 
 Render2D::~Render2D() {
 }

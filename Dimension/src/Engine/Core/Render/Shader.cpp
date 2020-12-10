@@ -15,6 +15,7 @@ Dimension::Shader::Shader() {
 	addUniform("diffuseMap");
 	addUniform("Ocolor");
 	addUniform("ModeltransformationArray");
+	addUniform("ProjectionView");
 	/*addAttribute("Color", 2);
 	addAttribute("Normal", 3);
 	addAttribute("Tangent", 4);
@@ -56,11 +57,12 @@ void Dimension::Shader::compile() {
 			"uniform mat4 Camera;\n"
 			"uniform mat4 Projection;\n"
 			"uniform mat4 ModeltransformationArray[100];\n"
+			"uniform mat4 ProjectionView;\n"
 			"out vec3 _TextureCoordinates;\n"
 			"\n"
 			"void main() {\n"
 			"	_TextureCoordinates = TextureCoordinates;\n"
-			"	vec4 worldPosition = ModeltransformationArray[VertextObjectIndex] * vec4(Position, 1.0f);\n"
+			"	vec4 worldPosition = ProjectionView * ModeltransformationArray[VertextObjectIndex] * vec4(Position, 1.0f);\n"
 			"	gl_Position = worldPosition;\n"
 			"}";
 

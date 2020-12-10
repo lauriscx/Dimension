@@ -18,8 +18,6 @@ public:
 	void draw(GraphicObject* object, Dimension::Shader shader);
 	void flush(GraphicObject* object, Dimension::Shader shader);
 
-
-	void SetPerpectiveMatrix();
 	~Render2D();
 
 private:
@@ -36,5 +34,4 @@ private:
 	std::vector<VBO*> vbos;
 
 	std::vector<int> indices;
-	glm::mat4 camera;
 };
