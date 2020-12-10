@@ -7,6 +7,8 @@
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
 
+	int BatchSize = 10000;
+
 	vao.Bind();
 
 	VBO* ibo_indices = new VBO();
@@ -15,7 +17,7 @@ Render2D::Render2D() {
 	ibo_indices->setDataType(GL_UNSIGNED_INT);
 
 	ibo_indices->bind();
-	ibo_indices->ReserveData(100);
+	ibo_indices->ReserveData(BatchSize);
 
 	vbos.push_back(ibo_indices);
 
@@ -28,7 +30,7 @@ Render2D::Render2D() {
 	vbo_position->setSize(3);
 
 	vbo_position->bind();
-	vbo_position->ReserveData(100);
+	vbo_position->ReserveData(BatchSize * 3);
 	vbo_position->AttributeSetup();
 
 	vbos.push_back(vbo_position);
@@ -43,7 +45,7 @@ Render2D::Render2D() {
 	vbo_TextureCoords->setSize(3);
 
 	vbo_TextureCoords->bind();
-	vbo_TextureCoords->ReserveData(100);
+	vbo_TextureCoords->ReserveData(BatchSize * 3);
 	vbo_TextureCoords->AttributeSetup();
 
 	vbos.push_back(vbo_TextureCoords);
@@ -57,7 +59,7 @@ Render2D::Render2D() {
 	vbo_Indexes->setSize(1);
 
 	vbo_Indexes->bind();
-	vbo_Indexes->ReserveData(100);
+	vbo_Indexes->ReserveData(BatchSize);
 	vbo_Indexes->AttributeISetup();
 
 	vbos.push_back(vbo_Indexes);

@@ -56,5 +56,6 @@
     <ClInclude Include="src\Engine\Core\Render\RenderData\Batch.h" />
     <ClInclude Include="DemoApplication1.h" />
     <ClInclude Include="src\Engine\Core\Render\Camera.h" />
+    <ClInclude Include="src\Utils\LoadObj.h" />
   </ItemGroup>
 </Project>

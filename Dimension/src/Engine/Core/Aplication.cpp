@@ -19,6 +19,7 @@
 #include "FileReader.h"
 #include "Render/Render2D.h"
 #include <fstream>
+#include "../../Utils/LoadObj.h"
 
 Dimension::Aplication*	Dimension::Aplication::app;
 static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
@@ -149,8 +150,32 @@ void Dimension::Aplication::Run() {
 	triangle.TexturesCoordinates.push_back(1.0f);
 	triangle.TexturesCoordinates.push_back(0.0f);
 
+	objl::Loader loader;
+	if (!loader.LoadFile("../res/box_stack.obj")) {
+		std::cout << "Not loaded obj file" << std::endl;
+	}
+	else {
+		triangle.Indices.clear();
+		triangle.Indices.insert(std::end(triangle.Indices), std::begin(loader.LoadedIndices), std::end(loader.LoadedIndices));
+		
+		triangle.Positions.clear();
+		triangle.TexturesCoordinates.clear();
+
+		for (int i = 0; i < loader.LoadedVertices.size(); i++) {
+			triangle.Positions.push_back(loader.LoadedVertices[i].Position.X);
+			triangle.Positions.push_back(loader.LoadedVertices[i].Position.Y);
+			triangle.Positions.push_back(loader.LoadedVertices[i].Position.Z);
+
+			triangle.Positions.push_back(loader.LoadedVertices[i].TextureCoordinate.X);
+			triangle.Positions.push_back(loader.LoadedVertices[i].TextureCoordinate.Y);
+			triangle.Positions.push_back(0.0f);
+		}
+	}
+
 	objectsToRender.push_back(sprite);
 	objectsToRender.push_back(triangle);
+
+
 
 	Render2D render;
 	auto t_end = std::chrono::high_resolution_clock::now();
