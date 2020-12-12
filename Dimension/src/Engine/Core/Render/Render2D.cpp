@@ -112,6 +112,7 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 	vbos[3]->StoreData(&batch.VertextObjectIndex[0], batch.VertextObjectIndex.size(), 0);
 	vbos[3]->unbind();
 	
+	Camera::SetProjectionMatrix();
 	shader.start();
 	shader.sendUniform("ModeltransformationArray", &batch.transformations[0], batch.GetObjectCount());
 	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());

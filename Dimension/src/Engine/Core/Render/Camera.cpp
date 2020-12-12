@@ -8,22 +8,22 @@ glm::mat4 Camera::camera = glm::mat4(1.0f);
 glm::mat4 Camera::view = glm::mat4(1.0f);
 bool Camera::perspective = false;
 
-float Camera::width = 800;
-float Camera::height = 600;
-float Camera::zNear = 0.1f;
-float Camera::zFar = 10.0f;
+float Camera::width = 1;
+float Camera::height = 1;
+float Camera::zNear = -0.1f;
+float Camera::zFar = 1000.0f;
 float Camera::fov = 75.0f;
 
-glm::vec3	Position = glm::vec3(0, 0, 0);
-glm::vec3	ViewDirection = glm::vec3(0, 0, -1);
-glm::vec2	Rotation = glm::vec2(0, 0);
+glm::vec3	Camera::Position = glm::vec3(0, 1, 0);
+glm::vec3	Camera::ViewDirection = glm::vec3(0, 0, -1);
+glm::vec2	Camera::Rotation = glm::vec2(0, 0);
 
 /* Axis rotate on left and right */
-glm::vec3	UpAxis = glm::vec3(0, 1, 0);
+glm::vec3	Camera::UpAxis = glm::vec3(0, 1, 0);
 
 /* Proportion rotate up and down */
-glm::vec3	ProportionRotation = glm::vec3(0, 0, 0);
-glm::mat4	ProportionRotationMatrixUpdated = glm::mat4(1);
+glm::vec3	Camera::ProportionRotation = glm::vec3(0, 0, 0);
+glm::mat4	Camera::ProportionRotationMatrixUpdated = glm::mat4(1);
 
 Camera::Camera() {}
 
@@ -42,16 +42,16 @@ void Camera::SetWindowSize(float width, float height) {
 
 
 glm::mat4 Camera::GetCameraViewMatrix() {
-	return camera * GetLookAt();
+	return camera;// *GetLookAt();
 }
 
 void Camera::SetProjectionMatrix() {
 	//view = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	if (perspective) {
-		camera = glm::perspective(glm::radians(fov), width / height, zNear, zFar);
+		camera = glm::perspective(/*glm::radians(*/fov/*)*/, width / height, zNear, zFar);
 	}
 	else {
-		camera = glm::ortho(0.0f, width, 0.0f, height, zNear, zFar); 
+		camera = glm::ortho(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f, zNear, zFar);
 	}
 }
 
@@ -80,25 +80,25 @@ void Camera::Rotate(glm::vec2	Rotation) {
 }
 
 void Camera::CameraMove(glm::vec3 Position, float Speed) {
-	if (Position.x == 1.0f) {
+	if (Position.x > 0.0f) {
 		ProportionRotation = glm::cross(ViewDirection, UpAxis);
 		Camera::Position += ProportionRotation * glm::vec3(1.0f, 0.0f, 1.0f) * Speed;
 	}
-	if (Position.x == -1.0f) {
+	if (Position.x < 0.0f) {
 		ProportionRotation = glm::cross(ViewDirection, UpAxis);
 		Camera::Position -= ProportionRotation * Speed;
 
 	}
-	if (Position.z == 1.0f) {
+	if (Position.z > 0.0f) {
 		Camera::Position += ViewDirection * glm::vec3(1.0f, 0.0f, 1.0f) * Speed;
 	}
-	if (Position.z == -1.0f) {
+	if (Position.z < 0.0f) {
 		Camera::Position -= ViewDirection * glm::vec3(1.0f, 0.0f, 1.0f) * Speed;
 	}
-	if (Position.y == 1.0f) {
+	if (Position.y > 0.0f) {
 		Camera::Position += UpAxis * Speed;
 	}
-	if (Position.y == -1.0f) {
+	if (Position.y < 0.0f) {
 		Camera::Position -= UpAxis * Speed;
 	}
 }

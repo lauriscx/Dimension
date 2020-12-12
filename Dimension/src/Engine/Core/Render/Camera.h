@@ -16,12 +16,8 @@ public:
 	static glm::vec3 GetPosition();
 	static glm::vec3 GetViewDirection();
 	static glm::vec3 GetUpAxis();
-	static glm::vec2 GetViewAspect();
 	static glm::vec2 GetRotation();
-	static glm::vec2 GetViewDistance();
 	static float GetFieldOfView();
-
-
 
 	static void SetFieldOfView(float		FieldOfView);
 	static void SetViewDirection(glm::vec3	Direction);
