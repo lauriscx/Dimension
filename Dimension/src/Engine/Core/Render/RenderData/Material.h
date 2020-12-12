@@ -20,9 +20,9 @@ public:
 
 	~Material();
 
-private:
 	glm::vec4 color;
 	glm::vec2 specularity;
+private:
 
 	std::map<std::string, Texture> textures;
 };

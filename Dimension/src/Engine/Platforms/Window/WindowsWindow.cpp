@@ -45,6 +45,7 @@ Dimension::WindowsWindow::WindowsWindow	(const char * title, const uint32_t widt
 	this->height = height;
 	this->width = width;
 	this->title = title;
+	this->fullScreen = false;
 }
 
 uint32_t	Dimension::WindowsWindow::GetWidth			() {
@@ -70,6 +71,33 @@ void		Dimension::WindowsWindow::Update			() {
 
 	/* Swap front and back buffers */
 	glfwSwapBuffers(window);
+}
+void Dimension::WindowsWindow::SetVsync(bool vsync) {
+	glfwSwapInterval(vsync);
+}
+void Dimension::WindowsWindow::SetFullScreen(bool FullScreen)
+{
+	if (fullScreen == FullScreen)
+		return;
+
+	if (FullScreen)
+	{
+		// backup window position and window size
+		glfwGetWindowPos(window, &x, &y);
+		glfwGetWindowSize(window, &width, &height);
+
+		// get resolution of monitor
+		const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+		// switch to full screen
+		glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, mode->width, mode->height, 0);
+	}
+	else
+	{
+		// restore last window size and position
+		glfwSetWindowMonitor(window, nullptr, x, y, width, height, 0);
+	}
+	fullScreen = FullScreen;
 }
 void		Dimension::WindowsWindow::EventsHandler		(Events* event) {
 	this->events = event;

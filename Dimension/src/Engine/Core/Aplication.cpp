@@ -13,6 +13,7 @@
 #include <string>
 #include "Render/RenderData/Texture.h"
 #include "../Core/Render/RenderData/GraphicObject.h"
+#include "../../Utils/FilesScaner.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -20,9 +21,27 @@
 #include "Render/Render2D.h"
 #include <fstream>
 #include "../../Utils/LoadObj.h"
+#include "Render/Camera.h"
 
 Dimension::Aplication*	Dimension::Aplication::app;
 static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+
+/*Variables for interface*/
+static bool Vsync = true;
+static bool FullScreen = false;
+static bool showDemo = false;
+static bool showCameraControlls = false;
+static bool showEntytiesControlls = false;
+static bool showResourcesControlls = false;
+static std::vector<std::string> paths;
+static std::map<std::string, bool> SelectedResources;
+static std::map<std::string, Texture> Loadedtextures;
+static std::map<std::string, objl::Loader> LoadedObjs;
+static char str[100] = { "../res/" };
+static std::vector<GraphicObject> GraphicObjects;
+static GraphicObject * SelectedObject = nullptr;
+static Texture * defaultTexture = nullptr;
+static  objl::Loader * defaultObj = nullptr;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	
@@ -63,12 +82,9 @@ void Dimension::Aplication::Run() {
 
 	GraphicObject sprite;
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
-	//sprite.GetBatch()->GenRectangle(0.1f, 0.1f);
-	glm::mat4 test(1.0f);
-	test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
-	//test = glm::scale(test, glm::vec3(0.5f, 0.5f, 1));
-	test = glm::translate(test, position);
-	sprite.SetTransformation(test);
+	sprite.position = glm::vec3(0, 0.0f, 0);
+	sprite.rotation = glm::vec3(0, 0, 45.0f);
+	sprite.scale = glm::vec3(0.05f, 0.05f, 0.05f);
 
 	//sprite.Indices = new std::vector<int>();
 	sprite.Indices.push_back(1);
@@ -117,13 +133,10 @@ void Dimension::Aplication::Run() {
 
 	GraphicObject triangle;
 	triangle.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(tree, "diffuseMap");
-	//triangle.GetBatch()->GenTriangle(0.5f, 0.5f);
-	glm::mat4 test2(1.0f);
-	test2 = glm::translate(test2, glm::vec3(0, 0.0f, 0));
-	test2 = glm::rotate(test2, 5.0f, glm::vec3(0, 0, 1.0f));
-	test2 = glm::scale(test2, glm::vec3(0.05f, 0.05f, 0.05f));
-	triangle.SetTransformation(test2);
 
+	triangle.position = glm::vec3(0, 0.0f, 0);
+	triangle.rotation = glm::vec3(0, 0, 5.0f);
+	triangle.scale = glm::vec3(0.05f, 0.05f, 0.05f);
 
 	triangle.Indices.push_back(0);
 	triangle.Indices.push_back(1);
@@ -185,6 +198,32 @@ void Dimension::Aplication::Run() {
 	auto t_start = std::chrono::high_resolution_clock::now();
 	double delta_time = 0;
 	while (Running) {
+		for (std::pair<std::string, bool> loadFile : SelectedResources) {
+			if (loadFile.second) {
+				std::cout << "Loading file: " << loadFile.first << std::endl;
+				int startpoint = loadFile.first.find_last_of(".", loadFile.first.size());
+				std::string ext = loadFile.first.substr(startpoint, loadFile.first.size());
+				if (ext == ".png") {
+					Loadedtextures[loadFile.first].Bind()->LoadPNG(loadFile.first.c_str())->LoadData()->SetParameters();
+					defaultTexture = &Loadedtextures[loadFile.first];
+				}
+				else if (ext == ".obj") {
+					if (!LoadedObjs[loadFile.first].LoadFile(loadFile.first)) {
+						std::cout << "Not loaded obj file" << std::endl;
+					}
+					else {
+						defaultObj = &LoadedObjs[loadFile.first];
+					}
+				}
+				else if (ext == ".glsl") {
+					
+				}
+				else {
+					std::cout << "File extension not supported by the system." << std::endl;
+				}
+			}
+		}
+
 		render.SetClearColor({ color.x, color.y, color.z, color.w });
 		t_start = std::chrono::high_resolution_clock::now();
 		/* Render here */
@@ -236,11 +275,18 @@ void Dimension::Aplication::Run() {
 			//render.draw(&grpObj, shader);
 			render.PackObject(grpObj);
 		}
+		for (GraphicObject grpObj : GraphicObjects) {
+			//render.draw(&grpObj, shader);
+			render.PackObject(grpObj);
+		}
+
 
 		render.flush(&sprite, shader);
 
 		RenderUI();
 		window->Update();
+		window->SetFullScreen(FullScreen);
+		window->SetVsync(Vsync);
 		Close();
 
 		t_end = std::chrono::high_resolution_clock::now();
@@ -248,17 +294,132 @@ void Dimension::Aplication::Run() {
 	}
 }
 
-static void HelpMarker(const char* desc)
-{
-	ImGui::TextDisabled("(?)");
-	if (ImGui::IsItemHovered())
-	{
-		ImGui::BeginTooltip();
-		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-		ImGui::TextUnformatted(desc);
-		ImGui::PopTextWrapPos();
-		ImGui::EndTooltip();
+void MainMenuBar() {
+	ImGui::BeginMainMenuBar();
+
+	float frameRate = ImGui::GetIO().Framerate;
+	ImGui::Text(("FPS: " + std::to_string(frameRate)).c_str());
+	if (ImGui::Button("2D demonstration")) {
+
 	}
+
+	if (ImGui::Button("3D demonstration")) {
+
+	}
+
+	ImGui::Checkbox("Show interface demonstartion", &showDemo);
+	if (showDemo) {
+		ImGui::ShowDemoWindow(&showDemo);
+	}
+	;
+	ImGui::Checkbox("Vsync", &Vsync);
+	ImGui::Checkbox("Full screen", &FullScreen);
+
+	ImGui::Checkbox("Show camera ctrls", &showCameraControlls);
+	ImGui::Checkbox("Show entyties ctrls", &showEntytiesControlls);
+	ImGui::Checkbox("Show resources ctrls", &showResourcesControlls);
+
+	ImGui::EndMainMenuBar();
+}
+
+void CameraControll() {
+	ImGui::Begin("Camera variables");
+	ImGui::SliderFloat3("Camera position", &Camera::Position[0], -10, 10, "%.3f", 1.0f);
+	ImGui::SliderFloat2("Camera rotation", &Camera::Rotation[0], -0.2f, 0.2f, "%.3f", 1.0f);
+	if (ImGui::Button("Stop rotation")) {
+		Camera::Rotation.x = 0;
+		Camera::Rotation.y = 0;
+	}
+	ImGui::SliderFloat3("Camera view direction", &Camera::ViewDirection[0], -100, 100, "%.3f", 1);
+	ImGui::SliderFloat("Camera field of view", &Camera::fov, 0, 360, "%.3f", 1);
+	ImGui::Checkbox("Camera is perspective", &Camera::perspective);
+	ImGui::ColorEdit4("Clear color", (float*)&color, ImGuiColorEditFlags_Float);
+	ImGui::End();
+}
+
+void ObjSelection() {
+	ImGui::Begin("Obj loaded files");
+	for (std::pair<std::string, objl::Loader> obj : LoadedObjs) {
+		ImGui::Button(obj.first.c_str());
+	}
+	ImGui::End();
+}
+void PngSelection() {
+	ImGui::Begin("Png loaded files");
+	for (std::pair<std::string, Texture> png : Loadedtextures) {
+		ImGui::Button(png.first.c_str());
+	}
+	ImGui::End();
+}
+void CreateEditGraphicObject() {
+	ImGui::Begin("Graphic objects");
+	if(ImGui::Button("Create graphic object")){
+		if (defaultObj != nullptr && defaultTexture != nullptr) {
+			GraphicObject obj;
+			obj.Indices.insert(std::end(obj.Indices), std::begin(defaultObj->LoadedIndices), std::end(defaultObj->LoadedIndices));
+
+			obj.Positions.clear();
+			obj.TexturesCoordinates.clear();
+
+			for (int i = 0; i < defaultObj->LoadedVertices.size(); i++) {
+				obj.Positions.push_back(defaultObj->LoadedVertices[i].Position.X);
+				obj.Positions.push_back(defaultObj->LoadedVertices[i].Position.Y);
+				obj.Positions.push_back(defaultObj->LoadedVertices[i].Position.Z);
+
+				obj.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.X);
+				obj.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.Y);
+				obj.TexturesCoordinates.push_back(0.0f);
+			}
+
+			obj.GetMaterial()->AddTexture(*defaultTexture, "diffuseMap");
+			GraphicObjects.push_back(obj);
+		}
+	}
+	int i = 0;
+	for (std::vector<GraphicObject>::iterator object = GraphicObjects.begin(); object != GraphicObjects.end(); ++object) {
+		if (ImGui::Button(std::to_string(i).c_str())) {
+			SelectedObject = object._Ptr;//Pointing to element in vector.
+		}
+		i++;
+	}
+	ImGui::End();
+
+	if (SelectedObject != nullptr) {
+		ImGui::Begin("Graphic object editor");
+			ImGui::SliderFloat3("Position", &SelectedObject->position[0], -1, 1, "%.3f", 1);
+			ImGui::SliderFloat3("rotation", &SelectedObject->rotation[0], -1, 1, "%.3f", 1);
+			ImGui::SliderFloat3("scale", &SelectedObject->scale[0], 0.01f, 1, "%.3f", 1);
+			ImGui::Button("Select obj/mesh");
+			ImGui::Button("Select texture");
+			ImGui::ColorEdit4("Material color", &SelectedObject->GetMaterial()->color[0], ImGuiColorEditFlags_Float);
+			ImGui::SliderFloat2("Material specularity", &SelectedObject->GetMaterial()->specularity[0], -1, 1, "%.3f", 1);
+		ImGui::End();
+	}
+}
+void GraphicObjectsControll() {
+
+}
+void ResoursesControl() {
+	ImGui::Begin("Resources selector");
+	ImGui::InputText("Files", &str[0], IM_ARRAYSIZE(str));
+	if (ImGui::Button("Scan")) {
+		paths.clear();
+		FilesScaner::Scan(str, &paths);
+	}
+	for (std::string path : paths) {
+		SelectedResources[path] = ImGui::Button(path.c_str());
+	}
+	ImGui::End();
+
+
+	ObjSelection();
+	PngSelection();
+}
+
+void EntytiesControll() {
+	ImGui::Begin("Valdimas");
+		ImGui::SliderFloat3("Pozicija", &position[0], -1, 1, "%.3f", 1);
+	ImGui::End();
 }
 
 void RenderUI() {
@@ -267,129 +428,33 @@ void RenderUI() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	// render your GUI
-	ImGui::Begin("Valdimas");
-	ImGui::SliderFloat3("Pozicija", &position[0], -1, 1, "%.3f", 1);
-	ImGui::End();
-	bool showDemo = true;
-	ImGui::ShowDemoWindow(&showDemo);
+	MainMenuBar();
 
-
-
-	static bool alpha_preview = true;
-	static bool alpha_half_preview = false;
-	static bool drag_and_drop = true;
-	static bool options_menu = true;
-	static bool hdr = false;
-	ImGui::Checkbox("With Alpha Preview", &alpha_preview);
-	ImGui::Checkbox("With Half Alpha Preview", &alpha_half_preview);
-	ImGui::Checkbox("With Drag and Drop", &drag_and_drop);
-	ImGui::Checkbox("With Options Menu", &options_menu); ImGui::SameLine(); HelpMarker("Right-click on the individual color widget to show options.");
-	ImGui::Checkbox("With HDR", &hdr); ImGui::SameLine(); HelpMarker("Currently all this does is to lift the 0..1 limits on dragging widgets.");
-	ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
-
-	ImGui::Text("Color widget:");
-	ImGui::SameLine(); HelpMarker(
-		"Click on the colored square to open a color picker.\n"
-		"CTRL+click on individual component to input value.\n");
-	ImGui::ColorEdit3("MyColor##1", (float*)&color, misc_flags);
-
-	ImGui::Text("Color widget HSV with Alpha:");
-	ImGui::ColorEdit4("MyColor##2", (float*)&color, ImGuiColorEditFlags_DisplayHSV | misc_flags);
-
-	ImGui::Text("Color widget with Float Display:");
-	ImGui::ColorEdit4("MyColor##2f", (float*)&color, ImGuiColorEditFlags_Float | misc_flags);
-
-	ImGui::Text("Color button with Picker:");
-	ImGui::SameLine(); HelpMarker(
-		"With the ImGuiColorEditFlags_NoInputs flag you can hide all the slider/text inputs.\n"
-		"With the ImGuiColorEditFlags_NoLabel flag you can pass a non-empty label which will only "
-		"be used for the tooltip and picker popup.");
-	ImGui::ColorEdit4("MyColor##3", (float*)&color, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | misc_flags);
-
-	ImGui::Text("Color button with Custom Picker Popup:");
-
-	// Generate a default palette. The palette will persist and can be edited.
-	static bool saved_palette_init = true;
-	static ImVec4 saved_palette[32] = {};
-	if (saved_palette_init)
-	{
-		for (int n = 0; n < IM_ARRAYSIZE(saved_palette); n++)
-		{
-			ImGui::ColorConvertHSVtoRGB(n / 31.0f, 0.8f, 0.8f,
-				saved_palette[n].x, saved_palette[n].y, saved_palette[n].z);
-			saved_palette[n].w = 1.0f; // Alpha
-		}
-		saved_palette_init = false;
+	if (showCameraControlls) {
+		CameraControll();
+	}
+	if (showEntytiesControlls) {
+		EntytiesControll();
+	}
+	if (showResourcesControlls) {
+		ResoursesControl();
 	}
 
-	static ImVec4 backup_color;
-	bool open_popup = ImGui::ColorButton("MyColor##3b", color, misc_flags);
-	ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
-	open_popup |= ImGui::Button("Palette");
-	if (open_popup)
-	{
-		ImGui::OpenPopup("mypicker");
-		backup_color = color;
-	}
-	if (ImGui::BeginPopup("mypicker"))
-	{
-		ImGui::Text("MY CUSTOM COLOR PICKER WITH AN AMAZING PALETTE!");
-		ImGui::Separator();
-		ImGui::ColorPicker4("##picker", (float*)&color, misc_flags | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview);
-		ImGui::SameLine();
-
-		ImGui::BeginGroup(); // Lock X position
-		ImGui::Text("Current");
-		ImGui::ColorButton("##current", color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
-		ImGui::Text("Previous");
-		if (ImGui::ColorButton("##previous", backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
-			color = backup_color;
-		ImGui::Separator();
-		ImGui::Text("Palette");
-		for (int n = 0; n < IM_ARRAYSIZE(saved_palette); n++)
-		{
-			ImGui::PushID(n);
-			if ((n % 8) != 0)
-				ImGui::SameLine(0.0f, ImGui::GetStyle().ItemSpacing.y);
-
-			ImGuiColorEditFlags palette_button_flags = ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoTooltip;
-			if (ImGui::ColorButton("##palette", saved_palette[n], palette_button_flags, ImVec2(20, 20)))
-				color = ImVec4(saved_palette[n].x, saved_palette[n].y, saved_palette[n].z, color.w); // Preserve alpha!
-
-			// Allow user to drop colors into each palette entry. Note that ColorButton() is already a
-			// drag source by default, unless specifying the ImGuiColorEditFlags_NoDragDrop flag.
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F))
-					memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 3);
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_4F))
-					memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 4);
-				ImGui::EndDragDropTarget();
-			}
-
-			ImGui::PopID();
-		}
-		ImGui::EndGroup();
-		ImGui::EndPopup();
-	}
-
+	CreateEditGraphicObject();
 
 	// Render dear imgui into screen
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-Dimension::Aplication::~Aplication() {
-
-}
+Dimension::Aplication::~Aplication() {}
 
 void Dimension::Aplication::Close() {
 	if (events.Dispacth<WindowCloseEvent>([](WindowCloseEvent* e) {return true;})) {
 		std::cout << "Close" << std::endl;
 		Running = false;
 	}
-	events.Dispacth<Error>([](Error* e) {
+	/*events.Dispacth<Error>([](Error* e) {
 		//std::string er = e.GetErrorReport();
 		std::cout << e->GetErrorReport() << std::endl;
 		return true;
@@ -397,7 +462,7 @@ void Dimension::Aplication::Close() {
 
 	events.Dispacth<WindowResizeEvent>([](WindowResizeEvent* e) {
 		//std::string er = e.GetErrorReport();
-		std::cout << "Window width: " << e->GetWidth() << std::endl;
+		//std::cout << "Window width: " << e->GetWidth() << std::endl;
 		return true;
 	});
 
@@ -405,5 +470,5 @@ void Dimension::Aplication::Close() {
 		//std::string er = e.GetErrorReport();
 		//std::cout << "key: " << e->GetKey() << std::endl;
 		return true;
-	});
+	});*/
 }

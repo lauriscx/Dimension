@@ -14,7 +14,7 @@ float Camera::zNear = -0.1f;
 float Camera::zFar = 1000.0f;
 float Camera::fov = 75.0f;
 
-glm::vec3	Camera::Position = glm::vec3(0, 1, 0);
+glm::vec3	Camera::Position = glm::vec3(0, 0.5f, 0);
 glm::vec3	Camera::ViewDirection = glm::vec3(0, 0, -1);
 glm::vec2	Camera::Rotation = glm::vec2(0, 0);
 
@@ -42,11 +42,10 @@ void Camera::SetWindowSize(float width, float height) {
 
 
 glm::mat4 Camera::GetCameraViewMatrix() {
-	return camera;// *GetLookAt();
+	return camera * GetLookAt();
 }
 
 void Camera::SetProjectionMatrix() {
-	//view = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	if (perspective) {
 		camera = glm::perspective(/*glm::radians(*/fov/*)*/, width / height, zNear, zFar);
 	}

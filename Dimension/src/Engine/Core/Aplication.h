@@ -18,6 +18,12 @@ namespace Dimension {
 
 			static Aplication* Get() { return app; }
 			std::shared_ptr<Window> GetWindow() { return window; }
+
+			/*Demo functions*/
+/*			void MainMenuBar();
+			void CameraControll();
+			void ResoursesControl();
+			void EntytiesControll();*/
 			
 			~Aplication();
 		private:

@@ -34,7 +34,9 @@ public:
 	std::vector<int> BonesIndex;
 	std::vector<float> BonesWeights;
 
-	std::vector<glm::mat4> transformations;
+	glm::vec3 position;
+	glm::vec3 rotation;
+	glm::vec3 scale;
 private:
 	Material material;
 

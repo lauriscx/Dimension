@@ -204,6 +204,7 @@
     <ClInclude Include="src\Engine\Core\Window.h" />
     <ClInclude Include="src\Engine\Core\Input\Events\Event.h" />
     <ClInclude Include="src\Engine\Platforms\Window\WindowsWindow.h" />
+    <ClInclude Include="src\Utils\FilesScaner.h" />
     <ClInclude Include="src\Utils\LoadObj.h" />
     <ClInclude Include="src\Utils\stb_image.h" />
   </ItemGroup>
