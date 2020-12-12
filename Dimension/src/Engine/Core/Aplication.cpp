@@ -112,13 +112,16 @@ void Dimension::Aplication::Run() {
 
 
 
+	Texture tree;
+	tree.Bind()->LoadPNG("../res/tree.png")->LoadData()->SetParameters();
+
 	GraphicObject triangle;
-	triangle.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(texture, "diffuseMap");
+	triangle.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(tree, "diffuseMap");
 	//triangle.GetBatch()->GenTriangle(0.5f, 0.5f);
 	glm::mat4 test2(1.0f);
-	//test2 = glm::translate(test2, glm::vec3(0, -1.0f, 0));
-	test2 = glm::rotate(test2, 0.0f, glm::vec3(0, 0, 1.0f));
-	//test2 = glm::scale(test2, glm::vec3(2, 1, 1));
+	test2 = glm::translate(test2, glm::vec3(0, 0.0f, 0));
+	test2 = glm::rotate(test2, 5.0f, glm::vec3(0, 0, 1.0f));
+	test2 = glm::scale(test2, glm::vec3(0.05f, 0.05f, 0.05f));
 	triangle.SetTransformation(test2);
 
 
@@ -166,9 +169,9 @@ void Dimension::Aplication::Run() {
 			triangle.Positions.push_back(loader.LoadedVertices[i].Position.Y);
 			triangle.Positions.push_back(loader.LoadedVertices[i].Position.Z);
 
-			triangle.Positions.push_back(loader.LoadedVertices[i].TextureCoordinate.X);
-			triangle.Positions.push_back(loader.LoadedVertices[i].TextureCoordinate.Y);
-			triangle.Positions.push_back(0.0f);
+			triangle.TexturesCoordinates.push_back(loader.LoadedVertices[i].TextureCoordinate.X);
+			triangle.TexturesCoordinates.push_back(loader.LoadedVertices[i].TextureCoordinate.Y);
+			triangle.TexturesCoordinates.push_back(0.0f);
 		}
 	}
 

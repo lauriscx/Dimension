@@ -4,6 +4,9 @@
 #include "RenderData/Batch.h"
 #include "RenderData/VAO.h"
 #include "RenderData/VBO.h"
+#include <vector>
+
+class Texture;
 
 class Render2D {
 public:
@@ -25,7 +28,7 @@ private:
 	glm::vec2 WindowSize;
 
 	Batch batch;
-
+	std::vector<Texture> textures;
 
 	/*Renderig data for GPU*/
 	//Vertex array object store all vertex buffer objects (vbo)

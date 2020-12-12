@@ -13,6 +13,7 @@ Dimension::Shader::Shader() {
 	addAttribute("VertextObjectIndex", 2);
 
 	addUniform("diffuseMap");
+	//addUniform("textures");
 	addUniform("Ocolor");
 	addUniform("ModeltransformationArray");
 	addUniform("ProjectionView");
@@ -22,6 +23,11 @@ Dimension::Shader::Shader() {
 	addAttribute("BiTangent", 5);
 	addAttribute("WeightValue", 6);
 	addAttribute("VertexIndex", 7);*/
+	
+	for (int i = 0; i < 32; i++) {
+		addTextures("textures[" + std::to_string(i) + "]");
+	}
+
 }
 
 void Dimension::Shader::addVertexCode(std::string name, std::string code) {
@@ -59,11 +65,13 @@ void Dimension::Shader::compile() {
 			"uniform mat4 ModeltransformationArray[100];\n"
 			"uniform mat4 ProjectionView;\n"
 			"out vec3 _TextureCoordinates;\n"
+			"flat out int _textureid;\n"
 			"\n"
 			"void main() {\n"
 			"	_TextureCoordinates = TextureCoordinates;\n"
 			"	vec4 worldPosition = ProjectionView * ModeltransformationArray[VertextObjectIndex] * vec4(Position, 1.0f);\n"
 			"	gl_Position = worldPosition;\n"
+			"	_textureid = VertextObjectIndex;\n"
 			"}";
 
 		code.second.second = (glCreateShader(GL_VERTEX_SHADER));
@@ -90,9 +98,11 @@ void Dimension::Shader::compile() {
 									"out vec4 Pixel;\n"
 									"in vec3 _TextureCoordinates;\n"
 									"uniform sampler2D diffuseMap;\n"
+									"uniform sampler2D textures[32];\n"
 									"uniform vec4 Ocolor;\n"
+									"flat in int _textureid;\n"
 									"void main() {\n"
-										"Pixel = texture(diffuseMap, _TextureCoordinates.xy) * Ocolor;\n"
+										"Pixel = texture(textures[_textureid], _TextureCoordinates.xy) * Ocolor;\n"
 									"}";
 
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
@@ -193,10 +203,11 @@ void Dimension::Shader::addTextures(std::string names, ...) {
 void Dimension::Shader::setupTextures() {
 	start();
 	int i = 0;
-	for (std::pair<std::string, std::pair<int, int>> texture : textures) {
-		texture.second.first = glGetUniformLocation(programID, texture.first.c_str());//set texture unifrom location.
-		texture.second.second = i;//saves texture id for render bind slot.
-		glUniform1i(texture.second.first, i);//set texture id.
+	for (std::map<std::string, std::pair<int, int>>::iterator texture = textures.begin(); texture != textures.end(); ++texture){
+	//for (std::pair<std::string, std::pair<int, int>> texture : textures) {
+		texture->second.first = glGetUniformLocation(programID, texture->first.c_str());//set texture unifrom location.
+		texture->second.second = i;//saves texture id for render bind slot.
+		glUniform1i(texture->second.first, i);//set texture id.
 		i++;
 	}
 	stop();

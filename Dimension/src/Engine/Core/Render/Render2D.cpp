@@ -3,6 +3,8 @@
 #include "RenderData/Texture.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Camera.h"
+//#include "RenderData/Texture.h"
+//#include "RenderData/Material.h"
 
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
@@ -88,6 +90,7 @@ void Render2D::StartScene() {
 
 void Render2D::PackObject(GraphicObject object) {
 	batch.AddToBatch(object);
+	textures.push_back(object.GetMaterial()->GetTexture("diffuseMap"));
 }
 
 void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
@@ -115,13 +118,20 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 	shader.sendUniform("ProjectionView", Camera::GetCameraViewMatrix());
 
 	vao.Bind();
-	object->GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
+	int i = 0;
+	for (Texture texture : textures) {
+		int slotindex = shader.getTextureSlot("textures[" + std::to_string(i) + "]");
+		texture.ActivateSlot(slotindex);
+		i++;
+	}
+	//object->GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
 
 	glDrawElements(GL_TRIANGLES, batch.Indices.size(), GL_UNSIGNED_INT, &batch.Indices[0]);
 
 	vao.Unbind();
 
 	batch.ClearBatch();
+	textures.clear();
 }
 
 
