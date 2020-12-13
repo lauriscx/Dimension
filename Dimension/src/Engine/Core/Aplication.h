@@ -10,6 +10,10 @@
 #include <chrono>
 
 class GraphicObject;
+class Texture;
+namespace objl {
+	class Loader;
+};
 namespace Dimension {
 	class Aplication {
 		public:
@@ -18,18 +22,30 @@ namespace Dimension {
 
 			static Aplication* Get() { return app; }
 			std::shared_ptr<Window> GetWindow() { return window; }
+			void LoadDefaultResources();
+			GraphicObject CreateObject(Texture texture, objl::Loader mesh);
 
 			/*Demo functions*/
-/*			void MainMenuBar();
-			void CameraControll();
+			void PrepereRender();
+			void DrawObjects();
+			void LoadRequestedResources();
+			void RenderUI();
+			void EntytiesControll();
 			void ResoursesControl();
-			void EntytiesControll();*/
+			void GraphicObjectsControll();
+			void CreateEditGraphicObject();
+			void PngSelection();
+			void ObjSelection();
+			void CameraControll();
+			void MainMenuBar();
 			
 			~Aplication();
 		private:
 			static Aplication* app;
 			std::shared_ptr<Window> window;
 			Events events;
+			Render2D render;
+			Shader shader;
 			bool Running;
 
 			void Close();

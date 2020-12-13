@@ -42,13 +42,19 @@ static std::vector<GraphicObject> GraphicObjects;
 static GraphicObject * SelectedObject = nullptr;
 static Texture * defaultTexture = nullptr;
 static  objl::Loader * defaultObj = nullptr;
+static int w_heigh = 0;
+static int w_width = 0;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
-	
+	/*Application init*/
 	Dimension::Aplication::app = this;
+
+	/*GLFW inti*/
 	window = Window::Create(title, width, height);
 	events.OnEvent(std::bind(&LayerStack::OnEvent, &m_Layers, std::placeholders::_1));
 	window->EventsHandler(&events);
+
+	/*OpenGL init*/
 	if (gladLoadGL() == 0) {
 		DERROR("Failed to load glad");
 	}
@@ -56,13 +62,13 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-}
-void RenderUI();
-glm::vec3 position(0);
-void Dimension::Aplication::Run() {
-	Layer * layer = new Layer("Test");
-	m_Layers.PushLayer(layer);
 
+	FileReader reader;
+	shader.addVertexCode("/res/Vertex.glsl", reader.ReadFile("../res/Vertex.glsl"));
+	shader.addFragmentCode("/res/Fragment.glsl", reader.ReadFile("../res/Fragment.glsl"));
+	shader.compile();
+
+	/*Graphic user interface init*/
 	IMGUI_CHECKVERSION();	// Setup Dear ImGui context
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO();
@@ -70,241 +76,108 @@ void Dimension::Aplication::Run() {
 	const char* glsl_version = "#version 330";
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	ImGui::StyleColorsDark();	// Setup Dear ImGui style
+}
 
-	FileReader reader;
-	Shader shader;
-	shader.addVertexCode("/res/Vertex.glsl", reader.ReadFile("../res/Vertex.glsl"));
-	shader.addFragmentCode("/res/Fragment.glsl", reader.ReadFile("../res/Fragment.glsl"));
-	shader.compile();
+void Dimension::Aplication::Run() {
+	Layer * layer = new Layer("Test");
+	m_Layers.PushLayer(layer);
 
-	Texture texture;
-	texture.Bind()->LoadPNG("../res/texture.png")->LoadData()->SetParameters();
+	LoadDefaultResources();
 
-	GraphicObject sprite;
-	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
-	sprite.position = glm::vec3(0, 0.0f, -10.0f);
-	sprite.rotation = glm::vec3(0, 0, 45.0f);
-	sprite.scale = glm::vec3(0.05f, 0.05f, 0.05f);
-
-	//sprite.Indices = new std::vector<int>();
-	sprite.Indices.push_back(1);
-	sprite.Indices.push_back(2);
-	sprite.Indices.push_back(0);
-	sprite.Indices.push_back(0);
-	sprite.Indices.push_back(2);
-	sprite.Indices.push_back(3);
-
-	float _width = 0.5f;
-	float _height = 0.1f;
-
-	sprite.Positions.push_back(-_width / 2.0f);
-	sprite.Positions.push_back(_height / 2.0f + 0.5);
-	sprite.Positions.push_back(0.0f);
-	sprite.Positions.push_back(-_width / 2.0f);
-	sprite.Positions.push_back(-_height / 2.0f + 0.5);
-	sprite.Positions.push_back(0.0f);
-	sprite.Positions.push_back(_width / 2.0f);
-	sprite.Positions.push_back(-_height / 2.0f + 0.5);
-	sprite.Positions.push_back(0.0f);
-	sprite.Positions.push_back(_width / 2.0f);
-	sprite.Positions.push_back(_height / 2.0f + 0.5);
-	sprite.Positions.push_back(0.0f);
-
-	sprite.TexturesCoordinates.push_back(0.0f);
-	sprite.TexturesCoordinates.push_back(0.0f);
-	sprite.TexturesCoordinates.push_back(0.0f);
-
-	sprite.TexturesCoordinates.push_back(1.0f);
-	sprite.TexturesCoordinates.push_back(0.0f);
-	sprite.TexturesCoordinates.push_back(0.0f);
-
-	sprite.TexturesCoordinates.push_back(1.0f);
-	sprite.TexturesCoordinates.push_back(1.0f);
-	sprite.TexturesCoordinates.push_back(0.0f);
-
-	sprite.TexturesCoordinates.push_back(0.0f);
-	sprite.TexturesCoordinates.push_back(1.0f);
-	sprite.TexturesCoordinates.push_back(0.0f);
-
-
-
-	Texture tree;
-	tree.Bind()->LoadPNG("../res/tree.png")->LoadData()->SetParameters();
-
-	GraphicObject triangle;
-	triangle.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(tree, "diffuseMap");
-
-	triangle.position = glm::vec3(5, 0.0f, -10.0f);
-	triangle.rotation = glm::vec3(0, 0, 5.0f);
-	triangle.scale = glm::vec3(0.05f, 0.05f, 0.05f);
-
-	triangle.Indices.push_back(0);
-	triangle.Indices.push_back(1);
-	triangle.Indices.push_back(2);
-
-
-	float width = 0.25f;
-	float height = 0.25f;
-
-	triangle.Positions.push_back(-width / 1.0f);
-	triangle.Positions.push_back(-height / 1.0f - 0.5);
-	triangle.Positions.push_back(0.0f);
-	triangle.Positions.push_back(width / 1.0f);
-	triangle.Positions.push_back(-height / 1.0f - 0.5);
-	triangle.Positions.push_back(0.0f);
-	triangle.Positions.push_back(0.0f);
-	triangle.Positions.push_back(height / 1.0f - 0.5);
-	triangle.Positions.push_back(0.0f);
-
-	triangle.TexturesCoordinates.push_back(0.0f);
-	triangle.TexturesCoordinates.push_back(0.0f);
-	triangle.TexturesCoordinates.push_back(0.0f);
-	triangle.TexturesCoordinates.push_back(1.0f);
-	triangle.TexturesCoordinates.push_back(0.0f);
-	triangle.TexturesCoordinates.push_back(0.0f);
-	triangle.TexturesCoordinates.push_back(0.5f);
-	triangle.TexturesCoordinates.push_back(1.0f);
-	triangle.TexturesCoordinates.push_back(0.0f);
-
-	objl::Loader loader;
-	if (!loader.LoadFile("../res/box_stack.obj")) {
-		std::cout << "Not loaded obj file" << std::endl;
-	}
-	else {
-		triangle.Indices.clear();
-		triangle.Indices.insert(std::end(triangle.Indices), std::begin(loader.LoadedIndices), std::end(loader.LoadedIndices));
-		
-		triangle.Positions.clear();
-		triangle.TexturesCoordinates.clear();
-
-		for (int i = 0; i < loader.LoadedVertices.size(); i++) {
-			triangle.Positions.push_back(loader.LoadedVertices[i].Position.X);
-			triangle.Positions.push_back(loader.LoadedVertices[i].Position.Y);
-			triangle.Positions.push_back(loader.LoadedVertices[i].Position.Z);
-
-			triangle.TexturesCoordinates.push_back(loader.LoadedVertices[i].TextureCoordinate.X);
-			triangle.TexturesCoordinates.push_back(loader.LoadedVertices[i].TextureCoordinate.Y);
-			triangle.TexturesCoordinates.push_back(0.0f);
-		}
-	}
-
-	objectsToRender.push_back(sprite);
-	objectsToRender.push_back(triangle);
-
-
-
-	Render2D render;
 	auto t_end = std::chrono::high_resolution_clock::now();
 	auto t_start = std::chrono::high_resolution_clock::now();
 	double delta_time = 0;
-	while (Running) {
-		for (std::pair<std::string, bool> loadFile : SelectedResources) {
-			if (loadFile.second) {
-				std::cout << "Loading file: " << loadFile.first << std::endl;
-				int startpoint = loadFile.first.find_last_of(".", loadFile.first.size());
-				std::string ext = loadFile.first.substr(startpoint, loadFile.first.size());
-				if (ext == ".png") {
-					Loadedtextures[loadFile.first].Bind()->LoadPNG(loadFile.first.c_str())->LoadData()->SetParameters();
-					defaultTexture = &Loadedtextures[loadFile.first];
-				}
-				else if (ext == ".obj") {
-					if (!LoadedObjs[loadFile.first].LoadFile(loadFile.first)) {
-						std::cout << "Not loaded obj file" << std::endl;
-					}
-					else {
-						defaultObj = &LoadedObjs[loadFile.first];
-					}
-				}
-				else if (ext == ".glsl") {
-					
-				}
-				else {
-					std::cout << "File extension not supported by the system." << std::endl;
-				}
-			}
-		}
 
-		render.SetClearColor({ color.x, color.y, color.z, color.w });
+	while (Running) {
 		t_start = std::chrono::high_resolution_clock::now();
-		/* Render here */
-		int display_w, display_h;
-		glfwGetFramebufferSize((GLFWwindow*)window->Context(), &display_w, &display_h);
-		render.SetWindowSize({ display_w, display_h });
-		render.PrepareScene();
+
+		LoadRequestedResources();
+		
 		m_Layers.Update();
 
-		glm::mat4 test(1.0f);
-		test = glm::rotate(test, 45.0f, glm::vec3(0, 0, 1.0f));
-		//test = glm::scale(test, glm::vec3(0.5f, 0.5f, 1));
-		test = glm::translate(test, position);
-		objectsToRender[0].SetTransformation(test);
-
-		/*if (Input::IsKeyPressed(GLFW_KEY_D)) {
-			objectsToRender.clear();
-			glm::mat4 moveMatrix = sprite.GetTransformation();
-			moveMatrix = glm::translate(moveMatrix, glm::vec3(1.0f * delta_time, 0.0f, 0.0f));
-			sprite.SetTransformation(moveMatrix);
-			objectsToRender.push_back(sprite);
-		}
-
-		if (Input::IsKeyPressed(GLFW_KEY_A)) {
-			objectsToRender.clear();
-			glm::mat4 moveMatrix = sprite.GetTransformation();
-			moveMatrix = glm::translate(moveMatrix, glm::vec3(-1.0f * delta_time, 0.0f, 0.0f));
-			sprite.SetTransformation(moveMatrix);
-			objectsToRender.push_back(sprite);
-		}
-
-		if (Input::IsKeyPressed(GLFW_KEY_S)) {
-			objectsToRender.clear();
-			glm::mat4 moveMatrix = sprite.GetTransformation();
-			moveMatrix = glm::translate(moveMatrix, glm::vec3(0.0f, -1.0f * delta_time, 0.0f));
-			sprite.SetTransformation(moveMatrix);
-			objectsToRender.push_back(sprite);
-		}
-
-		if (Input::IsKeyPressed(GLFW_KEY_W)) {
-			objectsToRender.clear();
-			glm::mat4 moveMatrix = sprite.GetTransformation();
-			moveMatrix = glm::translate(moveMatrix, glm::vec3(0.0f, 1.0f * delta_time, 0.0f));
-			sprite.SetTransformation(moveMatrix);
-			objectsToRender.push_back(sprite);
-		}*/
-
-		for (GraphicObject grpObj : objectsToRender) {
-			//render.draw(&grpObj, shader);
-			render.PackObject(grpObj);
-		}
-		for (GraphicObject grpObj : GraphicObjects) {
-			//render.draw(&grpObj, shader);
-			render.PackObject(grpObj);
-		}
-
-
-		render.flush(&sprite, shader);
-
+		/*Drawing elements in window*/
+		PrepereRender();
+		DrawObjects();
 		RenderUI();
+
+		/*Update OS window*/
 		window->Update();
 		window->SetFullScreen(FullScreen);
 		window->SetVsync(Vsync);
 		Close();
+
 
 		t_end = std::chrono::high_resolution_clock::now();
 		delta_time = (std::chrono::duration<double, std::milli>(t_end - t_start).count()) / 1000;
 	}
 }
 
-void MainMenuBar() {
+void Dimension::Aplication::LoadDefaultResources() {
+	defaultObj = new objl::Loader();
+	if (!defaultObj->LoadFile("../res/box_stack.obj")) {
+		std::cout << "Not loaded obj file" << std::endl;
+	} else {
+		std::cout << "Loaded obj file succesfully" << std::endl;
+		std::cout << "Loaded png file" << std::endl;
+		defaultTexture = new Texture();
+		defaultTexture->Bind()->LoadPNG("../res/tree.png")->LoadData()->SetParameters();
+	}
+
+	GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
+	SelectedObject = &GraphicObjects[0];
+}
+GraphicObject Dimension::Aplication::CreateObject(Texture texture, objl::Loader mesh) {
+	GraphicObject graphicObject;
+	graphicObject.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(*defaultTexture, "diffuseMap");
+
+	graphicObject.position = glm::vec3(0.0f, 0.0f, -10.0f);
+	graphicObject.rotation = glm::vec3(0, 0, 0.0f);
+	graphicObject.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	graphicObject.Indices.insert(std::end(graphicObject.Indices), std::begin(defaultObj->LoadedIndices), std::end(defaultObj->LoadedIndices));
+	for (int i = 0; i < defaultObj->LoadedVertices.size(); i++) {
+		graphicObject.Positions.push_back(defaultObj->LoadedVertices[i].Position.X);
+		graphicObject.Positions.push_back(defaultObj->LoadedVertices[i].Position.Y);
+		graphicObject.Positions.push_back(defaultObj->LoadedVertices[i].Position.Z);
+
+		graphicObject.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.X);
+		graphicObject.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.Y);
+		graphicObject.TexturesCoordinates.push_back(0.0f);
+	}
+
+	return graphicObject;
+}
+void Dimension::Aplication::MainMenuBar() {
 	ImGui::BeginMainMenuBar();
 
 	float frameRate = ImGui::GetIO().Framerate;
 	ImGui::Text(("FPS: " + std::to_string(frameRate)).c_str());
 	if (ImGui::Button("2D demonstration")) {
+		Camera::Position.x = 0.0f;
+		Camera::Position.y = 0.0f;
+		Camera::Position.z = 0.0f;
 
+		Camera::height = (float)w_heigh / 1000.0f;
+		Camera::width = (float)w_width / 1000.0f;
+
+		Camera::Rotation.x = 0;
+		Camera::Rotation.y = 0;
+
+		Camera::perspective = false;
 	}
 
 	if (ImGui::Button("3D demonstration")) {
+		Camera::Position.x = 0.0f;
+		Camera::Position.y = 0.0f;
+		Camera::Position.z = 0.0f;
 
+		Camera::height = w_heigh;
+		Camera::width = w_width;
+
+		Camera::Rotation.x = 0;
+		Camera::Rotation.y = 0;
+
+		Camera::perspective = true;
 	}
 
 	ImGui::Checkbox("Show interface demonstartion", &showDemo);
@@ -321,8 +194,7 @@ void MainMenuBar() {
 
 	ImGui::EndMainMenuBar();
 }
-
-void CameraControll() {
+void Dimension::Aplication::CameraControll() {
 	ImGui::Begin("Camera variables");
 	ImGui::SliderFloat3("Camera position", &Camera::Position[0], -10, 10, "%.3f", 1.0f);
 	ImGui::SliderFloat2("Camera rotation", &Camera::Rotation[0], -0.2f, 0.2f, "%.3f", 1.0f);
@@ -340,44 +212,50 @@ void CameraControll() {
 	ImGui::SliderFloat("Window ZFar", &Camera::zFar, 0.01f, 1000, "%.3f", 1);
 	ImGui::ColorEdit4("Clear color", (float*)&color, ImGuiColorEditFlags_Float);
 	ImGui::End();
-}
 
-void ObjSelection() {
+	if (Dimension::Input::IsKeyPressed(GLFW_KEY_D)) {
+		Camera::CameraMove({ 1, 0, 0 }, 0.1f);
+	}
+
+	if (Dimension::Input::IsKeyPressed(GLFW_KEY_A)) {
+		Camera::CameraMove({ -1, 0, 0 }, 0.1f);
+	}
+
+	if (Dimension::Input::IsKeyPressed(GLFW_KEY_S)) {
+		Camera::CameraMove({ 0, 0, -1 }, 0.1f);
+	}
+
+	if (Dimension::Input::IsKeyPressed(GLFW_KEY_W)) {
+		Camera::CameraMove({ 0, 0, 1 }, 0.1f);
+	}
+
+	if (Dimension::Input::IsKeyPressed(GLFW_KEY_SPACE)) {
+		Camera::CameraMove({ 0, 1, 0 }, 0.1f);
+	}
+
+	if (Dimension::Input::IsKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+		Camera::CameraMove({ 0, -1, 0 }, 0.1f);
+	}
+}
+void Dimension::Aplication::ObjSelection() {
 	ImGui::Begin("Obj loaded files");
 	for (std::pair<std::string, objl::Loader> obj : LoadedObjs) {
 		ImGui::Button(obj.first.c_str());
 	}
 	ImGui::End();
 }
-void PngSelection() {
+void Dimension::Aplication::PngSelection() {
 	ImGui::Begin("Png loaded files");
 	for (std::pair<std::string, Texture> png : Loadedtextures) {
 		ImGui::Button(png.first.c_str());
 	}
 	ImGui::End();
 }
-void CreateEditGraphicObject() {
+void Dimension::Aplication::CreateEditGraphicObject() {
 	ImGui::Begin("Graphic objects");
-	if(ImGui::Button("Create graphic object")){
+	if(ImGui::Button("Create graphic object")) {
 		if (defaultObj != nullptr && defaultTexture != nullptr) {
-			GraphicObject obj;
-			obj.Indices.insert(std::end(obj.Indices), std::begin(defaultObj->LoadedIndices), std::end(defaultObj->LoadedIndices));
-
-			obj.Positions.clear();
-			obj.TexturesCoordinates.clear();
-
-			for (int i = 0; i < defaultObj->LoadedVertices.size(); i++) {
-				obj.Positions.push_back(defaultObj->LoadedVertices[i].Position.X);
-				obj.Positions.push_back(defaultObj->LoadedVertices[i].Position.Y);
-				obj.Positions.push_back(defaultObj->LoadedVertices[i].Position.Z);
-
-				obj.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.X);
-				obj.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.Y);
-				obj.TexturesCoordinates.push_back(0.0f);
-			}
-			 
-			obj.GetMaterial()->AddTexture(*defaultTexture, "diffuseMap");
-			GraphicObjects.push_back(obj);
+			GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
 		}
 	}
 	int i = 0;
@@ -391,7 +269,7 @@ void CreateEditGraphicObject() {
 
 	if (SelectedObject != nullptr) {
 		ImGui::Begin("Graphic object editor");
-			ImGui::SliderFloat3("Position", &SelectedObject->position[0], -100, 100, "%.3f", 1);
+			ImGui::SliderFloat3("Position", &SelectedObject->position[0], -10, 10, "%.3f", 1);
 			ImGui::SliderFloat3("rotation", &SelectedObject->rotation[0], -1, 1, "%.3f", 1);
 			ImGui::SliderFloat3("scale", &SelectedObject->scale[0], 0.01f, 1, "%.3f", 1);
 			ImGui::Button("Select obj/mesh");
@@ -401,10 +279,10 @@ void CreateEditGraphicObject() {
 		ImGui::End();
 	}
 }
-void GraphicObjectsControll() {
+void Dimension::Aplication::GraphicObjectsControll() {
 
 }
-void ResoursesControl() {
+void Dimension::Aplication::ResoursesControl() {
 	ImGui::Begin("Resources selector");
 	ImGui::InputText("Files", &str[0], IM_ARRAYSIZE(str));
 	if (ImGui::Button("Scan")) {
@@ -420,14 +298,50 @@ void ResoursesControl() {
 	ObjSelection();
 	PngSelection();
 }
+void Dimension::Aplication::EntytiesControll() {
 
-void EntytiesControll() {
-	ImGui::Begin("Valdimas");
-		ImGui::SliderFloat3("Pozicija", &position[0], -1, 1, "%.3f", 1);
-	ImGui::End();
 }
+void Dimension::Aplication::PrepereRender() {
+	/* Render here */
+	render.SetClearColor({ color.x, color.y, color.z, color.w });
+	glfwGetFramebufferSize((GLFWwindow*)window->Context(), &w_width, &w_heigh);
+	render.SetWindowSize({ w_width, w_heigh });
+	render.PrepareScene();
+}
+void Dimension::Aplication::DrawObjects() {
+	for (GraphicObject grpObj : GraphicObjects) {
+		render.PackObject(grpObj);
+	}
+	render.flush(shader);
+}
+void Dimension::Aplication::LoadRequestedResources() {
+	for (std::pair<std::string, bool> loadFile : SelectedResources) {
+		if (loadFile.second) {
+			std::cout << "Loading file: " << loadFile.first << std::endl;
+			int startpoint = loadFile.first.find_last_of(".", loadFile.first.size());
+			std::string ext = loadFile.first.substr(startpoint, loadFile.first.size());
+			if (ext == ".png") {
+				Loadedtextures[loadFile.first].Bind()->LoadPNG(loadFile.first.c_str())->LoadData()->SetParameters();
+				defaultTexture = &Loadedtextures[loadFile.first];
+			}
+			else if (ext == ".obj") {
+				if (!LoadedObjs[loadFile.first].LoadFile(loadFile.first)) {
+					std::cout << "Not loaded obj file" << std::endl;
+				}
+				else {
+					defaultObj = &LoadedObjs[loadFile.first];
+				}
+			}
+			else if (ext == ".glsl") {
 
-void RenderUI() {
+			}
+			else {
+				std::cout << "File extension not supported by the system." << std::endl;
+			}
+		}
+	}
+}
+void Dimension::Aplication::RenderUI() {
 	// feed inputs to dear imgui, start new frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -451,9 +365,6 @@ void RenderUI() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
-Dimension::Aplication::~Aplication() {}
-
 void Dimension::Aplication::Close() {
 	if (events.Dispacth<WindowCloseEvent>([](WindowCloseEvent* e) {return true;})) {
 		std::cout << "Close" << std::endl;
@@ -477,3 +388,4 @@ void Dimension::Aplication::Close() {
 		return true;
 	});*/
 }
+Dimension::Aplication::~Aplication() {}

@@ -93,7 +93,7 @@ void Render2D::PackObject(GraphicObject object) {
 	textures.push_back(object.GetMaterial()->GetTexture("diffuseMap"));
 }
 
-void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
+void Render2D::flush(Dimension::Shader shader) {
 	vao.Unbind();
 
 	vbos[0]->bind();
@@ -115,7 +115,7 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 	Camera::SetProjectionMatrix();
 	shader.start();
 	shader.sendUniform("ModeltransformationArray", &batch.transformations[0], batch.GetObjectCount());
-	shader.sendUniform("Ocolor", object->GetMaterial()->GetColor());
+	shader.sendUniform("Ocolor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	shader.sendUniform("ProjectionView", Camera::GetCameraViewMatrix());
 
 	vao.Bind();
@@ -125,7 +125,6 @@ void Render2D::flush(GraphicObject* object, Dimension::Shader shader) {
 		texture.ActivateSlot(slotindex);
 		i++;
 	}
-	//object->GetMaterial()->GetTexture("diffuseMap").ActivateSlot(0);
 
 	glDrawElements(GL_TRIANGLES, batch.Indices.size(), GL_UNSIGNED_INT, &batch.Indices[0]);
 
