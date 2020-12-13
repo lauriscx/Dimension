@@ -29,6 +29,7 @@ namespace Dimension {
 			void DrawObjects();
 			void LoadRequestedResources();
 			void RenderUI();
+			void renderInformation();
 			void EntytiesControll();
 			void ResoursesControl();
 			void GraphicObjectsControll();
@@ -36,6 +37,7 @@ namespace Dimension {
 			void PngSelection();
 			void ObjSelection();
 			void CameraControll();
+			void SystemMonitor();
 			void MainMenuBar();
 			
 			~Aplication();

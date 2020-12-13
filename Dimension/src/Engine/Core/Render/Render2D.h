@@ -1,9 +1,11 @@
+#pragma once
 #include "RenderData/GraphicObject.h"
 #include "glm/glm.hpp"
 #include "RenderData/Batch.h"
 #include "RenderData/VAO.h"
 #include "RenderData/VBO.h"
 #include <vector>
+#include "../../../Utils/Timer.h"
 
 class Texture;
 namespace Dimension {
@@ -21,6 +23,12 @@ public:
 	void StartScene();
 	void PackObject(GraphicObject object);
 	void flush(Dimension::Shader shader);
+	float GetRenderTime();
+	int GetObjectsCount();
+	int DrawCalls();
+	float GetDrawTime();
+	float GetBatchTime();
+	float GetStreamData();
 
 	~Render2D();
 
@@ -30,7 +38,12 @@ private:
 
 	Batch batch;
 	std::vector<Texture> textures;
-
+	Timer renderTime;
+	Timer batchTime;
+	Timer drawTime;
+	Timer streamDataTime;
+	int RenderObjectCount = 0;
+	int drawCalls = 0;
 	/*Renderig data for GPU*/
 	//Vertex array object store all vertex buffer objects (vbo)
 	VAO vao;

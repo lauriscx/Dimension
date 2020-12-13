@@ -16,15 +16,15 @@
 #include "Input/Events/Error.h"
 #include "Input/Input.h"
 
+#include "../../Utils/FilesScaner.h"
+#include "../../Utils/LoadObj.h"
+#include "../../Utils/Timer.h"
+
 #include "Render/Render2D.h"
 #include "Render/RenderData/Texture.h"
 #include "Render/RenderData/GraphicObject.h"
 #include "Render/Shader.h"
 #include "Render/Camera.h"
-
-#include "../../Utils/FilesScaner.h"
-#include "../../Utils/LoadObj.h"
-#include "../../Utils/Timer.h"
 
 #include "FileReader.h"
 
@@ -52,13 +52,14 @@ static char str[100] = { "../res/" };
 static std::vector<GraphicObject> GraphicObjects;
 static GraphicObject * SelectedObject = nullptr;
 static Texture * defaultTexture = nullptr;
-static  objl::Loader * defaultObj = nullptr;
+static objl::Loader * defaultObj = nullptr;
 static int w_heigh = 0;
 static int w_width = 0;
 static Dimension::Shader* shader;
 static Render2D * render;
 static Timer timer;
 static float CameraMovementSpeed = 1.0f;
+static bool ShowRenderInformation = false;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	/*Application init*/
@@ -208,6 +209,8 @@ void Dimension::Aplication::MainMenuBar() {
 	ImGui::Checkbox("Show camera ctrls", &showCameraControlls);
 	ImGui::Checkbox("Show entyties ctrls", &showEntytiesControlls);
 	ImGui::Checkbox("Show resources ctrls", &showResourcesControlls);
+	ImGui::Checkbox("Show render information", &ShowRenderInformation);
+	
 
 	ImGui::EndMainMenuBar();
 }
@@ -255,6 +258,14 @@ void Dimension::Aplication::CameraControll() {
 		Camera::CameraMove({ 0, -1, 0 }, CameraMovementSpeed * timer.DeltaTime());
 	}
 }
+void Dimension::Aplication::SystemMonitor() {
+	ImGui::Begin("System monitor");
+	ImGui::Text(("Cycle time: " + std::to_string(timer.DeltaTimeMls())).c_str());
+	ImGui::Text(("Application processing time: " + std::to_string(timer.DeltaTimeMls() - (render->GetRenderTime() * 1000))).c_str());
+	ImGui::Text(("Rendering time: " + std::to_string(render->GetRenderTime() * 1000)).c_str());
+	ImGui::Text(("Draw calls: " + std::to_string(render->DrawCalls())).c_str());
+	ImGui::End();
+}
 void Dimension::Aplication::ObjSelection() {
 	ImGui::Begin("Obj loaded files");
 	for (std::pair<std::string, objl::Loader> obj : LoadedObjs) {
@@ -274,6 +285,7 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 	if(ImGui::Button("Create graphic object")) {
 		if (defaultObj != nullptr && defaultTexture != nullptr) {
 			GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
+			SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
 		}
 	}
 	int i = 0;
@@ -376,12 +388,25 @@ void Dimension::Aplication::RenderUI() {
 	if (showResourcesControlls) {
 		ResoursesControl();
 	}
-
+	if (ShowRenderInformation) {
+		renderInformation();
+	}
 	CreateEditGraphicObject();
+	SystemMonitor();
 
 	// Render dear imgui into screen
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+void Dimension::Aplication::renderInformation() {
+	ImGui::Begin("Render information");
+	ImGui::Text(("Objects count: " + std::to_string(render->GetObjectsCount())).c_str());
+	ImGui::Text(("Frame render time: " + std::to_string(render->GetRenderTime() * 1000)).c_str());
+	ImGui::Text(("Batch time: " + std::to_string(render->GetBatchTime() * 1000) + " prc " + std::to_string((render->GetBatchTime() / render->GetRenderTime()) * 100)).c_str());
+	ImGui::Text(("Stream data time(to GPU): " + std::to_string(render->GetStreamData() * 1000) + " prc " + std::to_string((render->GetStreamData() / render->GetRenderTime()) * 100)).c_str());
+	ImGui::Text(("Draw time: " + std::to_string(render->GetDrawTime() * 1000) + " prc " + std::to_string((render->GetDrawTime() / render->GetRenderTime()) * 100)).c_str());
+	ImGui::Text(("Draw calls: " + std::to_string(render->DrawCalls())).c_str());
+	ImGui::End();
 }
 void Dimension::Aplication::Close() {
 	if (events.Dispacth<WindowCloseEvent>([](WindowCloseEvent* e) {return true;})) {

@@ -4,8 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "Camera.h"
 #include "Shader.h"
-//#include "RenderData/Texture.h"
-//#include "RenderData/Material.h"
+//#include "../../../Utils/Timer.h"
 
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
@@ -82,19 +81,26 @@ void Render2D::PrepareScene() {
 	glClearColor(ClearColor.r, ClearColor.g, ClearColor.b, ClearColor.a);
 
 	glViewport(0, 0, WindowSize.x, WindowSize.y);
+	
+	renderTime.Start();
+	RenderObjectCount = 0;
+	drawCalls = 0;
+	batchTime.Start();
 }
 
-void Render2D::StartScene() {
-
-}
+void Render2D::StartScene() {}
 
 
 void Render2D::PackObject(GraphicObject object) {
 	batch.AddToBatch(object);
 	textures.push_back(object.GetMaterial()->GetTexture("diffuseMap"));
+	RenderObjectCount++;
 }
 
 void Render2D::flush(Dimension::Shader shader) {
+	batchTime.Stop();
+
+	streamDataTime.Start();
 	vao.Unbind();
 
 	vbos[0]->bind();
@@ -112,7 +118,11 @@ void Render2D::flush(Dimension::Shader shader) {
 	vbos[3]->bind();
 	vbos[3]->StoreData(&batch.VertextObjectIndex[0], batch.VertextObjectIndex.size(), 0);
 	vbos[3]->unbind();
+
+	streamDataTime.Stop();
 	
+	drawTime.Start();
+
 	Camera::SetProjectionMatrix();
 	shader.start();
 	shader.sendUniform("ModeltransformationArray", &batch.transformations[0], batch.GetObjectCount());
@@ -128,11 +138,38 @@ void Render2D::flush(Dimension::Shader shader) {
 	}
 
 	glDrawElements(GL_TRIANGLES, batch.Indices.size(), GL_UNSIGNED_INT, &batch.Indices[0]);
+	drawCalls++;
 
 	vao.Unbind();
 
 	batch.ClearBatch();
 	textures.clear();
+	drawTime.Stop();
+	renderTime.Stop();
+}
+
+float Render2D::GetRenderTime() {
+	return renderTime.DeltaTime();
+}
+
+int Render2D::GetObjectsCount() {
+	return RenderObjectCount;
+}
+
+int Render2D::DrawCalls() {
+	return drawCalls;
+}
+
+float Render2D::GetDrawTime() {
+	return drawTime.DeltaTime();
+}
+
+float Render2D::GetBatchTime() {
+	return batchTime.DeltaTime();
+}
+
+float Render2D::GetStreamData() {
+	return streamDataTime.DeltaTime();
 }
 
 
