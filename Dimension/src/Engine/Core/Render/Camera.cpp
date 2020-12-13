@@ -3,6 +3,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <math.h>
 
 glm::mat4 Camera::camera = glm::mat4(1.0f);
 glm::mat4 Camera::view = glm::mat4(1.0f);
@@ -10,7 +11,7 @@ bool Camera::perspective = false;
 
 float Camera::width = 1;
 float Camera::height = 1;
-float Camera::zNear = -0.1f;
+float Camera::zNear = 0.01f;
 float Camera::zFar = 1000.0f;
 float Camera::fov = 75.0f;
 
@@ -47,7 +48,19 @@ glm::mat4 Camera::GetCameraViewMatrix() {
 
 void Camera::SetProjectionMatrix() {
 	if (perspective) {
-		camera = glm::perspective(/*glm::radians(*/fov/*)*/, width / height, zNear, zFar);
+		/*float AspectRatio = width / height;
+		float FrustumLenght = (zFar - zNear);
+		float YScale = (float)((1.0f / std::tan(glm::radians(fov / 2.0f))));
+		float XScale = YScale / AspectRatio;
+
+		camera[0][0] = (XScale);
+		camera[1][1] = (YScale);
+		camera[2][2] = (-((zFar + zNear) / FrustumLenght));
+		camera[2][3] = (-1.0f);
+		camera[3][2] = (-((2.0f * zNear * zFar) / FrustumLenght));
+		camera[3][3] = (0);*/
+
+		camera = glm::perspective(glm::radians(fov), width / height, zNear, zFar);
 	}
 	else {
 		camera = glm::ortho(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f, zNear, zFar);

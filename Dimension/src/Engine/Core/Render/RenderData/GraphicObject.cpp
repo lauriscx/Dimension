@@ -2,7 +2,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 GraphicObject::GraphicObject() {
-	position = glm::vec3(0);
+	position = glm::vec3(0, 0, -10.0f);
 	rotation = glm::vec3(0);
 	scale = glm::vec3(0.1f);
 	transformation = glm::mat4(1);

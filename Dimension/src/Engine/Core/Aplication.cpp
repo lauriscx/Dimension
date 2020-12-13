@@ -24,9 +24,9 @@
 #include "Render/Camera.h"
 
 Dimension::Aplication*	Dimension::Aplication::app;
-static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
 
 /*Variables for interface*/
+static ImVec4 color = ImVec4(0, 0, 0, 1);
 static bool Vsync = true;
 static bool FullScreen = false;
 static bool showDemo = false;
@@ -82,7 +82,7 @@ void Dimension::Aplication::Run() {
 
 	GraphicObject sprite;
 	sprite.GetMaterial()->SetColor({ 0, 1, 1, 1 })->AddTexture(texture, "diffuseMap");
-	sprite.position = glm::vec3(0, 0.0f, 0);
+	sprite.position = glm::vec3(0, 0.0f, -10.0f);
 	sprite.rotation = glm::vec3(0, 0, 45.0f);
 	sprite.scale = glm::vec3(0.05f, 0.05f, 0.05f);
 
@@ -134,7 +134,7 @@ void Dimension::Aplication::Run() {
 	GraphicObject triangle;
 	triangle.GetMaterial()->SetColor({ 1, 0, 0, 1 })->AddTexture(tree, "diffuseMap");
 
-	triangle.position = glm::vec3(0, 0.0f, 0);
+	triangle.position = glm::vec3(5, 0.0f, -10.0f);
 	triangle.rotation = glm::vec3(0, 0, 5.0f);
 	triangle.scale = glm::vec3(0.05f, 0.05f, 0.05f);
 
@@ -333,6 +333,11 @@ void CameraControll() {
 	ImGui::SliderFloat3("Camera view direction", &Camera::ViewDirection[0], -100, 100, "%.3f", 1);
 	ImGui::SliderFloat("Camera field of view", &Camera::fov, 0, 360, "%.3f", 1);
 	ImGui::Checkbox("Camera is perspective", &Camera::perspective);
+	ImGui::SliderFloat("Window width", &Camera::width, 1, 1000, "%.3f", 1);
+	ImGui::SliderFloat("Window height", &Camera::height, 1, 1000, "%.3f", 1);
+	ImGui::Text(("Asspect ratio: " + std::to_string(Camera::width / Camera::height)).c_str());
+	ImGui::SliderFloat("Camera ZNear", &Camera::zNear, 0.01f, 10, "%.3f", 1);
+	ImGui::SliderFloat("Window ZFar", &Camera::zFar, 0.01f, 1000, "%.3f", 1);
 	ImGui::ColorEdit4("Clear color", (float*)&color, ImGuiColorEditFlags_Float);
 	ImGui::End();
 }
@@ -370,7 +375,7 @@ void CreateEditGraphicObject() {
 				obj.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.Y);
 				obj.TexturesCoordinates.push_back(0.0f);
 			}
-
+			 
 			obj.GetMaterial()->AddTexture(*defaultTexture, "diffuseMap");
 			GraphicObjects.push_back(obj);
 		}
@@ -386,7 +391,7 @@ void CreateEditGraphicObject() {
 
 	if (SelectedObject != nullptr) {
 		ImGui::Begin("Graphic object editor");
-			ImGui::SliderFloat3("Position", &SelectedObject->position[0], -1, 1, "%.3f", 1);
+			ImGui::SliderFloat3("Position", &SelectedObject->position[0], -100, 100, "%.3f", 1);
 			ImGui::SliderFloat3("rotation", &SelectedObject->rotation[0], -1, 1, "%.3f", 1);
 			ImGui::SliderFloat3("scale", &SelectedObject->scale[0], 0.01f, 1, "%.3f", 1);
 			ImGui::Button("Select obj/mesh");
