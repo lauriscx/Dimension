@@ -7,7 +7,6 @@
 #include "Input/Events/MouseEvent.h"
 #include "Input/Events/KeyEvent.h"
 #include "Layers/LayerStack.h"
-#include <chrono>
 
 class GraphicObject;
 class Texture;
@@ -44,8 +43,6 @@ namespace Dimension {
 			static Aplication* app;
 			std::shared_ptr<Window> window;
 			Events events;
-			Render2D render;
-			Shader shader;
 			bool Running;
 
 			void Close();

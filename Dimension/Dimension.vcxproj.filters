@@ -26,7 +26,6 @@
     <ClCompile Include="src\Engine\Core\Render\RenderData\VBO.cpp" />
     <ClCompile Include="src\Utils\stb_image.c" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\GraphicObject.cpp" />
-    <ClCompile Include="DemoApplication1.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -54,9 +53,9 @@
     <ClInclude Include="src\Utils\stb_image.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\GraphicObject.h" />
     <ClInclude Include="src\Engine\Core\Render\RenderData\Batch.h" />
-    <ClInclude Include="DemoApplication1.h" />
     <ClInclude Include="src\Engine\Core\Render\Camera.h" />
     <ClInclude Include="src\Utils\LoadObj.h" />
     <ClInclude Include="src\Utils\FilesScaner.h" />
+    <ClInclude Include="src\Utils\Timer.h" />
   </ItemGroup>
 </Project>

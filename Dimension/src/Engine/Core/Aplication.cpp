@@ -1,27 +1,38 @@
+#include "Aplication.h"
+
+/*Libraries includes*/
 #include "imgui.h"
 #include "GUI/imgui_impl_glfw.h"
 #include "GUI/imgui_impl_opengl3.h"
+
 #include "GLAD/glad.h"
-#include "Aplication.h"
-#include <iostream>
-#include "Input/Input.h"
 #include "GLFW/glfw3.h"
-#include <functional>
-#include "Layers/Layer.h"
-#include "Temporary/Logger.h"
-#include "Input/Events/Error.h"
-#include <string>
-#include "Render/RenderData/Texture.h"
-#include "../Core/Render/RenderData/GraphicObject.h"
-#include "../../Utils/FilesScaner.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "FileReader.h"
+/*Dimension system includes*/
+#include "Layers/Layer.h"
+
+#include "Input/Events/Error.h"
+#include "Input/Input.h"
+
 #include "Render/Render2D.h"
-#include <fstream>
-#include "../../Utils/LoadObj.h"
+#include "Render/RenderData/Texture.h"
+#include "Render/RenderData/GraphicObject.h"
+#include "Render/Shader.h"
 #include "Render/Camera.h"
+
+#include "../../Utils/FilesScaner.h"
+#include "../../Utils/LoadObj.h"
+#include "../../Utils/Timer.h"
+
+#include "FileReader.h"
+
+/*C++ native functions*/
+#include <functional>
+#include <iostream>
+#include <string>
+#include <fstream>
 
 Dimension::Aplication*	Dimension::Aplication::app;
 
@@ -44,6 +55,10 @@ static Texture * defaultTexture = nullptr;
 static  objl::Loader * defaultObj = nullptr;
 static int w_heigh = 0;
 static int w_width = 0;
+static Dimension::Shader* shader;
+static Render2D * render;
+static Timer timer;
+static float CameraMovementSpeed = 1.0f;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	/*Application init*/
@@ -56,7 +71,8 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 
 	/*OpenGL init*/
 	if (gladLoadGL() == 0) {
-		DERROR("Failed to load glad");
+		//DERROR("Failed to load glad");
+		std::cout << "Failed to load glad" << std::endl;
 	}
 	glDisable(GL_CULL_FACE);
 
@@ -64,9 +80,12 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 	glDepthFunc(GL_LESS);
 
 	FileReader reader;
-	shader.addVertexCode("/res/Vertex.glsl", reader.ReadFile("../res/Vertex.glsl"));
-	shader.addFragmentCode("/res/Fragment.glsl", reader.ReadFile("../res/Fragment.glsl"));
-	shader.compile();
+	shader = new Shader();
+	shader->addVertexCode("/res/Vertex.glsl", reader.ReadFile("../res/Vertex.glsl"));
+	shader->addFragmentCode("/res/Fragment.glsl", reader.ReadFile("../res/Fragment.glsl"));
+	shader->compile();
+
+	render = new Render2D();
 
 	/*Graphic user interface init*/
 	IMGUI_CHECKVERSION();	// Setup Dear ImGui context
@@ -84,12 +103,8 @@ void Dimension::Aplication::Run() {
 
 	LoadDefaultResources();
 
-	auto t_end = std::chrono::high_resolution_clock::now();
-	auto t_start = std::chrono::high_resolution_clock::now();
-	double delta_time = 0;
-
 	while (Running) {
-		t_start = std::chrono::high_resolution_clock::now();
+		timer.Start();
 
 		LoadRequestedResources();
 		
@@ -106,9 +121,7 @@ void Dimension::Aplication::Run() {
 		window->SetVsync(Vsync);
 		Close();
 
-
-		t_end = std::chrono::high_resolution_clock::now();
-		delta_time = (std::chrono::duration<double, std::milli>(t_end - t_start).count()) / 1000;
+		timer.Stop();
 	}
 }
 
@@ -163,6 +176,8 @@ void Dimension::Aplication::MainMenuBar() {
 		Camera::Rotation.x = 0;
 		Camera::Rotation.y = 0;
 
+		CameraMovementSpeed = 0.1f;
+
 		Camera::perspective = false;
 	}
 
@@ -176,6 +191,8 @@ void Dimension::Aplication::MainMenuBar() {
 
 		Camera::Rotation.x = 0;
 		Camera::Rotation.y = 0;
+
+		CameraMovementSpeed = 1.0f;
 
 		Camera::perspective = true;
 	}
@@ -210,31 +227,32 @@ void Dimension::Aplication::CameraControll() {
 	ImGui::Text(("Asspect ratio: " + std::to_string(Camera::width / Camera::height)).c_str());
 	ImGui::SliderFloat("Camera ZNear", &Camera::zNear, 0.01f, 10, "%.3f", 1);
 	ImGui::SliderFloat("Window ZFar", &Camera::zFar, 0.01f, 1000, "%.3f", 1);
+	ImGui::SliderFloat("Camera movement speed", &CameraMovementSpeed, 0.01f, 10, "%.3f", 1);
 	ImGui::ColorEdit4("Clear color", (float*)&color, ImGuiColorEditFlags_Float);
 	ImGui::End();
 
 	if (Dimension::Input::IsKeyPressed(GLFW_KEY_D)) {
-		Camera::CameraMove({ 1, 0, 0 }, 0.1f);
+		Camera::CameraMove({ 1, 0, 0 }, CameraMovementSpeed * timer.DeltaTime());
 	}
 
 	if (Dimension::Input::IsKeyPressed(GLFW_KEY_A)) {
-		Camera::CameraMove({ -1, 0, 0 }, 0.1f);
+		Camera::CameraMove({ -1, 0, 0 }, CameraMovementSpeed * timer.DeltaTime());
 	}
 
 	if (Dimension::Input::IsKeyPressed(GLFW_KEY_S)) {
-		Camera::CameraMove({ 0, 0, -1 }, 0.1f);
+		Camera::CameraMove({ 0, 0, -1 }, CameraMovementSpeed * timer.DeltaTime());
 	}
 
 	if (Dimension::Input::IsKeyPressed(GLFW_KEY_W)) {
-		Camera::CameraMove({ 0, 0, 1 }, 0.1f);
+		Camera::CameraMove({ 0, 0, 1 }, CameraMovementSpeed * timer.DeltaTime());
 	}
 
 	if (Dimension::Input::IsKeyPressed(GLFW_KEY_SPACE)) {
-		Camera::CameraMove({ 0, 1, 0 }, 0.1f);
+		Camera::CameraMove({ 0, 1, 0 }, CameraMovementSpeed * timer.DeltaTime());
 	}
 
 	if (Dimension::Input::IsKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-		Camera::CameraMove({ 0, -1, 0 }, 0.1f);
+		Camera::CameraMove({ 0, -1, 0 }, CameraMovementSpeed * timer.DeltaTime());
 	}
 }
 void Dimension::Aplication::ObjSelection() {
@@ -303,16 +321,16 @@ void Dimension::Aplication::EntytiesControll() {
 }
 void Dimension::Aplication::PrepereRender() {
 	/* Render here */
-	render.SetClearColor({ color.x, color.y, color.z, color.w });
+	render->SetClearColor({ color.x, color.y, color.z, color.w });
 	glfwGetFramebufferSize((GLFWwindow*)window->Context(), &w_width, &w_heigh);
-	render.SetWindowSize({ w_width, w_heigh });
-	render.PrepareScene();
+	render->SetWindowSize({ w_width, w_heigh });
+	render->PrepareScene();
 }
 void Dimension::Aplication::DrawObjects() {
 	for (GraphicObject grpObj : GraphicObjects) {
-		render.PackObject(grpObj);
+		render->PackObject(grpObj);
 	}
-	render.flush(shader);
+	render->flush(*shader);
 }
 void Dimension::Aplication::LoadRequestedResources() {
 	for (std::pair<std::string, bool> loadFile : SelectedResources) {
@@ -388,4 +406,7 @@ void Dimension::Aplication::Close() {
 		return true;
 	});*/
 }
-Dimension::Aplication::~Aplication() {}
+Dimension::Aplication::~Aplication() {
+	delete render;
+	delete shader;
+}

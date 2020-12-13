@@ -151,7 +151,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\Core\Render\Camera.cpp" />
-    <ClCompile Include="DemoApplication1.cpp" />
     <ClCompile Include="src\Engine\Core\FileReader.cpp" />
     <ClCompile Include="src\Engine\Core\GLAD\glad.c" />
     <ClCompile Include="src\Engine\Core\GUI\imgui.cpp" />
@@ -180,7 +179,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Core\Render\Camera.h" />
-    <ClInclude Include="DemoApplication1.h" />
     <ClInclude Include="src\Engine\Core\FileReader.h" />
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_glfw.h" />
     <ClInclude Include="src\Engine\Core\GUI\imgui_impl_opengl3.h" />
@@ -207,6 +205,7 @@
     <ClInclude Include="src\Utils\FilesScaner.h" />
     <ClInclude Include="src\Utils\LoadObj.h" />
     <ClInclude Include="src\Utils\stb_image.h" />
+    <ClInclude Include="src\Utils\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,4 @@
 #include "RenderData/GraphicObject.h"
-#include "Shader.h"
 #include "glm/glm.hpp"
 #include "RenderData/Batch.h"
 #include "RenderData/VAO.h"
@@ -7,6 +6,9 @@
 #include <vector>
 
 class Texture;
+namespace Dimension {
+	class Shader;
+};
 
 class Render2D {
 public:
