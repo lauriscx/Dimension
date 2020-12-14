@@ -129,13 +129,13 @@ void Dimension::Aplication::Run() {
 
 void Dimension::Aplication::LoadDefaultResources() {
 	defaultObj = new objl::Loader();
-	if (!defaultObj->LoadFile("../res/box_stack.obj")) {
+	if (!defaultObj->LoadFile("C:/Dev/Dimension/res/box_stack.obj")) {
 		std::cout << "Not loaded obj file" << std::endl;
 	} else {
 		std::cout << "Loaded obj file succesfully" << std::endl;
 		std::cout << "Loaded png file" << std::endl;
 		defaultTexture = new Texture();
-		defaultTexture->Bind()->LoadPNG("../res/tree.png")->LoadData()->SetParameters();
+		defaultTexture->Bind()->LoadPNG("C:/Dev/Dimension/res/tree.png")->LoadData()->SetParameters();
 	}
 
 	GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
@@ -296,6 +296,28 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 
 			//render->ClearBatch();
 			render->PackObject(*SelectedObject);
+		}
+	}
+	if (ImGui::Button("Create graphic object 10x")) {
+		if (defaultObj != nullptr && defaultTexture != nullptr) {
+			for (int i = 0; i < 10; i++) {
+				GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
+				//SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
+
+				//render->ClearBatch();
+				render->PackObject(GraphicObjects[GraphicObjects.size() - 1]);
+			}
+		}
+	}
+	if (ImGui::Button("Create graphic object 100x")) {
+		if (defaultObj != nullptr && defaultTexture != nullptr) {
+			for (int i = 0; i < 100; i++) {
+				GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
+				//SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
+
+				//render->ClearBatch();
+				render->PackObject(GraphicObjects[GraphicObjects.size() - 1]);
+			}
 		}
 	}
 	int i = 0;
