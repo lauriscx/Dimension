@@ -55,7 +55,16 @@ public:
 		this->BonesWeights.insert(std::end(this->BonesWeights), std::begin(GrahicObjectData.BonesWeights), std::end(GrahicObjectData.BonesWeights));
 		
 		this->transformations.push_back(GrahicObjectData.GetTransformation());
+		this->ObjectColor.push_back(GrahicObjectData.GetMaterial()->color);
 		ObjectCount++;
+	}
+	void ResetBatchUniforms() {
+		transformations.clear();
+		ObjectColor.clear();
+	}
+	void UpdateBatchUniforms(GraphicObject GrahicObjectData) {
+		this->transformations.push_back(GrahicObjectData.GetTransformation());
+		this->ObjectColor.push_back(GrahicObjectData.GetMaterial()->color);
 	}
 
 	void ClearBatch() {
@@ -77,6 +86,7 @@ public:
 
 		VertextObjectIndex.clear();
 		transformations.clear();
+		ObjectColor.clear();
 
 		ObjectCount = 0;
 		IndexNumber = 0;
@@ -101,6 +111,7 @@ public:
 	std::vector<float> BonesWeights;
 
 	std::vector<glm::mat4> transformations;
+	std::vector<glm::vec4> ObjectColor;
 
 	inline int GetObjectCount() { return ObjectCount; }
 

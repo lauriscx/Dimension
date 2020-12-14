@@ -60,6 +60,7 @@ static Render2D * render;
 static Timer timer;
 static float CameraMovementSpeed = 1.0f;
 static bool ShowRenderInformation = false;
+static bool changed = true;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	/*Application init*/
@@ -139,6 +140,7 @@ void Dimension::Aplication::LoadDefaultResources() {
 
 	GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
 	SelectedObject = &GraphicObjects[0];
+	render->PackObject(*SelectedObject);
 }
 GraphicObject Dimension::Aplication::CreateObject(Texture texture, objl::Loader mesh) {
 	GraphicObject graphicObject;
@@ -157,6 +159,11 @@ GraphicObject Dimension::Aplication::CreateObject(Texture texture, objl::Loader 
 		graphicObject.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.X);
 		graphicObject.TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.Y);
 		graphicObject.TexturesCoordinates.push_back(0.0f);
+
+		graphicObject.Colors.push_back(graphicObject.GetMaterial()->color.r);
+		graphicObject.Colors.push_back(graphicObject.GetMaterial()->color.b);
+		graphicObject.Colors.push_back(graphicObject.GetMaterial()->color.g);
+		graphicObject.Colors.push_back(graphicObject.GetMaterial()->color.a);
 	}
 
 	return graphicObject;
@@ -286,6 +293,9 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 		if (defaultObj != nullptr && defaultTexture != nullptr) {
 			GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
 			SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
+
+			//render->ClearBatch();
+			render->PackObject(*SelectedObject);
 		}
 	}
 	int i = 0;
@@ -299,13 +309,13 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 
 	if (SelectedObject != nullptr) {
 		ImGui::Begin("Graphic object editor");
-			ImGui::SliderFloat3("Position", &SelectedObject->position[0], -10, 10, "%.3f", 1);
-			ImGui::SliderFloat3("rotation", &SelectedObject->rotation[0], -1, 1, "%.3f", 1);
-			ImGui::SliderFloat3("scale", &SelectedObject->scale[0], 0.01f, 1, "%.3f", 1);
+			changed |= ImGui::SliderFloat3("Position", &SelectedObject->position[0], -10, 10, "%.3f", 1);
+			changed |= ImGui::SliderFloat3("rotation", &SelectedObject->rotation[0], -1, 1, "%.3f", 1);
+			changed |= ImGui::SliderFloat3("scale", &SelectedObject->scale[0], 0.01f, 1, "%.3f", 1);
 			ImGui::Button("Select obj/mesh");
 			ImGui::Button("Select texture");
-			ImGui::ColorEdit4("Material color", &SelectedObject->GetMaterial()->color[0], ImGuiColorEditFlags_Float);
-			ImGui::SliderFloat2("Material specularity", &SelectedObject->GetMaterial()->specularity[0], -1, 1, "%.3f", 1);
+			changed |= ImGui::ColorEdit4("Material color", &SelectedObject->GetMaterial()->color[0], ImGuiColorEditFlags_Float);
+			changed |= ImGui::SliderFloat2("Material specularity", &SelectedObject->GetMaterial()->specularity[0], -1, 1, "%.3f", 1);
 		ImGui::End();
 	}
 }
@@ -339,8 +349,12 @@ void Dimension::Aplication::PrepereRender() {
 	render->PrepareScene();
 }
 void Dimension::Aplication::DrawObjects() {
-	for (GraphicObject grpObj : GraphicObjects) {
-		render->PackObject(grpObj);
+	if (changed) {
+		render->ResetUniforms();
+		for (GraphicObject object : GraphicObjects) {
+			render->UpdateUniforms(object);
+		}
+		changed = false;
 	}
 	render->flush(*shader);
 }

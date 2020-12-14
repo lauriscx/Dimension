@@ -22,6 +22,7 @@ public:
 	void PrepareScene();
 	void StartScene();
 	void PackObject(GraphicObject object);
+	void ClearBatch();
 	void flush(Dimension::Shader shader);
 	float GetRenderTime();
 	int GetObjectsCount();
@@ -29,6 +30,9 @@ public:
 	float GetDrawTime();
 	float GetBatchTime();
 	float GetStreamData();
+
+	void ResetUniforms();
+	void UpdateUniforms(GraphicObject GrahicObjectData);
 
 	~Render2D();
 

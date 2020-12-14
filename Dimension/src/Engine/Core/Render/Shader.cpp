@@ -11,14 +11,16 @@ Dimension::Shader::Shader() {
 	addAttribute("Position", 0);
 	addAttribute("TextureCoordinates", 1);
 	addAttribute("VertextObjectIndex", 2);
+	addAttribute("Color", 3);
 
 	addUniform("diffuseMap");
 	//addUniform("textures");
-	addUniform("Ocolor");
+	for (int i = 0; i < 100; i++) {
+		addUniform("colors[" + std::to_string(i) + "]");
+	}
 	addUniform("ModeltransformationArray");
 	addUniform("ProjectionView");
-	/*addAttribute("Color", 2);
-	addAttribute("Normal", 3);
+	/*addAttribute("Normal", 3);
 	addAttribute("Tangent", 4);
 	addAttribute("BiTangent", 5);
 	addAttribute("WeightValue", 6);
@@ -59,6 +61,7 @@ void Dimension::Shader::compile() {
 			"in vec3 Position;\n"
 			"in vec3 TextureCoordinates;\n"
 			"in int VertextObjectIndex;\n"
+			"in vec4 Color;\n"
 			"\n"
 			"uniform mat4 Camera;\n"
 			"uniform mat4 Projection;\n"
@@ -66,12 +69,14 @@ void Dimension::Shader::compile() {
 			"uniform mat4 ProjectionView;\n"
 			"out vec3 _TextureCoordinates;\n"
 			"flat out int _textureid;\n"
+			"flat out vec4 color;\n"
 			"\n"
 			"void main() {\n"
 			"	_TextureCoordinates = TextureCoordinates;\n"
 			"	vec4 worldPosition = ProjectionView * ModeltransformationArray[VertextObjectIndex] * vec4(Position, 1.0f);\n"
 			"	gl_Position = worldPosition;\n"
 			"	_textureid = VertextObjectIndex;\n"
+			"	color = Color;\n"
 			"}";
 
 		code.second.second = (glCreateShader(GL_VERTEX_SHADER));
@@ -99,10 +104,11 @@ void Dimension::Shader::compile() {
 									"in vec3 _TextureCoordinates;\n"
 									"uniform sampler2D diffuseMap;\n"
 									"uniform sampler2D textures[32];\n"
-									"uniform vec4 Ocolor;\n"
+									"uniform vec4 colors[100];\n"
 									"flat in int _textureid;\n"
+									"flat in vec4 color;\n"
 									"void main() {\n"
-										"Pixel = texture(textures[_textureid], _TextureCoordinates.xy) * Ocolor;\n"
+										"Pixel = texture(textures[_textureid], _TextureCoordinates.xy) + colors[_textureid];\n"
 									"}";
 
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
