@@ -27,6 +27,7 @@
     <ClCompile Include="src\Utils\stb_image.c" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\GraphicObject.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Camera.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Batch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Platforms\Window\WindowsWindow.h" />

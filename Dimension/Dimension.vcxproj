@@ -162,6 +162,7 @@
     <ClCompile Include="src\Engine\Core\Layers\LayerStack.cpp" />
     <ClCompile Include="src\Engine\Core\Layers\Layer.cpp" />
     <ClCompile Include="src\Engine\Core\Aplication.cpp" />
+    <ClCompile Include="src\Engine\Core\Render\RenderData\Batch.cpp" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\GraphicObject.cpp" />
     <ClCompile Include="src\Engine\Core\Render\RenderData\Material.cpp" />
     <ClCompile Include="src\Engine\Core\Render\Render2D.cpp" />

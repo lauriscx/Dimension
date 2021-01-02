@@ -39,6 +39,7 @@ Texture* Texture::SetData(unsigned char * Right, unsigned char * Left, unsigned 
 }
 
 Texture* Texture::LoadPNG(const char * filePath) {
+	textureName = filePath;
 	int channels;
 	this->Data[0] = stbi_load(filePath, &width, &height, &channels, 4);
 	std::cout << width << " " << height << std::endl;
@@ -135,6 +136,10 @@ void Texture::CleanUp() {
 	glDeleteTextures(1, &id);
 	//delete[] Data;
 	std::cout << "Image cleared" << std::endl;
+}
+
+std::string Texture::GetTextureName() {
+	return textureName;
 }
 
 Texture::~Texture() {

@@ -20,6 +20,8 @@ public:
 	void ActivateSlot(int Slot);
 	void CleanUp();
 
+	std::string GetTextureName();
+
 	//void ActivateSlot(int Slot);
 
 	~Texture();
@@ -47,4 +49,6 @@ private:
 	int 	compareMode;
 	int 	dephtMode;
 	int 	pixelDataType;
+
+	std::string textureName;
 };
