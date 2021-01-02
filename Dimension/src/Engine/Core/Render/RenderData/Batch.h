@@ -37,6 +37,8 @@ public:
 
 	std::vector<Texture> TexturesBatch;
 
+	bool NeedRefresh = true;
+
 private:
 	int IndexNumber = 0;
 	int ObjectCount = 0;

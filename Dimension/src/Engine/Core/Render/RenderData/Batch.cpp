@@ -33,21 +33,30 @@ void Batch::AddToBatch(GraphicObject GrahicObjectData) {
 		}
 
 		bool addTexture = true;
-		Texture* addTex = nullptr;
+		int textID = 0;
 		for (Texture tex : TexturesBatch) {
-			if (tex.GetTextureName() == GrahicObjectData.GetMaterial()->GetTexture("diffuseMap").GetTextureName()) {
+			if (strcmp(tex.GetTextureName().c_str(), GrahicObjectData.GetMaterial()->GetTexture("diffuseMap").GetTextureName().c_str()) == 0) {
 				addTexture = false;
-				addTex = &tex;
+				for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
+					this->TexturesIndex.push_back(textID);
+				}
 				break;
 			}
+			textID++;
 		}
 		if (addTexture) {
-			//TexturesBatch.push_back(*addTex);
-		}
+			TexturesBatch.push_back(GrahicObjectData.GetMaterial()->GetTexture("diffuseMap"));
 
-		for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
-			this->TexturesIndex.push_back(TexturesBatch.size() - 1);
+			for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
+				this->TexturesIndex.push_back(TexturesBatch.size() - 1);
+			}
 		}
+		/*else {
+			//get texture ID from this list TexturesIndex.
+			for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
+				this->TexturesIndex.push_back(-1);
+			}
+		}*/
 
 		for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
 			this->VertextObjectIndex.push_back(ObjectCount);

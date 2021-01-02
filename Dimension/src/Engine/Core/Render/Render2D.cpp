@@ -66,7 +66,6 @@ Render2D::Render2D() {
 
 	vbos.push_back(vbo_Indexes);
 
-
 	VBO* vbo_Colors = new VBO();
 
 	vbo_Colors->setBufferType(GL_ARRAY_BUFFER);
@@ -80,6 +79,20 @@ Render2D::Render2D() {
 	vbo_Colors->AttributeSetup();
 
 	vbos.push_back(vbo_Colors);
+
+	VBO* vbo_TexturesIndexes = new VBO();
+
+	vbo_TexturesIndexes->setBufferType(GL_ARRAY_BUFFER);
+	vbo_TexturesIndexes->setStorageType(GL_DYNAMIC_DRAW);
+	vbo_TexturesIndexes->setDataType(GL_INT);
+	vbo_TexturesIndexes->setLocation(4);
+	vbo_TexturesIndexes->setSize(1);
+
+	vbo_TexturesIndexes->bind();
+	vbo_TexturesIndexes->ReserveData(BatchSize);
+	vbo_TexturesIndexes->AttributeISetup();
+
+	vbos.push_back(vbo_TexturesIndexes);
 	vao.Unbind();
 }
 
@@ -105,7 +118,7 @@ void Render2D::PrepareScene() {
 void Render2D::StartScene() {}
 
 
-void Render2D::PackObject(GraphicObject object) {
+void Render2D::PackObject(GraphicObject object, Dimension::Shader shader) {
 	batch.AddToBatch(object);
 	textures.push_back(object.GetMaterial()->GetTexture("diffuseMap"));
 	RenderObjectCount++;
@@ -143,6 +156,11 @@ void Render2D::flush(Dimension::Shader shader) {
 	vbos[4]->bind();
 	vbos[4]->StoreData(&batch.Colors[0], batch.Colors.size(), 0);
 	vbos[4]->unbind();
+
+
+	vbos[5]->bind();
+	vbos[5]->StoreData(&batch.TexturesIndex[0], batch.TexturesIndex.size(), 0);
+	vbos[5]->unbind();
 
 	streamDataTime.Stop();
 	drawTime.Start();

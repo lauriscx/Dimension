@@ -21,7 +21,7 @@ public:
 
 	void PrepareScene();
 	void StartScene();
-	void PackObject(GraphicObject object);
+	void PackObject(GraphicObject object, Dimension::Shader shader);
 	void ClearBatch();
 	void flush(Dimension::Shader shader);
 	float GetRenderTime();

@@ -12,12 +12,17 @@ Dimension::Shader::Shader() {
 	addAttribute("TextureCoordinates", 1);
 	addAttribute("VertextObjectIndex", 2);
 	addAttribute("Color", 3);
+	addAttribute("TexturesIndex", 4);
 
 	addUniform("diffuseMap");
 	//addUniform("textures");
-	for (int i = 0; i < 100; i++) {
+	int NumberOfComponents;
+	glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &NumberOfComponents);
+
+	for (int i = 0; i < (NumberOfComponents / 4) - 33; i++) {
 		addUniform("colors[" + std::to_string(i) + "]");
 	}
+	//addUniform("colors");
 	addUniform("ModeltransformationArray");
 	addUniform("ProjectionView");
 	/*addAttribute("Normal", 3);
@@ -25,7 +30,7 @@ Dimension::Shader::Shader() {
 	addAttribute("BiTangent", 5);
 	addAttribute("WeightValue", 6);
 	addAttribute("VertexIndex", 7);*/
-	
+	//GL_MAX_TEXTURES
 	for (int i = 0; i < 32; i++) {
 		addTextures("textures[" + std::to_string(i) + "]");
 	}
@@ -57,28 +62,35 @@ int 	Dimension::Shader::program() {
 void Dimension::Shader::compile() {
 	for (std::pair<std::string, std::pair<std::string, unsigned int>> code : vertex) {
 
-		const char* shaderCode = "#version 430\n"
+		int NumberOfComponents;
+		glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &NumberOfComponents);
+		int RealNumberOfComponentsAvailable = (NumberOfComponents / 16) - (16 * 3);
+		std::cout << "Vertex shader uniform array size: " << RealNumberOfComponentsAvailable << std::endl;
+		std::string _shaderCode = "#version 430\n"
 			"in vec3 Position;\n"
 			"in vec3 TextureCoordinates;\n"
 			"in int VertextObjectIndex;\n"
 			"in vec4 Color;\n"
+			"in int TexturesIndex;\n"
 			"\n"
 			"uniform mat4 Camera;\n"
 			"uniform mat4 Projection;\n"
-			"uniform mat4 ModeltransformationArray[100];\n"
+			"uniform mat4 ModeltransformationArray[" + std::to_string(RealNumberOfComponentsAvailable) + "];\n"
 			"uniform mat4 ProjectionView;\n"
 			"out vec3 _TextureCoordinates;\n"
 			"flat out int _textureid;\n"
 			"flat out vec4 color;\n"
+			"flat out int _objectid;\n"
 			"\n"
 			"void main() {\n"
 			"	_TextureCoordinates = TextureCoordinates;\n"
 			"	vec4 worldPosition = ProjectionView * ModeltransformationArray[VertextObjectIndex] * vec4(Position, 1.0f);\n"
 			"	gl_Position = worldPosition;\n"
-			"	_textureid = VertextObjectIndex;\n"
+			"	_textureid = TexturesIndex;\n"
+			"	_objectid = VertextObjectIndex;\n"
 			"	color = Color;\n"
 			"}";
-
+		const char* shaderCode = _shaderCode.c_str();
 		code.second.second = (glCreateShader(GL_VERTEX_SHADER));
 		glShaderSource(code.second.second, 1, (const char**)&shaderCode, NULL);
 		glCompileShader(code.second.second);
@@ -97,20 +109,29 @@ void Dimension::Shader::compile() {
 
 		glAttachShader(programID, code.second.second);
 	}
+	int NumberOfComponents;
+	glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &NumberOfComponents);
+	std::string sizeOfUniformArray = std::to_string((NumberOfComponents / 4) - 33);
+	std::cout << "Fragment shader uniform array size: " << sizeOfUniformArray << std::endl;
 
 	for (std::pair<std::string, std::pair<std::string, unsigned int>> code : fragment) {
-		const char* shaderCode =	"#version 430\n"
+		std::string _shaderCode =	"#version 430\n"
 									"out vec4 Pixel;\n"
 									"in vec3 _TextureCoordinates;\n"
 									"uniform sampler2D diffuseMap;\n"
 									"uniform sampler2D textures[32];\n"
-									"uniform vec4 colors[100];\n"
+									"uniform vec4 colors[" + sizeOfUniformArray + "];\n"
 									"flat in int _textureid;\n"
+									"flat in int _objectid;\n"
 									"flat in vec4 color;\n"
 									"void main() {\n"
-										"Pixel = texture(textures[_textureid], _TextureCoordinates.xy) + colors[_textureid];\n"
+										"if(_textureid > -1){\n"
+											"Pixel = texture(textures[_textureid], _TextureCoordinates.xy) + colors[_objectid];\n"
+										"} else {\n"
+											"Pixel = colors[_objectid];\n"
+										"}\n"
 									"}";
-
+		const char* shaderCode = (const char*)_shaderCode.c_str();
 		code.second.second = (glCreateShader(GL_FRAGMENT_SHADER));
 		glShaderSource(code.second.second, 1, (const char**)&shaderCode, NULL);
 		glCompileShader(code.second.second);

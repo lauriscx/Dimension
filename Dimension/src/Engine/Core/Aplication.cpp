@@ -141,7 +141,7 @@ void Dimension::Aplication::LoadDefaultResources() {
 
 	GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
 	SelectedObject = &GraphicObjects[0];
-	render->PackObject(*SelectedObject);
+	render->PackObject(*SelectedObject, *shader);
 }
 GraphicObject Dimension::Aplication::CreateObject(Texture texture, objl::Loader mesh) {
 	GraphicObject graphicObject;
@@ -295,8 +295,11 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 			GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
 			SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
 
+			SelectedObject->position.x = glm::linearRand(-5.0f, 5.0f);
+			SelectedObject->position.y = glm::linearRand(-5.0f, 5.0f);
+			SelectedObject->position.z = glm::linearRand(-5.0f, 5.0f);
 			//render->ClearBatch();
-			render->PackObject(*SelectedObject);
+			render->PackObject(*SelectedObject, *shader);
 		}
 	}
 	if (ImGui::Button("Create graphic object 10x")) {
@@ -310,7 +313,7 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 				//SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
 
 				//render->ClearBatch();
-				render->PackObject(GraphicObjects[GraphicObjects.size() - 1]);
+				render->PackObject(GraphicObjects[GraphicObjects.size() - 1], *shader);
 			}
 		}
 	}
@@ -325,7 +328,7 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 				//SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
 
 				//render->ClearBatch();
-				render->PackObject(GraphicObjects[GraphicObjects.size() - 1]);
+				render->PackObject(GraphicObjects[GraphicObjects.size() - 1], *shader);
 			}
 		}
 	}
