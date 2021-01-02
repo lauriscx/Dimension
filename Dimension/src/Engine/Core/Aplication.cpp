@@ -9,6 +9,7 @@
 #include "GLFW/glfw3.h"
 
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/random.hpp"
 
 /*Dimension system includes*/
 #include "Layers/Layer.h"
@@ -302,6 +303,10 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 		if (defaultObj != nullptr && defaultTexture != nullptr) {
 			for (int i = 0; i < 10; i++) {
 				GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
+				GraphicObject* newOb = &GraphicObjects[GraphicObjects.size() - 1];
+				newOb->position.x = glm::linearRand(-50.0f, 50.0f);
+				newOb->position.y = glm::linearRand(-5.0f, 5.0f);
+				newOb->position.z = glm::linearRand(-50.0f, 50.0f);
 				//SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
 
 				//render->ClearBatch();
@@ -313,6 +318,10 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 		if (defaultObj != nullptr && defaultTexture != nullptr) {
 			for (int i = 0; i < 100; i++) {
 				GraphicObjects.push_back(CreateObject(*defaultTexture, *defaultObj));
+				GraphicObject* newOb = &GraphicObjects[GraphicObjects.size() - 1];
+				newOb->position.x = glm::linearRand(-100.0f, 100.0f);
+				newOb->position.y = glm::linearRand(-10.0f, 10.0f);
+				newOb->position.z = glm::linearRand(-100.0f, 100.0f);
 				//SelectedObject = &GraphicObjects[GraphicObjects.size() - 1];
 
 				//render->ClearBatch();
@@ -320,6 +329,11 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 			}
 		}
 	}
+	if (ImGui::Button("Clear all objects")) {
+		GraphicObjects.clear();
+		render->ClearBatch();
+	}
+
 	int i = 0;
 	for (std::vector<GraphicObject>::iterator object = GraphicObjects.begin(); object != GraphicObjects.end(); ++object) {
 		if (ImGui::Button(std::to_string(i).c_str())) {

@@ -123,9 +123,9 @@ void Render2D::flush(Dimension::Shader shader) {
 	}
 	batchTime.Stop();
 	streamDataTime.Start();
-	vbos[0]->bind();
+	/*vbos[0]->bind();
 	vbos[0]->StoreData(&batch.Indices[0], batch.Indices.size(), 0);
-	vbos[0]->unbind();
+	vbos[0]->unbind();*/
 	
 	vbos[1]->bind();
 	vbos[1]->StoreData(&batch.Positions[0], batch.Positions.size(), 0);
