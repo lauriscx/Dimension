@@ -109,18 +109,24 @@ void Render2D::PrepareScene() {
 	glClearColor(ClearColor.r, ClearColor.g, ClearColor.b, ClearColor.a);
 
 	glViewport(0, 0, WindowSize.x, WindowSize.y);
-	
+}
+
+void Render2D::StartScene() {
 	drawCalls = 0;
-	renderTime.Start();
+}
+
+void Render2D::StartBatching() {
 	batchTime.Start();
 }
 
-void Render2D::StartScene() {}
+void Render2D::Stopbatching() {
+	batchTime.Stop();
+}
 
 
-void Render2D::PackObject(GraphicObject object, Dimension::Shader shader) {
-	batch.AddToBatch(object);
-	textures.push_back(object.GetMaterial()->GetTexture("diffuseMap"));
+void Render2D::PackObject(GraphicObject* object, Dimension::Shader shader) {
+	batch.AddToBatch(*object);
+	textures.push_back(object->GetMaterial()->GetTexture("diffuseMap"));
 	RenderObjectCount++;
 }
 
@@ -134,7 +140,7 @@ void Render2D::flush(Dimension::Shader shader) {
 	if (batch.GetObjectCount() < 1) {
 		return;
 	}
-	batchTime.Stop();
+	renderTime.Start();
 	streamDataTime.Start();
 	/*vbos[0]->bind();
 	vbos[0]->StoreData(&batch.Indices[0], batch.Indices.size(), 0);
@@ -219,8 +225,8 @@ void Render2D::ResetUniforms() {
 	batch.ResetBatchUniforms();
 }
 
-void Render2D::UpdateUniforms(GraphicObject GrahicObjectData) {
-	batch.UpdateBatchUniforms(GrahicObjectData);
+void Render2D::UpdateUniforms(GraphicObject* GrahicObjectData) {
+	batch.UpdateBatchUniforms(*GrahicObjectData);
 }
 
 

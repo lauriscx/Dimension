@@ -21,7 +21,9 @@ public:
 
 	void PrepareScene();
 	void StartScene();
-	void PackObject(GraphicObject object, Dimension::Shader shader);
+	void StartBatching();
+	void Stopbatching();
+	void PackObject(GraphicObject* object, Dimension::Shader shader);
 	void ClearBatch();
 	void flush(Dimension::Shader shader);
 	float GetRenderTime();
@@ -32,7 +34,7 @@ public:
 	float GetStreamData();
 
 	void ResetUniforms();
-	void UpdateUniforms(GraphicObject GrahicObjectData);
+	void UpdateUniforms(GraphicObject* GrahicObjectData);
 
 	~Render2D();
 
