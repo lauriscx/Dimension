@@ -37,7 +37,6 @@
 
 Dimension::Aplication*	Dimension::Aplication::app;
 
-/*Variables for interface*/
 static ImVec4 color = ImVec4(0, 0, 0, 1);
 static bool Vsync = true;
 static bool FullScreen = false;
@@ -54,6 +53,7 @@ static std::map<std::string, objl::Loader> LoadedObjs;
 static char str[100] = { "../res/" };
 static std::vector<GraphicObject*> GraphicObjects;
 static std::map<Render2D*, std::vector<GraphicObject*>> Batchedrenders;
+static Render2D* render;
 static int LastGraphicsObjectsSize = 0;
 static GraphicObject * SelectedObject = nullptr;
 static Texture * defaultTexture = nullptr;
@@ -61,12 +61,15 @@ static objl::Loader * defaultObj = nullptr;
 static int w_heigh = 0;
 static int w_width = 0;
 static Dimension::Shader* shader;
-static std::vector<Render2D> BatchRenders;
 static Timer timer;
 static float CameraMovementSpeed = 1.0f;
 static bool ShowRenderInformation = false;
 static bool changed = true;
 static bool cameraControll = true;
+static bool CinimaEffect = false;
+static float CinimaEffectRadius = 10.0f;
+static float CameraProgress = 0;
+static int BatchSize = 150;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	/*Application init*/
@@ -95,9 +98,8 @@ std::cout << "Failed to load glad" << std::endl;
 
 	//render = new Render2D();
 	//render2 = new Render2D();
-	Render2D* render = new Render2D();
+	render = new Render2D();
 	Batchedrenders[render];
-	BatchRenders.push_back(*render);
 	/*Graphic user interface init*/
 	IMGUI_CHECKVERSION();	// Setup Dear ImGui context
 	ImGui::CreateContext();
@@ -147,6 +149,13 @@ void Dimension::Aplication::Run() {
 			}
 		}
 
+		if (CinimaEffect) {
+			CameraProgress += 1.0f * timer.DeltaTime();
+			glm::vec3 Pos = { CinimaEffectRadius * glm::cos(CameraProgress) + (CinimaEffectRadius / 2.0f), 0, CinimaEffectRadius * glm::sin(CameraProgress) + (CinimaEffectRadius / 2.0f) };
+			Camera::SetPosition(Pos);
+			glm::vec3 dir = glm::vec3(0.0f, 0.0f, 0.0f);// -Camera::GetPosition();
+			Camera::SetViewDirection({ -Pos.x, 0, Pos.z });
+		}
 		/*Drawing elements in window*/
 		PrepereRender();
 		DrawObjects();
@@ -259,6 +268,40 @@ void Dimension::Aplication::MainMenuBar() {
 			Camera::perspective = true;
 		}
 
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::Checkbox("Cinima effect", &CinimaEffect)) {
+			Camera::SetPosition({ 0, 0, 0 });
+		}
+
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::Button("Stress test", ImVec2(100, 0.0f))) {
+			Vsync = false;
+			if (defaultObj != nullptr && defaultTexture != nullptr) {
+				for (int i = 0; i < 3500; i++) {
+					if (i % 100 == 0) {
+						std::cout << "Preparing stress test: " << (((float)i / 3500) * 100.0f) << "%" << std::endl;
+					}
+					SelectedObject = CreateObject(*defaultTexture, *defaultObj);
+					RandomizeObject(SelectedObject);
+					AddObjectToRender(SelectedObject);
+				}
+				std::cout << "Stress prepared: " << (100.0f) << "%" << std::endl;
+			}
+		}
+		if (ImGui::Button("Reset", ImVec2(100, 0.0f))) {
+			Vsync = true;
+			GraphicObjects.clear();
+			for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
+				_Batch->first->ClearBatch();
+				for (GraphicObject* obj : _Batch->second) {
+					delete obj;
+				}
+				_Batch->second.clear();
+				delete _Batch->first;
+			}
+			Batchedrenders.clear();
+		}
+
 		ImGui::EndCombo();
 	}
 
@@ -268,8 +311,8 @@ void Dimension::Aplication::MainMenuBar() {
 		ImGui::Checkbox("Show interface demonstartion", &showDemo);
 		ImGui::SetNextItemWidth(100);
 		ImGui::Checkbox("Show camera ctrls", &showCameraControlls);
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Show entyties ctrls", &showEntytiesControlls);
+		//ImGui::SetNextItemWidth(100);
+		//ImGui::Checkbox("Show entyties ctrls", &showEntytiesControlls);
 		ImGui::SetNextItemWidth(100);
 		ImGui::Checkbox("Show resources ctrls", &showResourcesControlls);
 		ImGui::SetNextItemWidth(100);
@@ -296,7 +339,7 @@ void Dimension::Aplication::MainMenuBar() {
 	ImGui::EndMainMenuBar();
 }
 void Dimension::Aplication::AddObjectToRender(GraphicObject* obj) {
-	if ((GraphicObjects.size() / 200) > Batchedrenders.size()) {
+	if ((GraphicObjects.size() / BatchSize) >= Batchedrenders.size()) {
 		Render2D* render = new Render2D();
 		Batchedrenders[render];
 	}
@@ -306,7 +349,7 @@ void Dimension::Aplication::AddObjectToRender(GraphicObject* obj) {
 	}
 
 	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-		if (_Batch->second.size() < 200) {
+		if (_Batch->second.size() < BatchSize) {
 			_Batch->second.push_back(obj);
 
 			_Batch->first->StartBatching();
@@ -359,12 +402,14 @@ void Dimension::Aplication::SystemMonitor() {
 	ImGui::Begin("System monitor");
 	ImGui::Text(("Cycle time: " + std::to_string(timer.DeltaTimeMls())).c_str());
 	float RenderTime = 0;
-	for (Render2D render : BatchRenders) {
-		RenderTime += render.GetRenderTime();
+	int DrawCalls = 0;
+	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
+		RenderTime += _Batch->first->GetRenderTime();
+		DrawCalls += _Batch->first->DrawCalls();
 	}
 	ImGui::Text(("Application processing time: " + std::to_string(timer.DeltaTimeMls() - (RenderTime * 1000))).c_str());
 	ImGui::Text(("Rendering time: " + std::to_string(RenderTime * 1000)).c_str());
-	ImGui::Text(("Draw calls: " + std::to_string(BatchRenders.size())).c_str());
+	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
 	ImGui::End();
 }
 void Dimension::Aplication::ObjSelection() {
@@ -469,10 +514,10 @@ void Dimension::Aplication::EntytiesControll() {
 }
 void Dimension::Aplication::PrepereRender() {
 	/* Render here */
-	BatchRenders[0].SetClearColor({ color.x, color.y, color.z, color.w });
+	render->SetClearColor({ color.x, color.y, color.z, color.w });
 	glfwGetFramebufferSize((GLFWwindow*)window->Context(), &w_width, &w_heigh);
-	BatchRenders[0].SetWindowSize({ w_width, w_heigh });
-	BatchRenders[0].PrepareScene();
+	render->SetWindowSize({ w_width, w_heigh });
+	render->PrepareScene();
 
 	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
 		_Batch->first->StartScene();
@@ -490,20 +535,6 @@ void Dimension::Aplication::DrawObjects() {
 				_Batch->first->UpdateUniforms(obj);
 			}
 		}
-
-		/*
-		int batchRenderID = 0;
-		for (int i = 0; i < BatchRenders.size(); i++) {
-			BatchRenders[i].ResetUniforms();
-			int LastID = ((batchRenderID + 1) * 200) + 200;
-			if (LastID > GraphicObjects.size()) {
-				LastID = GraphicObjects.size();
-			}
-			for (int i = 0 + (batchRenderID * 200); i < LastID; i++) {
-				BatchRenders[i].UpdateUniforms(GraphicObjects[i]);
-			}
-			BatchRenders[i].flush(*shader);
-		}*/
 		changed = false;
 	}
 	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
@@ -573,6 +604,7 @@ void Dimension::Aplication::RenderUI() {
 }
 void Dimension::Aplication::renderInformation() {
 	ImGui::Begin("Render information");
+	ImGui::ColorEdit4("Material color", &color.x, ImGuiColorEditFlags_Float);
 	int ObjectCount = 0;
 	float RenderTime = 0;
 	float BatchTime = 0;
@@ -590,6 +622,7 @@ void Dimension::Aplication::renderInformation() {
 	ImGui::Text(("Objects count: " + std::to_string(ObjectCount)).c_str());
 	ImGui::Text(("Frame render time: " + std::to_string(RenderTime * 1000)).c_str());
 	ImGui::Text(("Last batch time: " + std::to_string(BatchTime * 1000) + " prc " + std::to_string((BatchTime / RenderTime) * 100)).c_str());
+	ImGui::Text(("Batch size: " + std::to_string(BatchSize)).c_str());
 	ImGui::Text(("Stream data time(to GPU): " + std::to_string(StreamDataTime * 1000) + " prc " + std::to_string((StreamDataTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw time: " + std::to_string(DrawTime * 1000) + " prc " + std::to_string((DrawTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
@@ -601,6 +634,18 @@ void Dimension::Aplication::Close() {
 		std::cout << "Close" << std::endl;
 		Running = false;
 	}
+	events.Dispacth<MauseCursorEvent>([](MauseCursorEvent* e) {
+		//std::string er = e.GetErrorReport();
+		//if (p.GetMouseKey(GLFW_MOUSE_BUTTON_1)) {
+		double Mousey = e->GetY();
+		double Mousex = e->GetX();
+			//Camera::SetRotation(glm::vec2(Mousex - 1000 / 2, Mousey - 800 / 2));
+			//p.SetCursorPosition(a / 2, b / 2);
+		//}
+		//std::cout << e->GetX() << std::endl;
+		return true;
+	});
+	
 	/*events.Dispacth<Error>([](Error* e) {
 		//std::string er = e.GetErrorReport();
 		std::cout << e->GetErrorReport() << std::endl;
