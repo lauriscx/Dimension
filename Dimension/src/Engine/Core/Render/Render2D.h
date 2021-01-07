@@ -32,6 +32,9 @@ public:
 	float GetDrawTime();
 	float GetBatchTime();
 	float GetStreamData();
+	int GetReservedMemoryInMB();
+	bool IsObjectFit(GraphicObject* GrahicObjectData);
+	bool IsBatchFull();
 
 	void ResetUniforms();
 	void UpdateUniforms(GraphicObject* GrahicObjectData);
@@ -50,6 +53,8 @@ private:
 	Timer streamDataTime;
 	int RenderObjectCount = 0;
 	int drawCalls = 0;
+	int BatchElementsSize = 0;
+	int64_t BatchSizeInBytes;
 	/*Renderig data for GPU*/
 	//Vertex array object store all vertex buffer objects (vbo)
 	VAO vao;

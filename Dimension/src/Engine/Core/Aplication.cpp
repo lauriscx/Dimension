@@ -44,6 +44,7 @@ static bool showDemo = false;
 static bool showCameraControlls = false;
 static bool showEntytiesControlls = false;
 static bool showResourcesControlls = false;
+static bool ShowRenderInformation = false;
 static bool systemMonitor = false;
 static bool graphicObjectsList = false;
 static std::vector<std::string> paths;
@@ -63,13 +64,12 @@ static int w_width = 0;
 static Dimension::Shader* shader;
 static Timer timer;
 static float CameraMovementSpeed = 1.0f;
-static bool ShowRenderInformation = false;
 static bool changed = true;
 static bool cameraControll = true;
 static bool CinimaEffect = false;
 static float CinimaEffectRadius = 10.0f;
 static float CameraProgress = 0;
-static int BatchSize = 150;
+static int BatchSize = 200;
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	/*Application init*/
@@ -223,6 +223,31 @@ void Dimension::Aplication::MainMenuBar() {
 		ImGui::SetNextItemWidth(100);
 		ImGui::Checkbox("Full screen", &FullScreen);
 		ImGui::SetNextItemWidth(100);
+		if (ImGui::Button("Debug setup", ImVec2(100, 0.0f))) {
+			Vsync = false;
+			FullScreen = false;
+			showDemo = false;
+			showCameraControlls = false;
+			showEntytiesControlls = true;
+			showResourcesControlls = true;
+			ShowRenderInformation = true;
+			systemMonitor = true;
+			graphicObjectsList = true;
+
+			Camera::Position.x = 0.0f;
+			Camera::Position.y = 0.0f;
+			Camera::Position.z = 100.0f;
+
+			Camera::height = w_heigh;
+			Camera::width = w_width;
+
+			Camera::Rotation.x = 0;
+			Camera::Rotation.y = 0;
+
+			CameraMovementSpeed = 10.0f;
+
+			Camera::perspective = true;
+		}
 		if (ImGui::Button("Exit", ImVec2(100, 0.0f))) {
 			Running = false;
 		}
@@ -355,7 +380,15 @@ void Dimension::Aplication::AddObjectToRender(GraphicObject* obj) {
 			_Batch->first->StartBatching();
 			_Batch->first->ClearBatch();
 			for (int i = 0; i < _Batch->second.size(); i++) {
+				if (!_Batch->first->IsObjectFit(_Batch->second[i])) {
+					Render2D* render = new Render2D();
+					Batchedrenders[render];
+					break;
+				}
 				_Batch->first->PackObject(_Batch->second[i], *shader);
+				if (_Batch->first->IsBatchFull()) {
+					break;
+				}
 			}
 			_Batch->first->Stopbatching();
 			break;
@@ -611,6 +644,7 @@ void Dimension::Aplication::renderInformation() {
 	float StreamDataTime = 0;
 	float DrawTime = 0;
 	int DrawCalls = 0;
+	int ReservedBytesMemory = 0;
 	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
 		ObjectCount +=		_Batch->first->GetObjectsCount();
 		RenderTime +=		_Batch->first->GetRenderTime();
@@ -618,11 +652,13 @@ void Dimension::Aplication::renderInformation() {
 		StreamDataTime +=	_Batch->first->GetStreamData();
 		DrawTime +=			_Batch->first->GetDrawTime();
 		DrawCalls +=		_Batch->first->DrawCalls();
+		ReservedBytesMemory += _Batch->first->GetReservedMemoryInMB();
 	}
 	ImGui::Text(("Objects count: " + std::to_string(ObjectCount)).c_str());
 	ImGui::Text(("Frame render time: " + std::to_string(RenderTime * 1000)).c_str());
 	ImGui::Text(("Last batch time: " + std::to_string(BatchTime * 1000) + " prc " + std::to_string((BatchTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Batch size: " + std::to_string(BatchSize)).c_str());
+	ImGui::Text(("Reserved data in GPU: " + std::to_string(ReservedBytesMemory) + "MB").c_str());
 	ImGui::Text(("Stream data time(to GPU): " + std::to_string(StreamDataTime * 1000) + " prc " + std::to_string((StreamDataTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw time: " + std::to_string(DrawTime * 1000) + " prc " + std::to_string((DrawTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());

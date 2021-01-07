@@ -8,8 +8,7 @@
 
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
-
-	int BatchSize = sizeof(float) * 10000;
+	BatchElementsSize = 100000;
 
 	vao.Bind();
 
@@ -19,7 +18,8 @@ Render2D::Render2D() {
 	ibo_indices->setDataType(GL_UNSIGNED_INT);
 
 	ibo_indices->bind();
-	ibo_indices->ReserveData(BatchSize);
+	ibo_indices->ReserveData(BatchElementsSize);
+	BatchSizeInBytes += BatchElementsSize;
 
 	vbos.push_back(ibo_indices);
 
@@ -32,7 +32,8 @@ Render2D::Render2D() {
 	vbo_position->setSize(3);
 
 	vbo_position->bind();
-	vbo_position->ReserveData(BatchSize * 3);
+	vbo_position->ReserveData(BatchElementsSize * 3);
+	BatchSizeInBytes += BatchElementsSize * 3;
 	vbo_position->AttributeSetup();
 
 	vbos.push_back(vbo_position);
@@ -47,7 +48,8 @@ Render2D::Render2D() {
 	vbo_TextureCoords->setSize(3);
 
 	vbo_TextureCoords->bind();
-	vbo_TextureCoords->ReserveData(BatchSize * 3);
+	vbo_TextureCoords->ReserveData(BatchElementsSize * 3);
+	BatchSizeInBytes += BatchElementsSize * 3;
 	vbo_TextureCoords->AttributeSetup();
 
 	vbos.push_back(vbo_TextureCoords);
@@ -61,7 +63,8 @@ Render2D::Render2D() {
 	vbo_Indexes->setSize(1);
 
 	vbo_Indexes->bind();
-	vbo_Indexes->ReserveData(BatchSize);
+	vbo_Indexes->ReserveData(BatchElementsSize);
+	BatchSizeInBytes += BatchElementsSize;
 	vbo_Indexes->AttributeISetup();
 
 	vbos.push_back(vbo_Indexes);
@@ -75,7 +78,8 @@ Render2D::Render2D() {
 	vbo_Colors->setSize(4);
 
 	vbo_Colors->bind();
-	vbo_Colors->ReserveData(BatchSize * 4);
+	vbo_Colors->ReserveData(BatchElementsSize * 4);
+	BatchSizeInBytes += BatchElementsSize * 4;
 	vbo_Colors->AttributeSetup();
 
 	vbos.push_back(vbo_Colors);
@@ -89,7 +93,8 @@ Render2D::Render2D() {
 	vbo_TexturesIndexes->setSize(1);
 
 	vbo_TexturesIndexes->bind();
-	vbo_TexturesIndexes->ReserveData(BatchSize);
+	vbo_TexturesIndexes->ReserveData(BatchElementsSize);
+	BatchSizeInBytes += BatchElementsSize;
 	vbo_TexturesIndexes->AttributeISetup();
 
 	vbos.push_back(vbo_TexturesIndexes);
@@ -219,6 +224,21 @@ float Render2D::GetBatchTime() {
 
 float Render2D::GetStreamData() {
 	return streamDataTime.DeltaTime();
+}
+
+int Render2D::GetReservedMemoryInMB() {
+	int64_t Bytes = sizeof(float) * BatchSizeInBytes;
+	int32_t KB = Bytes / 1000;
+	int16_t MB = KB / 1000;
+	return MB;
+}
+
+bool Render2D::IsObjectFit(GraphicObject * GrahicObjectData) {
+	return (batch.Indices.size() + GrahicObjectData->Indices.size()) < BatchElementsSize;
+}
+
+bool Render2D::IsBatchFull() {
+	return batch.Indices.size() >= BatchElementsSize;
 }
 
 void Render2D::ResetUniforms() {
