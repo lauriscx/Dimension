@@ -70,6 +70,8 @@ static bool CinimaEffect = false;
 static float CinimaEffectRadius = 10.0f;
 static float CameraProgress = 0;
 static int BatchSize = 200;
+static std::vector<float> CyclesTimerHistory;
+static std::vector<float> RenderTimerHistory;
 
 /*Debug objects*/
 static Timer Loadresource;
@@ -285,6 +287,7 @@ void Dimension::Aplication::AddObjectToRender(GraphicObject* obj) {
 					break;
 				}
 			}
+			_Batch->first->Updatebatch();
 			_Batch->first->Stopbatching();
 			break;
 		}
@@ -305,6 +308,21 @@ void Dimension::Aplication::RandomizeObject(GraphicObject * obj) {
 	SelectedObject->rotation.y = glm::linearRand(-180.0f, 180.0f);
 	SelectedObject->rotation.z = glm::linearRand(-180.0f, 180.0f);
 	changed = true;
+}
+void Dimension::Aplication::ReleaseGraphicObjects() {
+	for (GraphicObject *obj : GraphicObjects) {
+		delete obj;
+	}
+	GraphicObjects.clear();
+	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
+		_Batch->first->ClearBatch();
+		_Batch->first->Updatebatch();
+		_Batch->second.clear();
+
+		//delete _Batch->first;
+	}
+	Batchedrenders.clear();
+
 }
 
 /*Graphic user interface with system controll*/
@@ -333,12 +351,12 @@ void Dimension::Aplication::RenderUI() {
 	}
 
 	ImGui::Begin("Debug timers");
-	ImGui::Text(("Loading resource function: " + std::to_string(Loadresource.DeltaTime()) + " %% " + std::to_string((Loadresource.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("Camera controls, cinema: " + std::to_string(CameracinematicsAndControll.DeltaTime()) + " %% " + std::to_string((CameracinematicsAndControll.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("Render prepare function: " + std::to_string(PrepareRenderFunction.DeltaTime()) + " %% " + std::to_string((PrepareRenderFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("render draw function: " + std::to_string(RenderDrawFunction.DeltaTime()) + " %% " + std::to_string((RenderDrawFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("User interface rendering: " + std::to_string(UserInterfaceRender.DeltaTime()) + " %% " + std::to_string((UserInterfaceRender.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("Ending of while loop: " + std::to_string(WhileLoopEnd.DeltaTime()) + " %% " + std::to_string((WhileLoopEnd.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("Loading resource function: " + std::to_string(Loadresource.AverageDeltaTime(100) * 1000) + "ms %% " + std::to_string((Loadresource.AverageDeltaTime(100) / timer.AverageDeltaTime(100)) * 100.0f)).c_str());
+	ImGui::Text(("Camera controls, cinema: " + std::to_string(CameracinematicsAndControll.AverageDeltaTime(100) * 1000) + "ms %% " + std::to_string((CameracinematicsAndControll.AverageDeltaTime(100) / timer.AverageDeltaTime(100)) * 100.0f)).c_str());
+	ImGui::Text(("Render prepare function: " + std::to_string(PrepareRenderFunction.AverageDeltaTime(100) * 1000) + "ms %% " + std::to_string((PrepareRenderFunction.AverageDeltaTime(100) / timer.AverageDeltaTime(100)) * 100.0f)).c_str());
+	ImGui::Text(("render draw function: " + std::to_string(RenderDrawFunction.AverageDeltaTime(100) * 1000) + "ms %% " + std::to_string((RenderDrawFunction.AverageDeltaTime(100) / timer.AverageDeltaTime(100)) * 100.0f)).c_str());
+	ImGui::Text(("User interface rendering: " + std::to_string(UserInterfaceRender.AverageDeltaTime(100) * 1000) + "ms %% " + std::to_string((UserInterfaceRender.AverageDeltaTime(100) / timer.AverageDeltaTime(100)) * 100.0f)).c_str());
+	ImGui::Text(("Ending of while loop: " + std::to_string(WhileLoopEnd.AverageDeltaTime(100) * 1000) + "ms %% " + std::to_string((WhileLoopEnd.AverageDeltaTime(100) / timer.AverageDeltaTime(100)) * 100.0f)).c_str());
 	
 	ImGui::End();
 	// Render dear imgui into screen
@@ -398,16 +416,7 @@ void Dimension::Aplication::MainMenuBar() {
 		}
 		if (ImGui::Button("Reset", ImVec2(100, 0.0f))) {
 			Vsync = true;
-			//GraphicObjects.clear();
-			for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-				_Batch->first->ClearBatch();
-				for (GraphicObject* obj : _Batch->second) {
-					delete obj;
-				}
-				//_Batch->second.clear();
-				//delete _Batch->first;
-			}
-			//Batchedrenders.clear();
+			ReleaseGraphicObjects();
 		}
 		if (ImGui::Button("Exit", ImVec2(100, 0.0f))) {
 			Running = false;
@@ -544,16 +553,7 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 		}
 	}
 	if (ImGui::Button("Clear all objects")) {
-		GraphicObjects.clear();
-		for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-			_Batch->first->ClearBatch();
-			for (GraphicObject* obj : _Batch->second) {
-				delete obj;
-			}
-			_Batch->second.clear();
-			delete _Batch->first;
-		}
-		Batchedrenders.clear();
+		ReleaseGraphicObjects();
 	}
 
 	int i = 0;
@@ -583,16 +583,22 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 //System info windows
 void Dimension::Aplication::SystemMonitor() {
 	ImGui::Begin("System monitor");
-	ImGui::Text(("Cycle time: " + std::to_string(timer.DeltaTimeMls())).c_str());
 	float RenderTime = 0;
 	int DrawCalls = 0;
 	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
 		RenderTime += _Batch->first->GetRenderTime();
 		DrawCalls += _Batch->first->DrawCalls();
 	}
-	ImGui::Text(("Application processing time: " + std::to_string(timer.DeltaTimeMls() - (RenderTime * 1000))).c_str());
-	ImGui::Text(("Rendering time: " + std::to_string(RenderTime * 1000)).c_str());
-	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
+	if (CyclesTimerHistory.size() > 100) {
+		CyclesTimerHistory.erase(CyclesTimerHistory.begin(), CyclesTimerHistory.begin() + 1);
+		RenderTimerHistory.erase(RenderTimerHistory.begin(), RenderTimerHistory.begin() + 1);
+	}
+	float cycleAverage = timer.AverageDeltaTime(100);
+
+	ImGui::Text(("Average cycle time: " + (std::to_string(cycleAverage * 1000)) + "ms").c_str());
+	ImGui::Text(("Application average processing time: " + (std::to_string((cycleAverage - RenderTime) * 1000)) + "ms").c_str());
+	ImGui::Text(("Rendering time: " + (std::to_string(RenderTime * 1000)) + "ms").c_str());
+	ImGui::Text(("Draw calls: " + (std::to_string(DrawCalls) + "ms")).c_str());
 	ImGui::End();
 }
 void Dimension::Aplication::renderInformation() {
@@ -616,12 +622,12 @@ void Dimension::Aplication::renderInformation() {
 	}
 	ImGui::Text(("Objects count: " + std::to_string(ObjectCount)).c_str());
 	ImGui::Text(("Frame render time: " + std::to_string(RenderTime * 1000)).c_str());
-	ImGui::Text(("Last batch time: " + std::to_string(BatchTime * 1000) + " %% " + std::to_string((BatchTime / RenderTime) * 100)).c_str());
-	ImGui::Text(("Batch size: " + std::to_string(BatchSize)).c_str());
+	ImGui::Text(("Last batch time: " + std::to_string(BatchTime * 1000) + "ms %% " + std::to_string((BatchTime / RenderTime) * 100)).c_str());
+	ImGui::Text(("Batch size: " + std::to_string(BatchSize) + " Objects fits").c_str());
 	ImGui::Text(("Batch count: " + std::to_string(Batchedrenders.size())).c_str());
 	ImGui::Text(("Reserved data in GPU: " + std::to_string(ReservedBytesMemory) + "MB").c_str());
-	ImGui::Text(("Stream data time(to GPU): " + std::to_string(StreamDataTime * 1000) + " %% " + std::to_string((StreamDataTime / RenderTime) * 100)).c_str());
-	ImGui::Text(("Draw time: " + std::to_string(DrawTime * 1000) + " %% " + std::to_string((DrawTime / RenderTime) * 100)).c_str());
+	ImGui::Text(("Stream data time(to GPU): " + std::to_string(StreamDataTime * 1000) + "ms %% " + std::to_string((StreamDataTime / RenderTime) * 100)).c_str());
+	ImGui::Text(("Draw time: " + std::to_string(DrawTime * 1000) + "ms %% " + std::to_string((DrawTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
 	ImGui::Text(("FPS: " + std::to_string(ImGui::GetIO().Framerate)).c_str());
 	ImGui::End();

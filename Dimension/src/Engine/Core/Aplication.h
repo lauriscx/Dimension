@@ -30,10 +30,9 @@ namespace Dimension {
 			void LoadRequestedResources();
 			void RenderUI();
 			void renderInformation();
-			void EntytiesControll();
 			void ResoursesControl();
-			void GraphicObjectsControll();
 			void CreateEditGraphicObject();
+			void ReleaseGraphicObjects();
 			void PngSelection();
 			void ObjSelection();
 			void CameraControll();

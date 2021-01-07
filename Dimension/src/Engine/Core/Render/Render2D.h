@@ -36,6 +36,7 @@ public:
 	bool IsObjectFit(GraphicObject* GrahicObjectData);
 	bool IsBatchFull();
 
+	void Updatebatch();
 	void ResetUniforms();
 	void UpdateUniforms(GraphicObject* GrahicObjectData);
 

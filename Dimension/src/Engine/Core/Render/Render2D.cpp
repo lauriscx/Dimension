@@ -65,25 +65,28 @@ void Render2D::flush(Dimension::Shader shader) {
 	renderTime.Start();
 	streamDataTime.Start();
 
-	vbos[1]->bind();
-	vbos[1]->StoreData(&batch.Positions[0], batch.Positions.size(), 0);
-	vbos[1]->unbind();
+	if (batch.NeedRefresh) {
+		vbos[1]->bind();
+		vbos[1]->StoreData(&batch.Positions[0], batch.Positions.size(), 0);
+		vbos[1]->unbind();
 
-	vbos[2]->bind();
-	vbos[2]->StoreData(&batch.TexturesCoordinates[0], batch.TexturesCoordinates.size(), 0);
-	vbos[2]->unbind();
+		vbos[2]->bind();
+		vbos[2]->StoreData(&batch.TexturesCoordinates[0], batch.TexturesCoordinates.size(), 0);
+		vbos[2]->unbind();
 
-	vbos[3]->bind();
-	vbos[3]->StoreData(&batch.VertextObjectIndex[0], batch.VertextObjectIndex.size(), 0);
-	vbos[3]->unbind();
+		vbos[3]->bind();
+		vbos[3]->StoreData(&batch.VertextObjectIndex[0], batch.VertextObjectIndex.size(), 0);
+		vbos[3]->unbind();
 
-	vbos[4]->bind();
-	vbos[4]->StoreData(&batch.Colors[0], batch.Colors.size(), 0);
-	vbos[4]->unbind();
+		vbos[4]->bind();
+		vbos[4]->StoreData(&batch.Colors[0], batch.Colors.size(), 0);
+		vbos[4]->unbind();
 
-	vbos[5]->bind();
-	vbos[5]->StoreData(&batch.TexturesIndex[0], batch.TexturesIndex.size(), 0);
-	vbos[5]->unbind();
+		vbos[5]->bind();
+		vbos[5]->StoreData(&batch.TexturesIndex[0], batch.TexturesIndex.size(), 0);
+		vbos[5]->unbind();
+		batch.NeedRefresh = false;
+	}
 
 	streamDataTime.Stop();
 	drawTime.Start();
@@ -115,7 +118,7 @@ void Render2D::flush(Dimension::Shader shader) {
 }
 
 float Render2D::GetRenderTime() {
-	return renderTime.DeltaTime();
+	return renderTime.AverageDeltaTime(100);
 }
 
 int Render2D::GetObjectsCount() {
@@ -127,15 +130,15 @@ int Render2D::DrawCalls() {
 }
 
 float Render2D::GetDrawTime() {
-	return drawTime.DeltaTime();
+	return drawTime.AverageDeltaTime(100);
 }
 
 float Render2D::GetBatchTime() {
-	return batchTime.DeltaTime();
+	return batchTime.AverageDeltaTime(100);
 }
 
 float Render2D::GetStreamData() {
-	return streamDataTime.DeltaTime();
+	return streamDataTime.AverageDeltaTime(100);
 }
 
 int Render2D::GetReservedMemoryInMB() {
@@ -151,6 +154,10 @@ bool Render2D::IsObjectFit(GraphicObject * GrahicObjectData) {
 
 bool Render2D::IsBatchFull() {
 	return batch.Indices.size() >= BatchElementsSize;
+}
+
+void Render2D::Updatebatch() {
+	batch.NeedRefresh = true;
 }
 
 void Render2D::ResetUniforms() {
