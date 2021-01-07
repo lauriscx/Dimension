@@ -4,7 +4,7 @@
 
 VBO::VBO() {
 	glGenBuffers(1, &id);
-	std::cout << "VBO constructed" << std::endl;
+	//std::cout << "VBO constructed" << std::endl;
 	bufferType = GL_ARRAY_BUFFER;
 	storageType = GL_STATIC_DRAW;
 	dataType = GL_FLOAT;
@@ -154,11 +154,11 @@ void VBO::StoreData(double* Data, int size, int Offset) {
 void VBO::CleanUp() {
 	unbind();
 	glDeleteBuffers(1, &id);
-	std::cout << "VBO deleted" << std::endl;
+	//std::cout << "VBO deleted" << std::endl;
 }
 
 
 VBO::~VBO()
 {
-	std::cout << "VBO deconstructed" << std::endl;
+	//std::cout << "VBO deconstructed" << std::endl;
 }

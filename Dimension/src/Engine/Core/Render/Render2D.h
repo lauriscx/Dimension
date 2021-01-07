@@ -61,5 +61,5 @@ private:
 	//Save data in vbo about 3D or 2D object.
 	std::vector<VBO*> vbos;
 
-	std::vector<int> indices;
+	void CreateVBO(int BufferType, int BufferStorageType, int DataType, int location, int ElementsCount, int VariablesCount);
 };

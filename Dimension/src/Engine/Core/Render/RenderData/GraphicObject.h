@@ -17,7 +17,7 @@ public:
 
 	~GraphicObject();
 
-	std::vector<int> Indices;
+	std::vector<unsigned int> Indices;
 	std::vector<int> UniformsIndex;
 	std::vector<int> TexturesIndex;
 

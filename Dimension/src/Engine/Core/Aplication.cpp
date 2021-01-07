@@ -71,6 +71,14 @@ static float CinimaEffectRadius = 10.0f;
 static float CameraProgress = 0;
 static int BatchSize = 200;
 
+/*Debug objects*/
+static Timer Loadresource;
+static Timer CameracinematicsAndControll;
+static Timer PrepareRenderFunction;
+static Timer RenderDrawFunction;
+static Timer UserInterfaceRender;
+static Timer WhileLoopEnd;
+
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	/*Application init*/
 	Dimension::Aplication::app = this;
@@ -82,8 +90,8 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 
 	/*OpenGL init*/
 	if (gladLoadGL() == 0) {
-//DERROR("Failed to load glad");
-std::cout << "Failed to load glad" << std::endl;
+		//DERROR("Failed to load glad");
+		std::cout << "Failed to load glad" << std::endl;
 	}
 	glDisable(GL_CULL_FACE);
 
@@ -111,17 +119,18 @@ std::cout << "Failed to load glad" << std::endl;
 }
 
 void Dimension::Aplication::Run() {
-	Layer * layer = new Layer("Test");
-	m_Layers.PushLayer(layer);
+	//Layer * layer = new Layer("Test");
+	//m_Layers.PushLayer(layer);
 
 	LoadDefaultResources();
 
 	while (Running) {
 		timer.Start();
-
+		Loadresource.Start();
 		LoadRequestedResources();
-
-		m_Layers.Update();
+		Loadresource.Stop();
+		CameracinematicsAndControll.Start();
+		//m_Layers.Update();
 
 		if (cameraControll) {
 			if (Dimension::Input::IsKeyPressed(GLFW_KEY_D)) {
@@ -156,17 +165,25 @@ void Dimension::Aplication::Run() {
 			glm::vec3 dir = glm::vec3(0.0f, 0.0f, 0.0f);// -Camera::GetPosition();
 			Camera::SetViewDirection({ -Pos.x, 0, Pos.z });
 		}
+		CameracinematicsAndControll.Stop();
 		/*Drawing elements in window*/
+		PrepareRenderFunction.Start();
 		PrepereRender();
+		PrepareRenderFunction.Stop();
+		RenderDrawFunction.Start();
 		DrawObjects();
+		RenderDrawFunction.Stop();
+		UserInterfaceRender.Start();
 		RenderUI();
+		UserInterfaceRender.Stop();
 
 		/*Update OS window*/
+		WhileLoopEnd.Start();
 		window->Update();
 		window->SetFullScreen(FullScreen);
 		window->SetVsync(Vsync);
 		Close();
-
+		WhileLoopEnd.Stop();
 		timer.Stop();
 	}
 }
@@ -194,7 +211,8 @@ GraphicObject* Dimension::Aplication::CreateObject(Texture texture, objl::Loader
 	graphicObject->position = glm::vec3(0.0f, 0.0f, -10.0f);
 	graphicObject->scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	graphicObject->Indices.insert(std::end(graphicObject->Indices), std::begin(defaultObj->LoadedIndices), std::end(defaultObj->LoadedIndices));
+	//graphicObject->Indices.insert(std::end(graphicObject->Indices), std::begin(defaultObj->LoadedIndices), std::end(defaultObj->LoadedIndices));
+	graphicObject->Indices = defaultObj->LoadedIndices;
 	for (int i = 0; i < defaultObj->LoadedVertices.size(); i++) {
 		graphicObject->Positions.push_back(defaultObj->LoadedVertices[i].Position.X);
 		graphicObject->Positions.push_back(defaultObj->LoadedVertices[i].Position.Y);
@@ -523,14 +541,12 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 		ImGui::End();
 	}
 }
-void Dimension::Aplication::GraphicObjectsControll() {
-
-}
 void Dimension::Aplication::ResoursesControl() {
 	ImGui::Begin("Resources selector");
 	ImGui::InputText("Files", &str[0], IM_ARRAYSIZE(str));
 	if (ImGui::Button("Scan")) {
 		paths.clear();
+		SelectedResources.clear();
 		FilesScaner::Scan(str, &paths);
 	}
 	for (std::string path : paths) {
@@ -541,9 +557,6 @@ void Dimension::Aplication::ResoursesControl() {
 
 	ObjSelection();
 	PngSelection();
-}
-void Dimension::Aplication::EntytiesControll() {
-
 }
 void Dimension::Aplication::PrepereRender() {
 	/* Render here */
@@ -573,9 +586,6 @@ void Dimension::Aplication::DrawObjects() {
 	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
 		_Batch->first->flush(*shader);
 	}
-	/*for (int i = 0; i < BatchRenders.size(); i++) {
-		BatchRenders[i].flush(*shader);
-	}*/
 }
 void Dimension::Aplication::LoadRequestedResources() {
 	for (std::pair<std::string, bool> loadFile : SelectedResources) {
@@ -616,7 +626,7 @@ void Dimension::Aplication::RenderUI() {
 		CameraControll();
 	}
 	if (showEntytiesControlls) {
-		EntytiesControll();
+		//EntytiesControll();
 	}
 	if (showResourcesControlls) {
 		ResoursesControl();
@@ -631,6 +641,15 @@ void Dimension::Aplication::RenderUI() {
 		CreateEditGraphicObject();
 	}
 
+	ImGui::Begin("Debug timers");
+	ImGui::Text(("Loading resource function: " + std::to_string(Loadresource.DeltaTime()) + " %% " + std::to_string((Loadresource.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("Camera controls, cinema: " + std::to_string(CameracinematicsAndControll.DeltaTime()) + " %% " + std::to_string((CameracinematicsAndControll.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("Render prepare function: " + std::to_string(PrepareRenderFunction.DeltaTime()) + " %% " + std::to_string((PrepareRenderFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("render draw function: " + std::to_string(RenderDrawFunction.DeltaTime()) + " %% " + std::to_string((RenderDrawFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("User interface rendering: " + std::to_string(UserInterfaceRender.DeltaTime()) + " %% " + std::to_string((UserInterfaceRender.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("Ending of while loop: " + std::to_string(WhileLoopEnd.DeltaTime()) + " %% " + std::to_string((WhileLoopEnd.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	
+	ImGui::End();
 	// Render dear imgui into screen
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -27,6 +27,6 @@ public:
 private:
 	std::chrono::time_point<std::chrono::steady_clock> t_end = std::chrono::high_resolution_clock::now();
 	std::chrono::time_point<std::chrono::steady_clock> t_start = std::chrono::high_resolution_clock::now();
-	double delta_time = 0;
+	double delta_time = 0.00001;
 };
 #endif //TIMER_H

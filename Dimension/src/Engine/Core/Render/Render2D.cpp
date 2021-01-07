@@ -4,100 +4,19 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "Camera.h"
 #include "Shader.h"
-//#include "../../../Utils/Timer.h"
 
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
-	BatchElementsSize = 100000;
+	BatchElementsSize = 10000000;
 
 	vao.Bind();
+	CreateVBO(GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_UNSIGNED_INT, 0, BatchElementsSize, 1);//Indicies
 
-	VBO* ibo_indices = new VBO();
-	ibo_indices->setBufferType(GL_ELEMENT_ARRAY_BUFFER);
-	ibo_indices->setStorageType(GL_STATIC_DRAW);
-	ibo_indices->setDataType(GL_UNSIGNED_INT);
-
-	ibo_indices->bind();
-	ibo_indices->ReserveData(BatchElementsSize);
-	BatchSizeInBytes += BatchElementsSize;
-
-	vbos.push_back(ibo_indices);
-
-	VBO* vbo_position = new VBO();
-
-	vbo_position->setBufferType(GL_ARRAY_BUFFER);
-	vbo_position->setStorageType(GL_DYNAMIC_DRAW);
-	vbo_position->setDataType(GL_FLOAT);
-	vbo_position->setLocation(0);
-	vbo_position->setSize(3);
-
-	vbo_position->bind();
-	vbo_position->ReserveData(BatchElementsSize * 3);
-	BatchSizeInBytes += BatchElementsSize * 3;
-	vbo_position->AttributeSetup();
-
-	vbos.push_back(vbo_position);
-
-
-	VBO* vbo_TextureCoords = new VBO();
-
-	vbo_TextureCoords->setBufferType(GL_ARRAY_BUFFER);
-	vbo_TextureCoords->setStorageType(GL_DYNAMIC_DRAW);
-	vbo_TextureCoords->setDataType(GL_FLOAT);
-	vbo_TextureCoords->setLocation(1);
-	vbo_TextureCoords->setSize(3);
-
-	vbo_TextureCoords->bind();
-	vbo_TextureCoords->ReserveData(BatchElementsSize * 3);
-	BatchSizeInBytes += BatchElementsSize * 3;
-	vbo_TextureCoords->AttributeSetup();
-
-	vbos.push_back(vbo_TextureCoords);
-
-	VBO* vbo_Indexes = new VBO();
-
-	vbo_Indexes->setBufferType(GL_ARRAY_BUFFER);
-	vbo_Indexes->setStorageType(GL_DYNAMIC_DRAW);
-	vbo_Indexes->setDataType(GL_INT);
-	vbo_Indexes->setLocation(2);
-	vbo_Indexes->setSize(1);
-
-	vbo_Indexes->bind();
-	vbo_Indexes->ReserveData(BatchElementsSize);
-	BatchSizeInBytes += BatchElementsSize;
-	vbo_Indexes->AttributeISetup();
-
-	vbos.push_back(vbo_Indexes);
-
-	VBO* vbo_Colors = new VBO();
-
-	vbo_Colors->setBufferType(GL_ARRAY_BUFFER);
-	vbo_Colors->setStorageType(GL_DYNAMIC_DRAW);
-	vbo_Colors->setDataType(GL_FLOAT);
-	vbo_Colors->setLocation(3);
-	vbo_Colors->setSize(4);
-
-	vbo_Colors->bind();
-	vbo_Colors->ReserveData(BatchElementsSize * 4);
-	BatchSizeInBytes += BatchElementsSize * 4;
-	vbo_Colors->AttributeSetup();
-
-	vbos.push_back(vbo_Colors);
-
-	VBO* vbo_TexturesIndexes = new VBO();
-
-	vbo_TexturesIndexes->setBufferType(GL_ARRAY_BUFFER);
-	vbo_TexturesIndexes->setStorageType(GL_DYNAMIC_DRAW);
-	vbo_TexturesIndexes->setDataType(GL_INT);
-	vbo_TexturesIndexes->setLocation(4);
-	vbo_TexturesIndexes->setSize(1);
-
-	vbo_TexturesIndexes->bind();
-	vbo_TexturesIndexes->ReserveData(BatchElementsSize);
-	BatchSizeInBytes += BatchElementsSize;
-	vbo_TexturesIndexes->AttributeISetup();
-
-	vbos.push_back(vbo_TexturesIndexes);
+	CreateVBO(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_FLOAT, 0, BatchElementsSize, 3);//Positions
+	CreateVBO(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_FLOAT, 1, BatchElementsSize, 3);//Texturecoords
+	CreateVBO(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_INT, 2, BatchElementsSize, 1);//Object index
+	CreateVBO(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_FLOAT, 3, BatchElementsSize, 4);//Colors
+	CreateVBO(GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_INT, 4, BatchElementsSize, 1);//texture index
 	vao.Unbind();
 }
 
@@ -123,11 +42,9 @@ void Render2D::StartScene() {
 void Render2D::StartBatching() {
 	batchTime.Start();
 }
-
 void Render2D::Stopbatching() {
 	batchTime.Stop();
 }
-
 
 void Render2D::PackObject(GraphicObject* object, Dimension::Shader shader) {
 	batch.AddToBatch(*object);
@@ -147,10 +64,7 @@ void Render2D::flush(Dimension::Shader shader) {
 	}
 	renderTime.Start();
 	streamDataTime.Start();
-	/*vbos[0]->bind();
-	vbos[0]->StoreData(&batch.Indices[0], batch.Indices.size(), 0);
-	vbos[0]->unbind();*/
-	
+
 	vbos[1]->bind();
 	vbos[1]->StoreData(&batch.Positions[0], batch.Positions.size(), 0);
 	vbos[1]->unbind();
@@ -163,11 +77,9 @@ void Render2D::flush(Dimension::Shader shader) {
 	vbos[3]->StoreData(&batch.VertextObjectIndex[0], batch.VertextObjectIndex.size(), 0);
 	vbos[3]->unbind();
 
-
 	vbos[4]->bind();
 	vbos[4]->StoreData(&batch.Colors[0], batch.Colors.size(), 0);
 	vbos[4]->unbind();
-
 
 	vbos[5]->bind();
 	vbos[5]->StoreData(&batch.TexturesIndex[0], batch.TexturesIndex.size(), 0);
@@ -249,8 +161,31 @@ void Render2D::UpdateUniforms(GraphicObject* GrahicObjectData) {
 	batch.UpdateBatchUniforms(*GrahicObjectData);
 }
 
-
-
-
 Render2D::~Render2D() {
+}
+
+void Render2D::CreateVBO(int BufferType, int BufferStorageType, int DataType, int location, int ElementsCount, int VariablesCount) {
+	VBO* vbo = new VBO();
+
+	vbo->setBufferType(BufferType);
+	vbo->setStorageType(BufferStorageType);
+	vbo->setDataType(DataType);
+	if (BufferType != GL_ELEMENT_ARRAY_BUFFER) {
+		vbo->setLocation(location);
+	}
+	vbo->setSize(VariablesCount);
+
+	vbo->bind();
+	vbo->ReserveData(ElementsCount * VariablesCount);
+	BatchSizeInBytes += ElementsCount * VariablesCount;
+	if (BufferType != GL_ELEMENT_ARRAY_BUFFER) {
+		if (DataType == GL_INT) {
+			vbo->AttributeISetup();
+		}
+		else {
+			vbo->AttributeSetup();
+		}
+	}
+
+	vbos.push_back(vbo);
 }
