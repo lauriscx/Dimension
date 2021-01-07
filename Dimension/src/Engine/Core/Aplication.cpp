@@ -188,6 +188,7 @@ void Dimension::Aplication::Run() {
 	}
 }
 
+/*Functions to interact with system*/
 void Dimension::Aplication::LoadDefaultResources() {
 	defaultObj = new objl::Loader();
 	if (!defaultObj->LoadFile("C:/Dev/Dimension/res/box_stack.obj")) {
@@ -202,6 +203,33 @@ void Dimension::Aplication::LoadDefaultResources() {
 
 	SelectedObject = CreateObject(*defaultTexture, *defaultObj);
 	AddObjectToRender(SelectedObject);
+}
+void Dimension::Aplication::LoadRequestedResources() {
+	for (std::pair<std::string, bool> loadFile : SelectedResources) {
+		if (loadFile.second) {
+			std::cout << "Loading file: " << loadFile.first << std::endl;
+			int startpoint = loadFile.first.find_last_of(".", loadFile.first.size());
+			std::string ext = loadFile.first.substr(startpoint, loadFile.first.size());
+			if (ext == ".png") {
+				Loadedtextures[loadFile.first].Bind()->LoadPNG(loadFile.first.c_str())->LoadData()->SetParameters();
+				defaultTexture = &Loadedtextures[loadFile.first];
+			}
+			else if (ext == ".obj") {
+				if (!LoadedObjs[loadFile.first].LoadFile(loadFile.first)) {
+					std::cout << "Not loaded obj file" << std::endl;
+				}
+				else {
+					defaultObj = &LoadedObjs[loadFile.first];
+				}
+			}
+			else if (ext == ".glsl") {
+
+			}
+			else {
+				std::cout << "File extension not supported by the system." << std::endl;
+			}
+		}
+	}
 }
 GraphicObject* Dimension::Aplication::CreateObject(Texture texture, objl::Loader mesh) {
 	GraphicObject* graphicObject = new GraphicObject();
@@ -229,157 +257,6 @@ GraphicObject* Dimension::Aplication::CreateObject(Texture texture, objl::Loader
 	}
 
 	return graphicObject;
-}
-void Dimension::Aplication::MainMenuBar() {
-	ImGui::BeginMainMenuBar();
-
-	ImGui::SetNextItemWidth(100);
-	if (ImGui::BeginCombo("##1", "System")) {
-
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Vsync", &Vsync);
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Full screen", &FullScreen);
-		ImGui::SetNextItemWidth(100);
-		if (ImGui::Button("Debug setup", ImVec2(100, 0.0f))) {
-			Vsync = false;
-			FullScreen = false;
-			showDemo = false;
-			showCameraControlls = false;
-			showEntytiesControlls = true;
-			showResourcesControlls = true;
-			ShowRenderInformation = true;
-			systemMonitor = true;
-			graphicObjectsList = true;
-
-			Camera::Position.x = 0.0f;
-			Camera::Position.y = 0.0f;
-			Camera::Position.z = 100.0f;
-
-			Camera::height = w_heigh;
-			Camera::width = w_width;
-
-			Camera::Rotation.x = 0;
-			Camera::Rotation.y = 0;
-
-			CameraMovementSpeed = 10.0f;
-
-			Camera::perspective = true;
-		}
-		if (ImGui::Button("Exit", ImVec2(100, 0.0f))) {
-			Running = false;
-		}
-
-
-		ImGui::EndCombo();
-	}
-
-	ImGui::SetNextItemWidth(100);
-	if(ImGui::BeginCombo("##2", "Settings")) {
-
-		ImGui::SetNextItemWidth(100);
-		if (ImGui::Button("2D demonstration")) {
-			Camera::Position.x = 0.0f;
-			Camera::Position.y = 0.0f;
-			Camera::Position.z = 0.0f;
-
-			Camera::height = (float)w_heigh / 1000.0f;
-			Camera::width = (float)w_width / 1000.0f;
-
-			Camera::Rotation.x = 0;
-			Camera::Rotation.y = 0;
-
-			CameraMovementSpeed = 0.1f;
-
-			Camera::perspective = false;
-		}
-
-		ImGui::SetNextItemWidth(100);
-		if (ImGui::Button("3D demonstration")) {
-			Camera::Position.x = 0.0f;
-			Camera::Position.y = 0.0f;
-			Camera::Position.z = 0.0f;
-
-			Camera::height = w_heigh;
-			Camera::width = w_width;
-
-			Camera::Rotation.x = 0;
-			Camera::Rotation.y = 0;
-
-			CameraMovementSpeed = 1.0f;
-
-			Camera::perspective = true;
-		}
-
-		ImGui::SetNextItemWidth(100);
-		if (ImGui::Checkbox("Cinima effect", &CinimaEffect)) {
-			Camera::SetPosition({ 0, 0, 0 });
-		}
-
-		ImGui::SetNextItemWidth(100);
-		if (ImGui::Button("Stress test", ImVec2(100, 0.0f))) {
-			Vsync = false;
-			if (defaultObj != nullptr && defaultTexture != nullptr) {
-				for (int i = 0; i < 3500; i++) {
-					if (i % 100 == 0) {
-						std::cout << "Preparing stress test: " << (((float)i / 3500) * 100.0f) << "%" << std::endl;
-					}
-					SelectedObject = CreateObject(*defaultTexture, *defaultObj);
-					RandomizeObject(SelectedObject);
-					AddObjectToRender(SelectedObject);
-				}
-				std::cout << "Stress prepared: " << (100.0f) << "%" << std::endl;
-			}
-		}
-		if (ImGui::Button("Reset", ImVec2(100, 0.0f))) {
-			Vsync = true;
-			GraphicObjects.clear();
-			for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-				_Batch->first->ClearBatch();
-				for (GraphicObject* obj : _Batch->second) {
-					delete obj;
-				}
-				_Batch->second.clear();
-				delete _Batch->first;
-			}
-			Batchedrenders.clear();
-		}
-
-		ImGui::EndCombo();
-	}
-
-	ImGui::SetNextItemWidth(100);
-	if (ImGui::BeginCombo("##3", "Windows", ImGuiComboFlags_::ImGuiComboFlags_None)) {
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Show interface demonstartion", &showDemo);
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Show camera ctrls", &showCameraControlls);
-		//ImGui::SetNextItemWidth(100);
-		//ImGui::Checkbox("Show entyties ctrls", &showEntytiesControlls);
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Show resources ctrls", &showResourcesControlls);
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Show render information", &ShowRenderInformation);
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Show system information", &systemMonitor);
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Show graphic objects list", &graphicObjectsList);
-
-		ImGui::EndCombo();
-	}
-	if (showDemo) {
-		ImGui::ShowDemoWindow(&showDemo);
-	}
-
-	ImGui::SetNextItemWidth(100);
-	if (ImGui::BeginCombo("##4", "Input", ImGuiComboFlags_::ImGuiComboFlags_None)) {
-		ImGui::SetNextItemWidth(100);
-		ImGui::Checkbox("Camera controlls", &cameraControll);
-
-		ImGui::EndCombo();
-	}
-	
-	ImGui::EndMainMenuBar();
 }
 void Dimension::Aplication::AddObjectToRender(GraphicObject* obj) {
 	if ((GraphicObjects.size() / BatchSize) >= Batchedrenders.size()) {
@@ -429,6 +306,196 @@ void Dimension::Aplication::RandomizeObject(GraphicObject * obj) {
 	SelectedObject->rotation.z = glm::linearRand(-180.0f, 180.0f);
 	changed = true;
 }
+
+/*Graphic user interface with system controll*/
+void Dimension::Aplication::RenderUI() {
+	// feed inputs to dear imgui, start new frame
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	MainMenuBar();
+
+	if (showCameraControlls) {
+		CameraControll();
+	}
+	if (showResourcesControlls) {
+		ResoursesControl();
+	}
+	if (ShowRenderInformation) {
+		renderInformation();
+	}
+	if (systemMonitor) {
+		SystemMonitor();
+	}
+	if (graphicObjectsList) {
+		CreateEditGraphicObject();
+	}
+
+	ImGui::Begin("Debug timers");
+	ImGui::Text(("Loading resource function: " + std::to_string(Loadresource.DeltaTime()) + " %% " + std::to_string((Loadresource.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("Camera controls, cinema: " + std::to_string(CameracinematicsAndControll.DeltaTime()) + " %% " + std::to_string((CameracinematicsAndControll.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("Render prepare function: " + std::to_string(PrepareRenderFunction.DeltaTime()) + " %% " + std::to_string((PrepareRenderFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("render draw function: " + std::to_string(RenderDrawFunction.DeltaTime()) + " %% " + std::to_string((RenderDrawFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("User interface rendering: " + std::to_string(UserInterfaceRender.DeltaTime()) + " %% " + std::to_string((UserInterfaceRender.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	ImGui::Text(("Ending of while loop: " + std::to_string(WhileLoopEnd.DeltaTime()) + " %% " + std::to_string((WhileLoopEnd.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
+	
+	ImGui::End();
+	// Render dear imgui into screen
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+void Dimension::Aplication::MainMenuBar() {
+	ImGui::BeginMainMenuBar();
+
+	ImGui::SetNextItemWidth(100);
+	if (ImGui::BeginCombo("##1", "System")) {
+
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Vsync", &Vsync);
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Full screen", &FullScreen);
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::Button("Debug setup", ImVec2(100, 0.0f))) {
+			Vsync = false;
+			FullScreen = false;
+			showDemo = false;
+			showCameraControlls = false;
+			showEntytiesControlls = true;
+			showResourcesControlls = true;
+			ShowRenderInformation = true;
+			systemMonitor = true;
+			graphicObjectsList = true;
+
+			Camera::Position.x = 0.0f;
+			Camera::Position.y = 0.0f;
+			Camera::Position.z = 100.0f;
+
+			Camera::height = w_heigh;
+			Camera::width = w_width;
+
+			Camera::Rotation.x = 0;
+			Camera::Rotation.y = 0;
+
+			CameraMovementSpeed = 10.0f;
+
+			Camera::perspective = true;
+		}
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::Button("Stress test", ImVec2(100, 0.0f))) {
+			Vsync = false;
+			if (defaultObj != nullptr && defaultTexture != nullptr) {
+				for (int i = 0; i < 3500; i++) {
+					if (i % 100 == 0) {
+						std::cout << "Preparing stress test: " << (((float)i / 3500) * 100.0f) << "%" << std::endl;
+					}
+					SelectedObject = CreateObject(*defaultTexture, *defaultObj);
+					RandomizeObject(SelectedObject);
+					AddObjectToRender(SelectedObject);
+				}
+				std::cout << "Stress prepared: " << (100.0f) << "%" << std::endl;
+			}
+		}
+		if (ImGui::Button("Reset", ImVec2(100, 0.0f))) {
+			Vsync = true;
+			//GraphicObjects.clear();
+			for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
+				_Batch->first->ClearBatch();
+				for (GraphicObject* obj : _Batch->second) {
+					delete obj;
+				}
+				//_Batch->second.clear();
+				//delete _Batch->first;
+			}
+			//Batchedrenders.clear();
+		}
+		if (ImGui::Button("Exit", ImVec2(100, 0.0f))) {
+			Running = false;
+		}
+
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::SetNextItemWidth(100);
+	if (ImGui::BeginCombo("##2", "Settings")) {
+
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::Button("2D demonstration")) {
+			Camera::Position.x = 0.0f;
+			Camera::Position.y = 0.0f;
+			Camera::Position.z = 0.0f;
+
+			Camera::height = (float)w_heigh / 1000.0f;
+			Camera::width = (float)w_width / 1000.0f;
+
+			Camera::Rotation.x = 0;
+			Camera::Rotation.y = 0;
+
+			CameraMovementSpeed = 0.1f;
+
+			Camera::perspective = false;
+		}
+
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::Button("3D demonstration")) {
+			Camera::Position.x = 0.0f;
+			Camera::Position.y = 0.0f;
+			Camera::Position.z = 0.0f;
+
+			Camera::height = w_heigh;
+			Camera::width = w_width;
+
+			Camera::Rotation.x = 0;
+			Camera::Rotation.y = 0;
+
+			CameraMovementSpeed = 1.0f;
+
+			Camera::perspective = true;
+		}
+
+		ImGui::SetNextItemWidth(100);
+		if (ImGui::Checkbox("Cinima effect", &CinimaEffect)) {
+			Camera::SetPosition({ 0, 0, 0 });
+		}
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::SetNextItemWidth(100);
+	if (ImGui::BeginCombo("##3", "Windows", ImGuiComboFlags_::ImGuiComboFlags_None)) {
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Show interface demonstartion", &showDemo);
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Show camera ctrls", &showCameraControlls);
+		//ImGui::SetNextItemWidth(100);
+		//ImGui::Checkbox("Show entyties ctrls", &showEntytiesControlls);
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Show resources ctrls", &showResourcesControlls);
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Show render information", &ShowRenderInformation);
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Show system information", &systemMonitor);
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Show graphic objects list", &graphicObjectsList);
+
+		ImGui::EndCombo();
+	}
+	if (showDemo) {
+		ImGui::ShowDemoWindow(&showDemo);
+	}
+
+	ImGui::SetNextItemWidth(100);
+	if (ImGui::BeginCombo("##4", "Input", ImGuiComboFlags_::ImGuiComboFlags_None)) {
+		ImGui::SetNextItemWidth(100);
+		ImGui::Checkbox("Camera controlls", &cameraControll);
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::EndMainMenuBar();
+}
+
 void Dimension::Aplication::CameraControll() {
 	ImGui::Begin("Camera variables");
 	ImGui::SliderFloat3("Camera position", &Camera::Position[0], -10, 10, "%.3f", 1.0f);
@@ -447,34 +514,6 @@ void Dimension::Aplication::CameraControll() {
 	ImGui::SliderFloat("Window ZFar", &Camera::zFar, 0.01f, 1000, "%.3f", 1);
 	ImGui::SliderFloat("Camera movement speed", &CameraMovementSpeed, 0.01f, 10, "%.3f", 1);
 	ImGui::ColorEdit4("Clear color", (float*)&color, ImGuiColorEditFlags_Float);
-	ImGui::End();
-}
-void Dimension::Aplication::SystemMonitor() {
-	ImGui::Begin("System monitor");
-	ImGui::Text(("Cycle time: " + std::to_string(timer.DeltaTimeMls())).c_str());
-	float RenderTime = 0;
-	int DrawCalls = 0;
-	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-		RenderTime += _Batch->first->GetRenderTime();
-		DrawCalls += _Batch->first->DrawCalls();
-	}
-	ImGui::Text(("Application processing time: " + std::to_string(timer.DeltaTimeMls() - (RenderTime * 1000))).c_str());
-	ImGui::Text(("Rendering time: " + std::to_string(RenderTime * 1000)).c_str());
-	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
-	ImGui::End();
-}
-void Dimension::Aplication::ObjSelection() {
-	ImGui::Begin("Obj loaded files");
-	for (std::pair<std::string, objl::Loader> obj : LoadedObjs) {
-		ImGui::Button(obj.first.c_str());
-	}
-	ImGui::End();
-}
-void Dimension::Aplication::PngSelection() {
-	ImGui::Begin("Png loaded files");
-	for (std::pair<std::string, Texture> png : Loadedtextures) {
-		ImGui::Button(png.first.c_str());
-	}
 	ImGui::End();
 }
 void Dimension::Aplication::CreateEditGraphicObject() {
@@ -541,118 +580,20 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 		ImGui::End();
 	}
 }
-void Dimension::Aplication::ResoursesControl() {
-	ImGui::Begin("Resources selector");
-	ImGui::InputText("Files", &str[0], IM_ARRAYSIZE(str));
-	if (ImGui::Button("Scan")) {
-		paths.clear();
-		SelectedResources.clear();
-		FilesScaner::Scan(str, &paths);
-	}
-	for (std::string path : paths) {
-		SelectedResources[path] = ImGui::Button(path.c_str());
-	}
-	ImGui::End();
-
-
-	ObjSelection();
-	PngSelection();
-}
-void Dimension::Aplication::PrepereRender() {
-	/* Render here */
-	render->SetClearColor({ color.x, color.y, color.z, color.w });
-	glfwGetFramebufferSize((GLFWwindow*)window->Context(), &w_width, &w_heigh);
-	render->SetWindowSize({ w_width, w_heigh });
-	render->PrepareScene();
-
+//System info windows
+void Dimension::Aplication::SystemMonitor() {
+	ImGui::Begin("System monitor");
+	ImGui::Text(("Cycle time: " + std::to_string(timer.DeltaTimeMls())).c_str());
+	float RenderTime = 0;
+	int DrawCalls = 0;
 	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-		_Batch->first->StartScene();
+		RenderTime += _Batch->first->GetRenderTime();
+		DrawCalls += _Batch->first->DrawCalls();
 	}
-
-	/*for (int i = 0; i < BatchRenders.size(); i++) {
-		BatchRenders[i].StartScene();
-	}*/
-}
-void Dimension::Aplication::DrawObjects() {
-	if (changed) {
-		for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-			_Batch->first->ResetUniforms();
-			for (GraphicObject* obj : _Batch->second) {
-				_Batch->first->UpdateUniforms(obj);
-			}
-		}
-		changed = false;
-	}
-	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
-		_Batch->first->flush(*shader);
-	}
-}
-void Dimension::Aplication::LoadRequestedResources() {
-	for (std::pair<std::string, bool> loadFile : SelectedResources) {
-		if (loadFile.second) {
-			std::cout << "Loading file: " << loadFile.first << std::endl;
-			int startpoint = loadFile.first.find_last_of(".", loadFile.first.size());
-			std::string ext = loadFile.first.substr(startpoint, loadFile.first.size());
-			if (ext == ".png") {
-				Loadedtextures[loadFile.first].Bind()->LoadPNG(loadFile.first.c_str())->LoadData()->SetParameters();
-				defaultTexture = &Loadedtextures[loadFile.first];
-			}
-			else if (ext == ".obj") {
-				if (!LoadedObjs[loadFile.first].LoadFile(loadFile.first)) {
-					std::cout << "Not loaded obj file" << std::endl;
-				}
-				else {
-					defaultObj = &LoadedObjs[loadFile.first];
-				}
-			}
-			else if (ext == ".glsl") {
-
-			}
-			else {
-				std::cout << "File extension not supported by the system." << std::endl;
-			}
-		}
-	}
-}
-void Dimension::Aplication::RenderUI() {
-	// feed inputs to dear imgui, start new frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
-	MainMenuBar();
-
-	if (showCameraControlls) {
-		CameraControll();
-	}
-	if (showEntytiesControlls) {
-		//EntytiesControll();
-	}
-	if (showResourcesControlls) {
-		ResoursesControl();
-	}
-	if (ShowRenderInformation) {
-		renderInformation();
-	}
-	if (systemMonitor) {
-		SystemMonitor();
-	}
-	if (graphicObjectsList) {
-		CreateEditGraphicObject();
-	}
-
-	ImGui::Begin("Debug timers");
-	ImGui::Text(("Loading resource function: " + std::to_string(Loadresource.DeltaTime()) + " %% " + std::to_string((Loadresource.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("Camera controls, cinema: " + std::to_string(CameracinematicsAndControll.DeltaTime()) + " %% " + std::to_string((CameracinematicsAndControll.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("Render prepare function: " + std::to_string(PrepareRenderFunction.DeltaTime()) + " %% " + std::to_string((PrepareRenderFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("render draw function: " + std::to_string(RenderDrawFunction.DeltaTime()) + " %% " + std::to_string((RenderDrawFunction.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("User interface rendering: " + std::to_string(UserInterfaceRender.DeltaTime()) + " %% " + std::to_string((UserInterfaceRender.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	ImGui::Text(("Ending of while loop: " + std::to_string(WhileLoopEnd.DeltaTime()) + " %% " + std::to_string((WhileLoopEnd.DeltaTime() / timer.DeltaTime()) * 100.0f)).c_str());
-	
+	ImGui::Text(("Application processing time: " + std::to_string(timer.DeltaTimeMls() - (RenderTime * 1000))).c_str());
+	ImGui::Text(("Rendering time: " + std::to_string(RenderTime * 1000)).c_str());
+	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
 	ImGui::End();
-	// Render dear imgui into screen
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 void Dimension::Aplication::renderInformation() {
 	ImGui::Begin("Render information");
@@ -675,15 +616,76 @@ void Dimension::Aplication::renderInformation() {
 	}
 	ImGui::Text(("Objects count: " + std::to_string(ObjectCount)).c_str());
 	ImGui::Text(("Frame render time: " + std::to_string(RenderTime * 1000)).c_str());
-	ImGui::Text(("Last batch time: " + std::to_string(BatchTime * 1000) + " prc " + std::to_string((BatchTime / RenderTime) * 100)).c_str());
+	ImGui::Text(("Last batch time: " + std::to_string(BatchTime * 1000) + " %% " + std::to_string((BatchTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Batch size: " + std::to_string(BatchSize)).c_str());
+	ImGui::Text(("Batch count: " + std::to_string(Batchedrenders.size())).c_str());
 	ImGui::Text(("Reserved data in GPU: " + std::to_string(ReservedBytesMemory) + "MB").c_str());
-	ImGui::Text(("Stream data time(to GPU): " + std::to_string(StreamDataTime * 1000) + " prc " + std::to_string((StreamDataTime / RenderTime) * 100)).c_str());
-	ImGui::Text(("Draw time: " + std::to_string(DrawTime * 1000) + " prc " + std::to_string((DrawTime / RenderTime) * 100)).c_str());
+	ImGui::Text(("Stream data time(to GPU): " + std::to_string(StreamDataTime * 1000) + " %% " + std::to_string((StreamDataTime / RenderTime) * 100)).c_str());
+	ImGui::Text(("Draw time: " + std::to_string(DrawTime * 1000) + " %% " + std::to_string((DrawTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
 	ImGui::Text(("FPS: " + std::to_string(ImGui::GetIO().Framerate)).c_str());
 	ImGui::End();
 }
+//Files loading
+void Dimension::Aplication::ResoursesControl() {
+	ImGui::Begin("Resources selector");
+	ImGui::InputText("Files", &str[0], IM_ARRAYSIZE(str));
+	if (ImGui::Button("Scan")) {
+		paths.clear();
+		SelectedResources.clear();
+		FilesScaner::Scan(str, &paths);
+	}
+	for (std::string path : paths) {
+		SelectedResources[path] = ImGui::Button(path.c_str());
+	}
+	ImGui::End();
+
+
+	ObjSelection();
+	PngSelection();
+}
+void Dimension::Aplication::PngSelection() {
+	ImGui::Begin("Png loaded files");
+	for (std::pair<std::string, Texture> png : Loadedtextures) {
+		ImGui::Button(png.first.c_str());
+	}
+	ImGui::End();
+}
+void Dimension::Aplication::ObjSelection() {
+	ImGui::Begin("Obj loaded files");
+	for (std::pair<std::string, objl::Loader> obj : LoadedObjs) {
+		ImGui::Button(obj.first.c_str());
+	}
+	ImGui::End();
+}
+
+/*rendering stuff*/
+void Dimension::Aplication::PrepereRender() {
+	/* Render here */
+	render->SetClearColor({ color.x, color.y, color.z, color.w });
+	glfwGetFramebufferSize((GLFWwindow*)window->Context(), &w_width, &w_heigh);
+	render->SetWindowSize({ w_width, w_heigh });
+	render->PrepareScene();
+
+	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
+		_Batch->first->StartScene();
+	}
+}
+void Dimension::Aplication::DrawObjects() {
+	if (changed) {
+		for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
+			_Batch->first->ResetUniforms();
+			for (GraphicObject* obj : _Batch->second) {
+				_Batch->first->UpdateUniforms(obj);
+			}
+		}
+		changed = false;
+	}
+	for (std::map<Render2D*, std::vector<GraphicObject*>>::iterator _Batch = Batchedrenders.begin(); _Batch != Batchedrenders.end(); ++_Batch) {
+		_Batch->first->flush(*shader);
+	}
+}
+
 void Dimension::Aplication::Close() {
 	if (events.Dispacth<WindowCloseEvent>([](WindowCloseEvent* e) {return true;})) {
 		std::cout << "Close" << std::endl;

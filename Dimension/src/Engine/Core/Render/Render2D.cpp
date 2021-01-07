@@ -7,7 +7,7 @@
 
 Render2D::Render2D() {
 	ClearColor = { 1, 0.75f, 0, 1 };
-	BatchElementsSize = 10000000;
+	BatchElementsSize = 1000000;
 
 	vao.Bind();
 	CreateVBO(GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW, GL_UNSIGNED_INT, 0, BatchElementsSize, 1);//Indicies
