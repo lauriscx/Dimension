@@ -598,7 +598,7 @@ void Dimension::Aplication::SystemMonitor() {
 	ImGui::Text(("Average cycle time: " + (std::to_string(cycleAverage * 1000)) + "ms").c_str());
 	ImGui::Text(("Application average processing time: " + (std::to_string((cycleAverage - RenderTime) * 1000)) + "ms").c_str());
 	ImGui::Text(("Rendering time: " + (std::to_string(RenderTime * 1000)) + "ms").c_str());
-	ImGui::Text(("Draw calls: " + (std::to_string(DrawCalls) + "ms")).c_str());
+	ImGui::Text(("Draw calls: " + (std::to_string(DrawCalls))).c_str());
 	ImGui::End();
 }
 void Dimension::Aplication::renderInformation() {
@@ -621,7 +621,7 @@ void Dimension::Aplication::renderInformation() {
 		ReservedBytesMemory += _Batch->first->GetReservedMemoryInMB();
 	}
 	ImGui::Text(("Objects count: " + std::to_string(ObjectCount)).c_str());
-	ImGui::Text(("Frame render time: " + std::to_string(RenderTime * 1000)).c_str());
+	ImGui::Text(("Frame render time: " + std::to_string(RenderTime * 1000) + "ms").c_str());
 	ImGui::Text(("Last batch time: " + std::to_string(BatchTime * 1000) + "ms %% " + std::to_string((BatchTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Batch size: " + std::to_string(BatchSize) + " Objects fits").c_str());
 	ImGui::Text(("Batch count: " + std::to_string(Batchedrenders.size())).c_str());
