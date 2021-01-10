@@ -28,12 +28,17 @@
 #include "Render/Camera.h"
 
 #include "FileReader.h"
+#include "ResourceManager/Resources.h"
+#include "TaskManager/TaskManager.h"
 
 /*C++ native functions*/
 #include <functional>
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <math.h>
+#include <thread>
+#include <mutex>
 
 Dimension::Aplication*	Dimension::Aplication::app;
 
@@ -73,6 +78,9 @@ static int BatchSize = 200;
 static std::vector<float> CyclesTimerHistory;
 static std::vector<float> RenderTimerHistory;
 
+static Resources resources;
+static TaskManager taskManager;
+
 /*Debug objects*/
 static Timer Loadresource;
 static Timer CameracinematicsAndControll;
@@ -80,6 +88,27 @@ static Timer PrepareRenderFunction;
 static Timer RenderDrawFunction;
 static Timer UserInterfaceRender;
 static Timer WhileLoopEnd;
+
+
+static std::mutex test;
+void LoadTexture(std::string path, std::map<std::string, void*>* data) {
+	//std::lock_guard<std::mutex> lock(test);
+	std::string* tekstas = new std::string();
+	for (int i = 0; i < 10; i++) {
+		//std::cout << "tried to load image " << path << std::endl;
+		tekstas->append("tried to load image ");
+		tekstas->append(path);
+	}
+	if (tekstas != nullptr) {
+		std::cout << "\ntext size: " << tekstas->size() << std::endl;
+	}
+	data->insert(std::pair<std::string, void*>(path, (void*)tekstas));
+	int g = 0;
+}
+
+void AsyncCreateObject(std::string path, std::map<std::string, void*>* data) {
+//	data->insert(std::pair<std::string, void*>(path, Dimension::Aplication::CreateObject(*Dimension::Aplication::defaultTexture, *Dimension::Aplication::defaultObj)));
+}
 
 Dimension::Aplication::Aplication(const char* title, int width, int height) : Running(true) {
 	/*Application init*/
@@ -118,8 +147,11 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 	const char* glsl_version = "#version 330";
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	ImGui::StyleColorsDark();	// Setup Dear ImGui style
-}
 
+	resources.AttachFunctionToResourceType(Resources::Type::Text, &LoadTexture);
+	resources.AttachFunctionToResourceType(Resources::Type::UserCustom1, &AsyncCreateObject);
+}
+bool tes = true;
 void Dimension::Aplication::Run() {
 	//Layer * layer = new Layer("Test");
 	//m_Layers.PushLayer(layer);
@@ -401,6 +433,11 @@ void Dimension::Aplication::MainMenuBar() {
 		}
 		ImGui::SetNextItemWidth(100);
 		if (ImGui::Button("Stress test", ImVec2(100, 0.0f))) {
+			/*TaskManager::CreateAsyncTask([](Texture, objl::Loader) {
+				
+			}, *defaultTexture, *defaultObj);*/
+			//std::async(std::launch::async, [](Texture, objl::Loader) {}, *defaultTexture, *defaultObj);
+
 			Vsync = false;
 			if (defaultObj != nullptr && defaultTexture != nullptr) {
 				for (int i = 0; i < 3500; i++) {

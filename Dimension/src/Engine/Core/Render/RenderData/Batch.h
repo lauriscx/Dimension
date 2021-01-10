@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "GraphicObject.h"
+#include "../../../../Utils/Timer.h"
 
 class Batch {
 public:
@@ -42,4 +43,6 @@ public:
 private:
 	int IndexNumber = 0;
 	int ObjectCount = 0;
+	Timer index;
+	Timer OtherData;
 };

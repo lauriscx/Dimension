@@ -2,6 +2,7 @@
 #include "GraphicObject.h"
 #include "Batch.h"
 #include "Texture.h"
+#include <iostream>
 
 void Batch::AddBatch(Batch batch) {
 		this->Indices.insert(std::end(this->Indices), std::begin(batch.Indices), std::end(batch.Indices));
@@ -21,7 +22,9 @@ void Batch::AddBatch(Batch batch) {
 		this->BonesIndex.insert(std::end(this->BonesIndex), std::begin(batch.BonesIndex), std::end(batch.BonesIndex));
 		this->BonesWeights.insert(std::end(this->BonesWeights), std::begin(batch.BonesWeights), std::end(batch.BonesWeights));
 	}
+
 void Batch::AddToBatch(GraphicObject GrahicObjectData) {
+		index.Start();
 		int prevIndexSize = Indices.size();
 		int NewMaxIndeci = 0;
 		for (int i = 0; i < GrahicObjectData.Indices.size(); i++) {
@@ -51,13 +54,14 @@ void Batch::AddToBatch(GraphicObject GrahicObjectData) {
 				this->TexturesIndex.push_back(TexturesBatch.size() - 1);
 			}
 		}
+		index.Stop();
 		/*else {
 			//get texture ID from this list TexturesIndex.
 			for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
 				this->TexturesIndex.push_back(-1);
 			}
 		}*/
-
+		OtherData.Start();
 		for (int i = IndexNumber; i < NewMaxIndeci + 1; i++) {
 			this->VertextObjectIndex.push_back(ObjectCount);
 		}
@@ -81,6 +85,9 @@ void Batch::AddToBatch(GraphicObject GrahicObjectData) {
 		this->transformations.push_back(GrahicObjectData.GetTransformation());
 		this->ObjectColor.push_back(GrahicObjectData.GetMaterial()->color);
 		ObjectCount++;
+		OtherData.Stop();
+		std::cout << index.DeltaTime() << std::endl;
+		std::cout << OtherData.DeltaTime() << std::endl;
 	}
 void Batch::ResetBatchUniforms() {
 		transformations.clear();

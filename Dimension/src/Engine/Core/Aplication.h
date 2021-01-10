@@ -22,7 +22,7 @@ namespace Dimension {
 			static Aplication* Get() { return app; }
 			std::shared_ptr<Window> GetWindow() { return window; }
 			void LoadDefaultResources();
-			GraphicObject* CreateObject(Texture texture, objl::Loader mesh);
+			static GraphicObject* CreateObject(Texture texture, objl::Loader mesh);
 
 			/*Demo functions*/
 			void PrepereRender();
@@ -38,10 +38,11 @@ namespace Dimension {
 			void CameraControll();
 			void SystemMonitor();
 			void MainMenuBar();
-			void AddObjectToRender(GraphicObject* obj);
-			void RandomizeObject(GraphicObject* obj);
+			static void AddObjectToRender(GraphicObject* obj);
+			static void RandomizeObject(GraphicObject* obj);
 			
 			~Aplication();
+
 		private:
 			static Aplication* app;
 			std::shared_ptr<Window> window;
