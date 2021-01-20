@@ -119,7 +119,7 @@ void Dimension::Shader::compile() {
 									"out vec4 Pixel;\n"
 									"in vec3 _TextureCoordinates;\n"
 									"uniform sampler2D diffuseMap;\n"
-									"uniform sampler2D textures[32];\n"
+									"uniform sampler2D textures[32];\n"  
 									"uniform vec4 colors[" + sizeOfUniformArray + "];\n"
 									"flat in int _textureid;\n"
 									"flat in int _objectid;\n"

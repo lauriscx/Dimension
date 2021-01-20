@@ -1,4 +1,5 @@
 #include "WindowsWindow.h"
+#include "GLAD/glad.h"
 #include "GLFW/glfw3.h"
 #include "../../Core/Input/Events/Events.h"
 #include "../../Core/Input/Events/AplicationEvent.h"
@@ -75,6 +76,7 @@ void		Dimension::WindowsWindow::Update			() {
 void Dimension::WindowsWindow::SetVsync(bool vsync) {
 	glfwSwapInterval(vsync);
 }
+
 void Dimension::WindowsWindow::SetFullScreen(bool FullScreen)
 {
 	if (fullScreen == FullScreen)
@@ -176,6 +178,23 @@ void		Dimension::WindowsWindow::EventsHandler		(Events* event) {
 		MauseCursorEvent* event = new MauseCursorEvent(x, y);
 		events->AddEvent(event);
 	});
+}
+const char * Dimension::WindowsWindow::GetVendor() {
+	return (const char*)glGetString(GL_VENDOR);
+}
+const char * Dimension::WindowsWindow::GetRenderer() {
+	return (const char*)glGetString(GL_RENDERER);
+}
+const char * Dimension::WindowsWindow::GetVersion() {
+	return (const char*)glGetString(GL_VERSION);
+}
+int Dimension::WindowsWindow::GetExtensionNum() {
+	int n = 0;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+	return n;
+}
+const char * Dimension::WindowsWindow::GetExtension(int i) {
+	return (const char*)glGetStringi(GL_EXTENSIONS, i);
 }
 void *		Dimension::WindowsWindow::Context			() {
 	return window;

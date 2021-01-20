@@ -19,6 +19,11 @@ namespace Dimension {
 		virtual void		SetVsync		(bool vsync)		override;
 		virtual void		SetFullScreen	(bool FullScreen)	override;
 		virtual void		EventsHandler	(Events* event)		override;
+		virtual const char* GetVendor		()					override;
+		virtual const char* GetRenderer		()					override;
+		virtual const char* GetVersion		()					override;
+		virtual int			GetExtensionNum	()					override;
+		virtual const char* GetExtension	(int i)				override;
 		virtual void *		Context			()					override;
 
 		virtual ~WindowsWindow();

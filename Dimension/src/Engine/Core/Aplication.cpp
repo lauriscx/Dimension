@@ -77,6 +77,11 @@ static float CameraProgress = 0;
 static int BatchSize = 200;
 static std::vector<float> CyclesTimerHistory;
 static std::vector<float> RenderTimerHistory;
+static std::string Vendor;
+static std::string Renderer;
+static std::string Version;
+static std::vector<std::string> Extensions;
+static std::vector<float> lines;
 
 static Resources resources;
 static TaskManager taskManager;
@@ -150,6 +155,14 @@ Dimension::Aplication::Aplication(const char* title, int width, int height) : Ru
 
 	resources.AttachFunctionToResourceType(Resources::Type::Text, &LoadTexture);
 	resources.AttachFunctionToResourceType(Resources::Type::UserCustom1, &AsyncCreateObject);
+
+	Vendor = window->GetVendor();
+	Renderer = window->GetRenderer();
+	Version = window->GetVersion();
+
+	for (int i = 0; i < window->GetExtensionNum(); i++) {
+		Extensions.push_back((std::string(std::to_string(i + 1) + ". Extension ") + window->GetExtension(i)).c_str());
+	}
 }
 bool tes = true;
 void Dimension::Aplication::Run() {
@@ -274,14 +287,14 @@ GraphicObject* Dimension::Aplication::CreateObject(Texture texture, objl::Loader
 	graphicObject->scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	//graphicObject->Indices.insert(std::end(graphicObject->Indices), std::begin(defaultObj->LoadedIndices), std::end(defaultObj->LoadedIndices));
-	graphicObject->Indices = defaultObj->LoadedIndices;
-	for (int i = 0; i < defaultObj->LoadedVertices.size(); i++) {
-		graphicObject->Positions.push_back(defaultObj->LoadedVertices[i].Position.X);
-		graphicObject->Positions.push_back(defaultObj->LoadedVertices[i].Position.Y);
-		graphicObject->Positions.push_back(defaultObj->LoadedVertices[i].Position.Z);
+	graphicObject->Indices = mesh.LoadedIndices;
+	for (int i = 0; i < mesh.LoadedVertices.size(); i++) {
+		graphicObject->Positions.push_back(mesh.LoadedVertices[i].Position.X);
+		graphicObject->Positions.push_back(mesh.LoadedVertices[i].Position.Y);
+		graphicObject->Positions.push_back(mesh.LoadedVertices[i].Position.Z);
 
-		graphicObject->TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.X);
-		graphicObject->TexturesCoordinates.push_back(defaultObj->LoadedVertices[i].TextureCoordinate.Y);
+		graphicObject->TexturesCoordinates.push_back(mesh.LoadedVertices[i].TextureCoordinate.X);
+		graphicObject->TexturesCoordinates.push_back(mesh.LoadedVertices[i].TextureCoordinate.Y);
 		graphicObject->TexturesCoordinates.push_back(0.0f);
 
 		graphicObject->Colors.push_back(graphicObject->GetMaterial()->color.r);
@@ -381,6 +394,8 @@ void Dimension::Aplication::RenderUI() {
 	if (graphicObjectsList) {
 		CreateEditGraphicObject();
 	}
+
+	SystemHarwareInfo();
 
 	ImGui::Begin("Debug timers");
 	ImGui::Text(("Loading resource function: " + std::to_string(Loadresource.AverageDeltaTime(100) * 1000) + "ms %% " + std::to_string((Loadresource.AverageDeltaTime(100) / timer.AverageDeltaTime(100)) * 100.0f)).c_str());
@@ -617,7 +632,7 @@ void Dimension::Aplication::CreateEditGraphicObject() {
 		ImGui::End();
 	}
 }
-//System info windows
+//System info window
 void Dimension::Aplication::SystemMonitor() {
 	ImGui::Begin("System monitor");
 	float RenderTime = 0;
@@ -636,6 +651,17 @@ void Dimension::Aplication::SystemMonitor() {
 	ImGui::Text(("Application average processing time: " + (std::to_string((cycleAverage - RenderTime) * 1000)) + "ms").c_str());
 	ImGui::Text(("Rendering time: " + (std::to_string(RenderTime * 1000)) + "ms").c_str());
 	ImGui::Text(("Draw calls: " + (std::to_string(DrawCalls))).c_str());
+	ImGui::End();
+}
+void Dimension::Aplication::SystemHarwareInfo() {
+	ImGui::Begin("Hardware information panel");
+	ImGui::Text((Vendor).c_str());
+	ImGui::Text((Renderer).c_str());
+	ImGui::Text((Version).c_str());
+	ImGui::Text((std::string("Extensions count ") + std::to_string(Extensions.size())).c_str());
+	for (int i = 0; i < Extensions.size(); i++) {
+		ImGui::Text((Extensions[i]).c_str());
+	}
 	ImGui::End();
 }
 void Dimension::Aplication::renderInformation() {
@@ -666,7 +692,16 @@ void Dimension::Aplication::renderInformation() {
 	ImGui::Text(("Stream data time(to GPU): " + std::to_string(StreamDataTime * 1000) + "ms %% " + std::to_string((StreamDataTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw time: " + std::to_string(DrawTime * 1000) + "ms %% " + std::to_string((DrawTime / RenderTime) * 100)).c_str());
 	ImGui::Text(("Draw calls: " + std::to_string(DrawCalls)).c_str());
-	ImGui::Text(("FPS: " + std::to_string(ImGui::GetIO().Framerate)).c_str());
+	//ImGui::Text(("FPS: " + std::to_string(ImGui::GetIO().Framerate)).c_str());
+
+	//ImGui::PlotLines("FPS diagram", [](void* data, int index) { data = (void*)&ImGui::GetIO().Framerate; return ImGui::GetIO().Framerate; }, (void*)&ImGui::GetIO().Framerate, 1);
+
+	lines.push_back(ImGui::GetIO().Framerate);
+	if (lines.size() > 250) {
+		lines.erase(lines.begin(), lines.begin() + 1);
+	}
+	ImGui::PlotLines("##6", &lines[0], lines.size(), 0, ("FPS: " + std::to_string(ImGui::GetIO().Framerate)).c_str(), 0, 300, {500, 100});
+
 	ImGui::End();
 }
 //Files loading

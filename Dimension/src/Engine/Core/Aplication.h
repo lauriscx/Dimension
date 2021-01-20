@@ -37,6 +37,7 @@ namespace Dimension {
 			void ObjSelection();
 			void CameraControll();
 			void SystemMonitor();
+			void SystemHarwareInfo();
 			void MainMenuBar();
 			static void AddObjectToRender(GraphicObject* obj);
 			static void RandomizeObject(GraphicObject* obj);

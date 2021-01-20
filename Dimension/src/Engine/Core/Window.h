@@ -16,6 +16,11 @@ namespace Dimension {
 			virtual void		SetVsync		(bool vsync)		= 0;
 			virtual void		SetFullScreen	(bool FullScreen)	= 0;
 			virtual void		EventsHandler	(Events* event)		= 0;
+			virtual const char* GetVendor		()					= 0;
+			virtual const char* GetRenderer		()					= 0;
+			virtual const char* GetVersion		()					= 0;
+			virtual int			GetExtensionNum	()					= 0;
+			virtual const char* GetExtension	(int i)				= 0;
 			virtual void *		Context			()					= 0;
 	};
 }

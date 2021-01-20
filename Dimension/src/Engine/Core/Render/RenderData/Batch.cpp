@@ -86,8 +86,8 @@ void Batch::AddToBatch(GraphicObject GrahicObjectData) {
 		this->ObjectColor.push_back(GrahicObjectData.GetMaterial()->color);
 		ObjectCount++;
 		OtherData.Stop();
-		std::cout << index.DeltaTime() << std::endl;
-		std::cout << OtherData.DeltaTime() << std::endl;
+		//std::cout << index.DeltaTime() << std::endl;
+		//std::cout << OtherData.DeltaTime() << std::endl;
 	}
 void Batch::ResetBatchUniforms() {
 		transformations.clear();
